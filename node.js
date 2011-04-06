@@ -374,7 +374,7 @@ http.get = function(options, callback){return new http.ClientRequest;};
  * connection (in the case of keep-alive connections).<br>
  * <br>
  * <b>connection</b> : <code>function (stream) { }</code> — When a new TCP
- * stream is established. stream is an object of type <code>net.Stream</code>.
+ * stream is established. stream is an object of type {@link net.Stream}.
  * Usually users will not want to access this event. The stream can also be
  * accessed at <code>request.connection</code>.<br>
  * <br>
@@ -1194,9 +1194,8 @@ Buffer.prototype.slice = function(start, end){return new Buffer;};
  * @augments EventEmitter
  * @constructor
  */
-function ReadableStream() {
-	
-}
+function ReadableStream() {}
+ReadableStream.prototype = new EventEmitter;
 
 /**
  * A boolean that is true by default, but turns false after an 'error' occurred,
@@ -1306,6 +1305,7 @@ ReadableStream.prototype.pipe = function(destination, options){};
  * @constructor
  */
 function WritableStream() {}
+WritableStream.prototype = new EventEmitter;
 
 /**
  * A boolean that is <code>true</code> by default, but turns
@@ -1356,3 +1356,431 @@ WritableStream.prototype.destroy = function(){};
  * there is no data left in the queue for writes.
  */
 WritableStream.prototype.destroySoon = function(){};
+
+/**
+ * The <code>net</code> module provides you with an asynchronous network
+ * wrapper. It contains methods for creating both servers and clients (called
+ * streams). You can include this module with <code>require("net")</code>;
+ * @namespace
+ */
+var net = {};
+
+/**
+ * Creates a new TCP server. The <code>connectionListener</code> argument is
+ * automatically set as a listener for the 'connection' event.
+ * @param {Object} options
+ * @param {Boolean} options.allowHalfOpen If <code>true</code>, then the socket won't automatically send FIN packet when the other end of the socket sends a FIN packet. The socket becomes non-readable, but still writable. You should call the end() method explicitly. See 'end' event for more information.
+ * @param {Function} connectionListener
+ */
+net.createServer = function(options, connectionListener){};
+
+/**
+ * Construct a new socket object and opens a socket to the given location. When
+ * the socket is established the 'connect' event will be emitted.
+ * 
+ * @param {Number}
+ *            port TCP connection on specified port. If {@link String} is
+ *            passed, creates unix socket connection to <code>path</code>
+ * @param {String}
+ *            host TCP connection on specified host. If omitted,
+ *            <code>localhost</code> will be assumed.
+ * @returns net.Server
+ */
+net.createConnection = function(port, host){return new net.Server;};
+
+/**
+ * This class is used to create a TCP or UNIX server.
+ * <p>
+ * Events:
+ * </p>
+ * <ul>
+ * <li><b>connection</b> : <code>function (socket) {}</code> — Emitted when
+ * a new connection is made. socket is an instance of {@link net.Socket}.</li>
+ * <li><b>close</b> : <code>function () {}</code> — Emitted when the server
+ * closes.</li>
+ * </ul>
+ * <p>
+ * Example of a echo server which listens for connections on port 8124:
+ * </p>
+ * 
+ * <pre>
+ * var net = require('net');
+ * var server = net.createServer(function(c) {
+ * 	c.write('hello\r\n');
+ * 	c.pipe(c);
+ * });
+ * server.listen(8124, 'localhost');
+ * </pre>
+ * 
+ * <p>
+ * Test this by using telnet:
+ * </p>
+ * 
+ * <pre>
+ * telnetlocalhost8124
+ * </pre>
+ * 
+ * <p>
+ * To listen on the socket /tmp/echo.sock the last line would just be changed to
+ * </p>
+ * 
+ * <pre>
+ * server.listen('/tmp/echo.sock');
+ * </pre>
+ * 
+ * <p>
+ * Use nc to connect to a UNIX domain socket server:
+ * </p>
+ * 
+ * <pre>
+ * nc - U / tmp / echo.sock
+ * </pre>
+ * 
+ * @augments EventEmitter
+ * @constructor
+ */
+net.Server = function() {};
+net.Server.prototype = new EventEmitter;
+
+/**
+ * <p>
+ * Begin accepting connections on the specified <code>port</code> and <code>host</code>. If the <code>host</code> is
+ * omitted, the server will accept connections directed to any IPv4 address
+ * (INADDR_ANY).
+ * </p>
+ * <p>
+ * This function is asynchronous. The last parameter <code>callback</code> will be called
+ * when the server has been bound.
+ * </p>
+ * <p>
+ * One issue some users run into is getting EADDRINUSE errors. Meaning another
+ * server is already running on the requested port. One way of handling this
+ * would be to wait a second and the try again. This can be done with
+ * </p>
+ * 
+ * <pre>
+ * server.on('error', function(e) {
+ * 	if (e.code == 'EADDRINUSE') {
+ * 		console.log('Address in use, retrying...');
+ * 		setTimeout(function() {
+ * 			server.close();
+ * 			server.listen(PORT, HOST);
+ * 		}, 1000);
+ * 	}
+ * });
+ * </pre>
+ * 
+ * <p>
+ * (Note: All sockets in Node are set SO_REUSEADDR already)
+ * </p>
+ * @param {Number} port TCP port. If {@link String} is passed, assumed you're connecting to UNIX socket
+ * @param {String} host
+ * @param {Function} callback
+ */
+net.Server.prototype.listen = function(port, host, callback){};
+
+/**
+ * <p>
+ * Start a server listening for connections on the given file descriptor.
+ * </p>
+ * <p>
+ * This file descriptor must have already had the bind(2) and listen(2) system
+ * calls invoked on it.
+ * </p>
+ * @param {Object} fd
+ */
+net.Server.prototype.listenFD = function(fd){};
+
+/**
+ * Stops the server from accepting new connections. This function is
+ * asynchronous, the server is finally closed when the server emits a 'close'
+ * event.
+ */
+net.Server.prototype.close = function(){};
+
+/**
+ * Returns the bound address of the server as seen by the operating system.
+ * Useful to find which port was assigned when giving getting an OS-assigned
+ * address
+ * <p>
+ * Example:
+ * </p>
+ * 
+ * <pre>
+ * var server = net.createServer(function(socket) {
+ * 	socket.end(&quot;goodbye\n&quot;);
+ * });
+ * 
+ * // grab a random port.
+ * server.listen(function() {
+ * 	address = server.address();
+ * 	console.log(&quot;opened server on %j&quot;, address);
+ * });
+ * </pre>
+ * @returns String
+ */
+net.Server.prototype.address = function(){return '';};
+
+/**
+ * Set this property to reject connections when the server's connection count
+ * gets high.
+ */
+net.Server.prototype.maxConnections = 1;
+
+/**
+ * The number of concurrent connections on the server.
+ */
+net.Server.prototype.connections = 1;
+
+/**
+ * This object is an abstraction of of a TCP or UNIX socket.
+ * <code>net.Socket</code> instances implement a duplex Stream interface. They
+ * can be created by the user and used as a client (with <code>connect()</code>)
+ * or they can be created by Node and passed to the user through the
+ * 'connection' event of a server.
+ * 
+ * <p>
+ * Events:
+ * </p>
+ * <ul>
+ * <li><b>connect</b> : <code>function () { }</code> — Emitted when a socket
+ * connection successfully is established. See connect().</li>
+ * <li><b>data</b> : <code>function (data) { }</code> — Emitted when data is
+ * received. The argument data will be a Buffer or String. Encoding of data is
+ * set by socket.setEncoding(). (See the {@link ReadableStream} for more
+ * information.)</li>
+ * <li><b>end</b> : <code>function () { }</code> — Emitted when the other
+ * end of the socket sends a FIN packet. By default (allowHalfOpen == false) the
+ * socket will destroy its file descriptor once it has written out its pending
+ * write queue. However, by setting allowHalfOpen == true the socket will not
+ * automatically end() its side allowing the user to write arbitrary amounts of
+ * data, with the caveat that the user is required to end() their side now.</li>
+ * <li><b>timeout</b> : <code>function () { }</code> — Emitted if the socket
+ * times out from inactivity. This is only to notify that the socket has been
+ * idle. The user must manually close the connection. See also:
+ * <code>socket.setTimeout()</code></li>
+ * <li><b>drain</b> : <code>function () { }</code> — Emitted when the write
+ * buffer becomes empty. Can be used to throttle uploads.</li>
+ * <li><b>error</b> : <code>function (exception) { }</code> — Emitted when
+ * an error occurs. The 'close' event will be called directly following this
+ * event.</li>
+ * <li><b>close</b> : <code>function (had_error) { }</code> — Emitted once
+ * the socket is fully closed. The argument had_error is a boolean which says if
+ * the socket was closed due to a transmission error.</li>
+ * </ul>
+ * 
+ * @param {Object}
+ *            options
+ * @param {Object}
+ *            options.fd Allows you to specify the existing file descriptor of
+ *            socket.
+ * @param {String}
+ *            options.type Specified underlying protocol. It can be 'tcp4',
+ *            'tcp6', or 'unix'.
+ * @param {Boolean}
+ *            options.allowHalfOpen If <code>true</code>, then the socket
+ *            won't automatically send FIN packet when the other end of the
+ *            socket sends a FIN packet. The socket becomes non-readable, but
+ *            still writable. You should call the end() method explicitly. See
+ *            'end' event for more information.
+ * @augments EventEmitter
+ * @constructor
+ */
+net.Socket = function(options) {};
+net.Socket.prototype = new EventEmitter;
+
+/**
+ * <p>
+ * Opens the connection for a given socket. If <code>port</code> and <code>host</code> are given, then the
+ * socket will be opened as a TCP socket, if <code>host</code> is omitted, localhost will be
+ * assumed. If a <code>path</code> is given, the socket will be opened as a unix socket to
+ * that path.
+ * </p>
+ * <p>
+ * Normally this method is not needed, as {@link net.createConnection} opens the socket.
+ * Use this only if you are implementing a custom Socket or if a Socket is
+ * closed and you want to reuse it to connect to another server.
+ * </p>
+ * <p>
+ * This function is asynchronous. When the 'connect' event is emitted the socket
+ * is established. If there is a problem connecting, the 'connect' event will
+ * not be emitted, the 'error' event will be emitted with the exception.
+ * </p>
+ * <p>
+ * The <code>callback</code> parameter will be added as an listener for the 'connect' event.
+ * </p>
+ * @param {Number} port TCP port. If {@link String} is passed, assumed you're connecting to UNIX socket
+ * @param {String} host
+ * @param {Function} callback
+ */
+net.Socket.prototype.connect = function(port, host, callback){};
+
+/**
+ * <p>
+ * <code>net.Socket</code> has the property that <code>socket.write()</code>
+ * always works. This is to help users get up an running quickly. The computer
+ * cannot necessarily keep up with the amount of data that is written to a
+ * socket — the network connection simply might be too slow. Node will
+ * internally queue up the data written to a socket and send it out over the
+ * wire when it is possible. (Internally it is polling on the socket's file
+ * descriptor for being writable).
+ * </p>
+ * <p>
+ * The consequence of this internal buffering is that memory may grow. This
+ * property shows the number of characters currently buffered to be written.
+ * (Number of characters is approximately equal to the number of bytes to be
+ * written, but the buffer may contain strings, and the strings are lazily
+ * encoded, so the exact number of bytes is not known.)
+ * </p>
+ * <p>
+ * Users who experience large or growing <code>bufferSize</code> should
+ * attempt to "throttle" the data flows in their program with
+ * <code>pause()</code> and <code>resume()</code>.
+ * </p>
+ * 
+ */
+net.Socket.prototype.bufferSize = 0;
+
+/**
+ * Sets the encoding for data that is received.
+ * @param {String} encoding Either 'ascii', 'utf8', or 'base64'
+ */
+net.Socket.prototype.setEncoding = function(encoding){};
+
+/**
+ * This function has been removed in v0.3. It used to upgrade the connection to
+ * SSL/TLS. See the TLS section for the new API.
+ * @deprecated since v0.3
+ */
+net.Socket.prototype.setSecure = function(){};
+
+/**
+ * <p>
+ * Sends data on the socket. The second parameter specifies the encoding in the
+ * case of a string--it defaults to UTF8 encoding.
+ * </p>
+ * 
+ * <p>
+ * The optional <code>callback</code> parameter will be executed when the data
+ * is finally written out - this may not be immediately.
+ * </p>
+ * 
+ * @param {String}
+ *            data
+ * @param {String}
+ *            encoding
+ * @param {Function}
+ *            callback
+ * @returns Boolean Returns <code>true</code> if the entire data was flushed
+ *          successfully to the kernel buffer. Returns <code>false</code> if
+ *          all or part of the data was queued in user memory. 'drain' will be
+ *          emitted when the buffer is again free.
+ */
+net.Socket.prototype.write = function(data, encoding, callback){return true;};
+
+/**
+ * <p>
+ * Half-closes the socket. I.E., it sends a FIN packet. It is possible the
+ * server will still send some data.
+ * </p>
+ * <p>
+ * If <code>data</code> is specified, it is equivalent to calling
+ * <code>socket.write(data, encoding)</code> followed by
+ * <code>socket.end()</code>.
+ * </p>
+ * @param {String}
+ *            data
+ * @param {String}
+ *            encoding
+ */
+net.Socket.prototype.end = function(data, encoding){};
+
+/**
+ * Ensures that no more I/O activity happens on this socket. Only necessary in
+ * case of errors (parse error or so).
+ */
+net.Socket.prototype.destroy = function(){};
+
+/**
+ * Pauses the reading of data. That is, 'data' events will not be emitted.
+ * Useful to throttle back an upload.
+ */
+net.Socket.prototype.pause = function(){};
+
+/**
+ * Resumes reading after a call to pause().
+ */
+net.Socket.prototype.resume = function(){};
+
+/**
+ * <p>
+ * Sets the socket to timeout after <code>timeout</code> milliseconds of inactivity on the
+ * socket. By default {@link net.Socket} do not have a timeout.
+ * </p>
+ * <p>
+ * When an idle timeout is triggered the socket will receive a 'timeout' event
+ * but the connection will not be severed. The user must manually end() or
+ * destroy() the socket.
+ * </p>
+ * <p>
+ * If <code>timeout</code> is 0, then the existing idle timeout is disabled.
+ * </p>
+ * <p>
+ * The optional callback parameter will be added as a one time listener for the
+ * 'timeout' event.
+ * </p>
+ * @param {Number} timeout
+ * @param {Function} callback
+ */
+net.Socket.prototype.setTimeout = function(timeout, callback){};
+
+/**
+ * Disables the Nagle algorithm. By default TCP connections use the Nagle
+ * algorithm, they buffer data before sending it off. Setting <code>noDelay</code> will
+ * immediately fire off data each time <code>socket.write()</code> is called.
+ * @param {Boolean} noDelay
+ */
+net.Socket.prototype.setNoDelay = function(noDelay){};
+
+/**
+ * 
+ * Enable/disable keep-alive functionality, and optionally set the initial delay
+ * before the first keepalive probe is sent on an idle socket. Set <code>initialDelay</code>
+ * (in milliseconds) to set the delay between the last data packet received and
+ * the first keepalive probe. Setting 0 for <code>initialDelay</code> will leave the value
+ * unchanged from the default (or previous) setting.
+ * 
+ * @param {Boolean} enable
+ * @param {Number} initialDelay
+ */
+net.Socket.prototype.setKeepAlive = function(enable, initialDelay){};
+
+/**
+ * The string representation of the remote IP address. For example,
+ * '74.125.127.100' or '2001:4860:a005::68'. This member is only present in
+ * server-side connections.
+ */
+net.Socket.prototype.remoteAddress = "";
+
+
+/**
+ * Tests if input is an IP address.
+ * @param {String} input 
+ * @returns {Number} <b>0</b> for invalid strings, <b>4</b> for
+ * IP version 4 addresses, and <b>6</b> for IP version 6 addresses.
+ */
+net.isIP = function(input){return 0;};
+
+/**
+ * Returns <code>true</code> if <code>input</code> is a version 4 IP address, otherwise returns <code>false</code>.
+ * @param {String} input
+ * @returns Boolean
+ */
+net.isIPv4 = function(input){return true;};
+
+/**
+ * Returns <code>true</code> if <code>input</code> is a version 6 IP address, otherwise returns <code>false</code>.
+ * @param {String} input
+ * @returns Boolean
+ */
+net.isIPv6 = function(input){return true;};

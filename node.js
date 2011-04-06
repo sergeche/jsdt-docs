@@ -1165,3 +1165,194 @@ Buffer.prototype.copy = function(targetBuffer, targetStart, sourceStart, sourceE
  * @param {Number} end
  */
 Buffer.prototype.slice = function(start, end){return new Buffer;};
+
+/**
+ * A stream is an abstract interface implemented by various objects in Node. For
+ * example a request to an HTTP server is a stream, as is stdout. Streams are
+ * readable, writable, or both. All streams are instances of
+ * {@link EventEmitter}.
+ * <p>
+ * Events:
+ * </p>
+ * <ul>
+ * <li><b>data</b> : <code>function (data) { }</code> — The 'data' event
+ * emits either a Buffer (by default) or a string if setEncoding() was used.</li>
+ * <li><b>end</b> : <code>function () { }</code> — Emitted when the stream
+ * has received an EOF (FIN in TCP terminology). Indicates that no more 'data'
+ * events will happen. If the stream is also writable, it may be possible to
+ * continue writing.</li>
+ * <li><b>error</b> : <code>function (exception) { }</code> — Emitted if
+ * there was an error receiving data.</li>
+ * <li><b>close</b> : <code>function () { }</code> — Emitted when the
+ * underlying file descriptor has been closed. Not all streams will emit this.
+ * (For example, an incoming HTTP request will not emit 'close'.)</li>
+ * <li><b>fd</b> : <code>function (fd) { }</code> — Emitted when a file
+ * descriptor is received on the stream. Only UNIX streams support this
+ * functionality; all others will simply never emit this event.</li>
+ * </ul>
+ * 
+ * @augments EventEmitter
+ * @constructor
+ */
+function ReadableStream() {
+	
+}
+
+/**
+ * A boolean that is true by default, but turns false after an 'error' occurred,
+ * the stream came to an 'end', or destroy() was called.
+ */
+ReadableStream.prototype.readable = true;
+
+/**
+ * Makes the data event emit a {@link String} instead of a {@link Buffer}.
+ * 
+ * @param {String}
+ *            encoding Can be 'utf8', 'ascii', or 'base64'.
+ */
+ReadableStream.prototype.setEncoding = function(encoding){};
+
+/**
+ * Pauses the incoming 'data' events.
+ */
+ReadableStream.prototype.pause = function(){};
+
+/**
+ * Resumes the incoming 'data' events after a pause().
+ */
+ReadableStream.prototype.resume = function(){};
+
+/**
+ * Closes the underlying file descriptor. Stream will not emit any more events.
+ */
+ReadableStream.prototype.destroy = function(){};
+
+/**
+ * After the write queue is drained, close the file descriptor.
+ */
+ReadableStream.prototype.destroySoon = function(){};
+
+/**
+ * 
+ * <p>
+ * Connects this read stream to <code>destination</code> WriteStream. Incoming
+ * data on this stream gets written to destination. The destination and source
+ * streams are kept in sync by pausing and resuming as necessary.
+ * </p>
+ * <p>
+ * Emulating the Unix cat command:
+ * </p>
+ * 
+ * <pre>
+ * process.stdin.resume();
+ * process.stdin.pipe(process.stdout);
+ * </pre>
+ * 
+ * <p>
+ * By default <code>end()</code> is called on the destination when the source
+ * stream emits end, so that <code>destination</code> is no longer writable.
+ * Pass <code>{ end: false }</code> as options to keep the
+ * <code>destination</code> stream open.
+ * </p>
+ * <p>
+ * This keeps <code>process.stdout</code> open so that "Goodbye" can be
+ * written at the end.
+ * </p>
+ * 
+ * <pre>
+ * process.stdin.resume();
+ * process.stdin.pipe(process.stdout, {
+ * 	end : false
+ * });
+ * 
+ * process.stdin.on(&quot;end&quot;, function() {
+ * 	process.stdout.write(&quot;Goodbye\n&quot;);
+ * });
+ * </pre>
+ * 
+ * <p>
+ * NOTE: If the source stream does not support <code>pause()</code> and
+ * <code>resume()</code>, this function adds simple definitions which simply
+ * emit 'pause' and 'resume' events on the source stream.
+ * </p>
+ * 
+ * @param {WriteableStream}
+ *            destination
+ * @param {Object}
+ *            options
+ */
+ReadableStream.prototype.pipe = function(destination, options){};
+
+/**
+ * A stream is an abstract interface implemented by various objects in Node. For
+ * example a request to an HTTP server is a stream, as is stdout. Streams are
+ * readable, writable, or both. All streams are instances of
+ * {@link EventEmitter}.
+ * <p>
+ * Events:
+ * </p>
+ * <ul>
+ * <li><b>drain</b> : <code>function () { }</code> — Emitted after a
+ * <code>write()</code> method was called that returned false to indicate that
+ * it is safe to write again.</li>
+ * <li><b>error</b> : <code>function (exception) { }</code> — Emitted on
+ * error with the exception exception.</li>
+ * <li><b>close</b> : <code>function () { }</code> — Emitted when the
+ * underlying file descriptor has been closed.</li>
+ * <li><b>pipe</b> : <code>function (src) { }</code> — Emitted when the
+ * stream is passed to a readable stream's pipe method.</li>
+ * </ul>
+ * @augments EventEmitter
+ * @constructor
+ */
+function WritableStream() {}
+
+/**
+ * A boolean that is <code>true</code> by default, but turns
+ * <code>false</code> after an 'error' occurred or <code>end()</code> /
+ * <code>destroy()</code> was called.
+ */
+WritableStream.prototype.writable = true;
+
+/**
+ * <p>
+ * Writes string with the given encoding to the stream. Returns
+ * <code>true</code> if the string has been flushed to the kernel buffer.
+ * Returns <code>false</code> to indicate that the kernel buffer is full, and
+ * the data will be sent out in the future. The 'drain' event will indicate when
+ * the kernel buffer is empty again. The encoding defaults to 'utf8'.
+ * </p>
+ * <p>
+ * If the optional fd parameter is specified, it is interpreted as an integral
+ * file descriptor to be sent over the stream. This is only supported for UNIX
+ * streams, and is silently ignored otherwise. When writing a file descriptor in
+ * this manner, closing the descriptor before the stream drains risks sending an
+ * invalid (closed) FD.
+ * </p>
+ * @param {String} data String data of {@link Buffer}
+ * @param {String} encoding
+ * @param {Object} fd
+ * @returns Boolean
+ */
+WritableStream.prototype.write = function(data, encoding, fd){return true;};
+
+/**
+ * Terminates the stream with EOF or FIN. If arguments passed, sends string with
+ * the given encoding and terminates the stream with EOF or FIN. This is useful
+ * to reduce the number of packets sent.
+ * @param {String} data String data or {@link Buffer}
+ * @param {String} encoding
+ */
+WritableStream.prototype.end = function(string, encoding) {};
+
+/**
+ * Closes the underlying file descriptor. Stream will not emit any more events.
+ */
+WritableStream.prototype.destroy = function(){};
+
+/**
+ * After the write queue is drained, close the file descriptor.
+ * <code>destroySoon()</code> can still destroy straight away, as long as
+ * there is no data left in the queue for writes.
+ */
+WritableStream.prototype.destroySoon = function(){};

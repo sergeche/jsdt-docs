@@ -2617,3 +2617,100 @@ NodePathModule.prototype.exists = function(p, callback){};
 NodePathModule.prototype.existsSync = function(p){return true;};
 
 var path = new NodePathModule;
+
+/**
+ * This module has utilities for URL resolution and parsing. Call
+ * <code>require('url')</code> to use it.
+ * 
+ * @constructor
+ */
+function NodeUrlModule() {};
+
+/**
+ * Take a URL string, and return an object. Pass <code>true</code> as the
+ * second argument to also parse the query string using the
+ * <code>querystring</code> module.
+ * 
+ * @param {String} url
+ * @param {Boolean} parseQueryString
+ * @returns NodeUrlParsedObject
+ */
+NodeUrlModule.prototype.parse = function(url, parseQueryString){return new NodeUrlParsedObject;};
+
+/**
+ * Take a parsed URL object, and return a formatted URL string.
+ * @param {NodeUrlParsedObject} urlObj
+ * @returns {String}
+ */
+NodeUrlModule.prototype.format = function(urlObj){return "";};
+
+/**
+ * Take a base URL, and a href URL, and resolve them as a browser would for an
+ * anchor tag.
+ * 
+ * @param {String} from
+ * @param {String} to
+ * @returns {String}
+ */
+NodeUrlModule.prototype.resolve = function(from, to){return "";};
+
+/**
+ * Parsed URL object
+ * @private
+ */
+function NodeUrlParsedObject() {}
+
+NodeUrlParsedObject.prototype = {
+	/**
+	 * The full URL that was originally parsed.
+	 */
+	href: 'http://user:pass@host.com:8080/p/a/t/h?query=string#hash',
+	
+	/**
+	 * The request protocol
+	 */
+	protocol: 'http:',
+	
+	/**
+	 * The full host portion of the URL, including port and authentication information.
+	 */
+	host: 'user:pass@host.com:8080',
+
+	/**
+	 * The authentication information portion of a URL.
+	 */
+	auth: 'user:pass',
+	
+	/**
+	 * Just the hostname portion of the host.
+	 */
+	hostname: 'host.com',
+	
+	/**
+	 * The port number portion of the host.
+	 */
+	port: 8080,
+	
+	/**
+	 * The path section of the URL, that comes after the host and before the
+	 * query, including the initial slash if present.
+	 */
+	pathname: '/p/a/t/h',
+	
+	/**
+	 * The 'query string' portion of the URL, including the leading question
+	 * mark.
+	 */
+	search: '?query=string',
+	
+	/**
+	 * Either the 'params' portion of the query string, or a querystring-parsed
+	 * object (like <code>{'query':'string'}</code>).
+	 */
+	query: 'query=string', //or {'query':'string'}
+	
+	/**
+	 * The 'fragment' portion of the URL including the pound-sign.
+	 */
+	hash: '#hash'
+};

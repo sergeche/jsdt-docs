@@ -20,9 +20,10 @@ var exports = {};
 var process = {};
 
 /**
- * To require modules. See the Modules section.
+ * To require modules.
+ * @param {String} module_name
  */
-function require(){}
+function require(module_name){}
 
 /**
  * Use the internal require() machinery to look up the location of a module, but
@@ -221,17 +222,18 @@ EventEmitter.prototype = {
  * HTTP API is very low-level. It deals with stream handling and message parsing
  * only. It parses a message into headers and body but it does not parse the
  * actual headers or the body.
- * @namespace
- * @type http
+ * 
+ * @constructor
  */
-var http = {};
+function NodeHttpModule(){};
 
 /**
  * Returns a new web server object.
  * @param {Function} requestListener a function which is automatically added to the 'request' event.
+ * @memberOf NodeHttpModule
  * @returns http.Server
  */
-http.createServer = function(requestListener){};
+NodeHttpModule.prototype.createServer = function(requestListener){};
 
 /**
  * <p>
@@ -317,7 +319,7 @@ http.createServer = function(requestListener){};
  * @returns http.ClientRequest
  * 
  */
-http.request = function(options, callback){return new http.ClientRequest;};
+NodeHttpModule.prototype.request = function(options, callback){return new http.ClientRequest;};
 
 /**
  * <p>
@@ -364,7 +366,9 @@ http.request = function(options, callback){return new http.ClientRequest;};
  * @returns http.ClientRequest
  * 
  */
-http.get = function(options, callback){return new http.ClientRequest;};
+NodeHttpModule.prototype.get = function(options, callback){return new http.ClientRequest;};
+
+var http = new NodeHttpModule;
 
 /**
  * HTTP server. Works with following events:<br>
@@ -405,7 +409,6 @@ http.get = function(options, callback){return new http.ClientRequest;};
  * @constructor
  */
 http.Server = function() {};
-
 http.Server.prototype = new EventEmitter;
 
 /**
@@ -430,16 +433,28 @@ http.Server.prototype.listen = function(port, hostname, callback){};
 http.Server.prototype.close = function() {};
 
 /**
- * This object is created internally by a HTTP server -- not by the user -- and passed as the first argument to a 'request' listener.<br><br>
- * This is an <code>EventEmitter</code> with the following events:<br><br>
- * <b>data</b> : <code>function (chunk) { }</code> — Emitted when a piece of the message body is received.<br>
-
-Example: A chunk of the body is given as the single argument. The transfer-encoding has been decoded. The body chunk is a string. The body encoding is set with <code>request.setBodyEncoding()</code>.<br><br>
-<b>end</b> : <code>function () { }</code> — Emitted exactly once for each message. No arguments. After emitted no other events will be emitted on the request.
+ * This object is created internally by a HTTP server -- not by the user -- and
+ * passed as the first argument to a 'request' listener.<br>
+ * <br>
+ * This is an <code>EventEmitter</code> with the following events:<br>
+ * <br>
+ * <b>data</b> : <code>function (chunk) { }</code> — Emitted when a piece of
+ * the message body is received.<br>
+ * 
+ * Example: A chunk of the body is given as the single argument. The
+ * transfer-encoding has been decoded. The body chunk is a string. The body
+ * encoding is set with <code>request.setBodyEncoding()</code>.<br>
+ * <br>
+ * <b>end</b> : <code>function () { }</code> — Emitted exactly once for each
+ * message. No arguments. After emitted no other events will be emitted on the
+ * request.
+ * 
  * @augments EventEmitter
+ * @type http.ServerRequest
  * @constructor
  */
 http.ServerRequest = function() {};
+http.ServerRequest.prototype = new EventEmitter;
 
 /**
  * The request method as a string. Read only. Example: 'GET', 'DELETE'.
@@ -528,10 +543,13 @@ http.ServerRequest.prototype.connection = new net.Stream;
 
 /**
  * This object is created internally by a HTTP server--not by the user. It is
- * passed as the second parameter to the 'request' event. It is a <code>Writable Stream</code>.
+ * passed as the second parameter to the 'request' event. It is a {@link WritableStream}.
  * @constructor
+ * @augments WritableStream
+ * @type http.ServerResponse
  */
 http.ServerResponse = function() {};
+http.ServerResponse.prototype = new WritableStream;
 
 /**
  * Sends a HTTP/1.1 100 Continue message to the client, indicating that the
@@ -750,6 +768,7 @@ request.on('response', function (response) {
  * @augments EventEmitter
  */
 http.ClientRequest = function() {};
+http.ClientRequest.prototype = new EventEmitter;
 
 /**
  * Sends a chunk of the body. By calling this method many times, the user can
@@ -853,9 +872,8 @@ http.ClientResponse.prototype.resume = function(){};
 
 /**
  * These functions are in the module 'util'. Use require('util') to access them.
- * @namespace
  */
-var util = {};
+function NodeUtilModule(){};
 
 /**
  * A synchronous output function. Will block the process and output string
@@ -864,7 +882,7 @@ var util = {};
  * <pre>require('util').debug('message on stderr');</pre>
  * @param {String} str
  */
-util.debug = function(str){};
+NodeUtilModule.prototype.debug = function(str){};
 
 /**
  * Output with timestamp on stdout.
@@ -872,7 +890,7 @@ util.debug = function(str){};
  * <pre>require('util').log('Timestmaped message.');</pre>
  * @param {String} str
  */
-util.log = function(str){};
+NodeUtilModule.prototype.log = function(str){};
 
 /**
  * <p>
@@ -899,7 +917,7 @@ util.log = function(str){};
  *            indefinitely, pass in <code>null</code> for depth.
  * @returns Object           
  */
-util.inspect = function(object, showHidden, depth){};
+NodeUtilModule.prototype.inspect = function(object, showHidden, depth){};
 
 /**
  * <p>
@@ -917,7 +935,7 @@ util.inspect = function(object, showHidden, depth){};
  * @param {WriteableStream} writableStream
  * @param {Function} callback
  */
-util.pump = function(readableStream, writableStream, callback){};
+NodeUtilModule.prototype.pump = function(readableStream, writableStream, callback){};
 
 /**
  * <p>
@@ -957,7 +975,12 @@ util.pump = function(readableStream, writableStream, callback){};
  * 
  * @returns any
  */
-util.inherits = function(constructor, superConstructor){ return {};};
+NodeUtilModule.prototype.inherits = function(constructor, superConstructor){ return {};};
+
+/**
+ * @type NodeUtilModule
+ */
+var util = new NodeUtilModule;
 
 /**
  * <p>
@@ -1361,9 +1384,10 @@ WritableStream.prototype.destroySoon = function(){};
  * The <code>net</code> module provides you with an asynchronous network
  * wrapper. It contains methods for creating both servers and clients (called
  * streams). You can include this module with <code>require("net")</code>;
- * @namespace
+ * @constructor
+ * @type NodeNetModule
  */
-var net = {};
+function NodeNetModule(){};
 
 /**
  * Creates a new TCP server. The <code>connectionListener</code> argument is
@@ -1372,7 +1396,7 @@ var net = {};
  * @param {Boolean} options.allowHalfOpen If <code>true</code>, then the socket won't automatically send FIN packet when the other end of the socket sends a FIN packet. The socket becomes non-readable, but still writable. You should call the end() method explicitly. See 'end' event for more information.
  * @param {Function} connectionListener
  */
-net.createServer = function(options, connectionListener){};
+NodeNetModule.prototype.createServer = function(options, connectionListener){};
 
 /**
  * Construct a new socket object and opens a socket to the given location. When
@@ -1386,7 +1410,34 @@ net.createServer = function(options, connectionListener){};
  *            <code>localhost</code> will be assumed.
  * @returns net.Server
  */
-net.createConnection = function(port, host){return new net.Server;};
+NodeNetModule.prototype.createConnection = function(port, host){return new net.Server;};
+
+/**
+ * Tests if input is an IP address.
+ * @param {String} input 
+ * @returns {Number} <b>0</b> for invalid strings, <b>4</b> for
+ * IP version 4 addresses, and <b>6</b> for IP version 6 addresses.
+ */
+NodeNetModule.prototype.isIP = function(input){return 0;};
+
+/**
+ * Returns <code>true</code> if <code>input</code> is a version 4 IP address, otherwise returns <code>false</code>.
+ * @param {String} input
+ * @returns Boolean
+ */
+NodeNetModule.prototype.isIPv4 = function(input){return true;};
+
+/**
+ * Returns <code>true</code> if <code>input</code> is a version 6 IP address, otherwise returns <code>false</code>.
+ * @param {String} input
+ * @returns Boolean
+ */
+NodeNetModule.prototype.isIPv6 = function(input){return true;};
+
+/**
+ * @type NodeNetModule
+ */
+var net = new NodeNetModule;
 
 /**
  * This class is used to create a TCP or UNIX server.
@@ -1437,6 +1488,7 @@ net.createConnection = function(port, host){return new net.Server;};
  * </pre>
  * 
  * @augments EventEmitter
+ * @type net.Server
  * @constructor
  */
 net.Server = function() {};
@@ -1584,6 +1636,7 @@ net.Server.prototype.connections = 1;
  *            still writable. You should call the end() method explicitly. See
  *            'end' event for more information.
  * @augments EventEmitter
+ * @type net.Socket
  * @constructor
  */
 net.Socket = function(options) {};
@@ -1761,26 +1814,3 @@ net.Socket.prototype.setKeepAlive = function(enable, initialDelay){};
  * server-side connections.
  */
 net.Socket.prototype.remoteAddress = "";
-
-
-/**
- * Tests if input is an IP address.
- * @param {String} input 
- * @returns {Number} <b>0</b> for invalid strings, <b>4</b> for
- * IP version 4 addresses, and <b>6</b> for IP version 6 addresses.
- */
-net.isIP = function(input){return 0;};
-
-/**
- * Returns <code>true</code> if <code>input</code> is a version 4 IP address, otherwise returns <code>false</code>.
- * @param {String} input
- * @returns Boolean
- */
-net.isIPv4 = function(input){return true;};
-
-/**
- * Returns <code>true</code> if <code>input</code> is a version 6 IP address, otherwise returns <code>false</code>.
- * @param {String} input
- * @returns Boolean
- */
-net.isIPv6 = function(input){return true;};

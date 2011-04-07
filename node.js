@@ -1814,3 +1814,619 @@ net.Socket.prototype.setKeepAlive = function(enable, initialDelay){};
  * server-side connections.
  */
 net.Socket.prototype.remoteAddress = "";
+
+/**
+ * File I/O is provided by simple wrappers around standard POSIX functions. To
+ * use this module do <code>require('fs')</code>. All the methods have
+ * asynchronous and synchronous forms.
+ * <br><br>
+ * The asynchronous form always take a completion callback as its last argument.
+ * The arguments passed to the completion callback depend on the method, but the
+ * first argument is always reserved for an exception. If the operation was
+ * completed successfully, then the first argument will be <code>null</code>
+ * or <code>undefined</code>.
+ * <br><br>
+ * In busy processes, the programmer is <b>strongly encouraged</b> to use the
+ * asynchronous versions of these calls. The synchronous versions will block the
+ * entire process until they complete--halting all connections.
+ */
+function NodeFsModule() {}
+
+/**
+ * Asynchronous rename(2). No arguments other than a possible exception are
+ * given to the completion callback.
+ * 
+ * @param {String} path1
+ * @param {String} path2
+ * @param {Function} callback
+ */
+NodeFsModule.prototype.rename = function(path1, path2, callback){};
+
+/**
+ * Synchronous rename(2).
+ * 
+ * @param {String} path1
+ * @param {String} path2
+ */
+NodeFsModule.prototype.renameSync = function(path1, path2){};
+
+/**
+ * Asynchronous ftruncate(2). No arguments other than a possible exception are
+ * given to the completion callback.
+ * 
+ * @param {Object} fd
+ * @param {Number} len
+ * @param {Function} callback
+ */
+NodeFsModule.prototype.truncate = function(fd, len, callback){};
+
+/**
+ * Synchronous ftruncate(2).
+ * 
+ * @param {Object} fd
+ * @param {Number} len
+ */
+NodeFsModule.prototype.truncateSync = function(fd, len){};
+
+/**
+ * Asynchronous chmod(2). No arguments other than a possible exception are given
+ * to the completion callback.
+ * 
+ * @param {String} path
+ * @param {Number} mode
+ * @param {Function} callback
+ */
+NodeFsModule.prototype.chmod = function(path, mode, callback){};
+
+/**
+ * Synchronous chmod(2).
+ * 
+ * @param {String} path
+ * @param {Number} mode
+ */
+NodeFsModule.prototype.chmodSync = function(path, mode){};
+
+/**
+ * Asynchronous stat(2). The callback gets two arguments (err, stats) where
+ * stats is a {@link fs.Stats} object. It looks like this:
+ * 
+ * <pre>
+ * {
+ * 	dev : 2049,
+ * 	ino : 305352,
+ * 	mode : 16877,
+ * 	nlink : 12,
+ * 	uid : 1000,
+ * 	gid : 1000,
+ * 	rdev : 0,
+ * 	size : 4096,
+ * 	blksize : 4096,
+ * 	blocks : 8,
+ * 	atime : '2009-06-29T11:11:55Z',
+ * 	mtime : '2009-06-29T11:11:40Z',
+ * 	ctime : '2009-06-29T11:11:40Z'
+ * }
+ * </pre>
+ * 
+ * @param {String}
+ *            path
+ * @param {Function}
+ *            callback
+ */
+NodeFsModule.prototype.stat = function(path, callback){};
+
+/**
+ * Asynchronous lstat(2). The callback gets two arguments (err, stats) where
+ * stats is a {@link fs.Stats} object. lstat() is identical to stat(), except that if
+ * path is a symbolic link, then the link itself is stat-ed, not the file that
+ * it refers to.
+ * 
+ * @param {String} path
+ * @param {Function} callback
+ */
+NodeFsModule.prototype.lstat = function(path, callback){};
+
+/**
+ * Asynchronous fstat(2). The callback gets two arguments (err, stats) where
+ * stats is a {@link fs.Stats} object.
+ * 
+ * @param {Object} fd
+ * @param {Function} callback
+ */
+NodeFsModule.prototype.fstat = function(fd, callback){};
+
+/**
+ * Synchronous stat(2)
+ * 
+ * @param {String} path
+ * @returns {fs.Stats}
+ */
+NodeFsModule.prototype.statSync = function(path){return new fs.Stats;};
+
+/**
+ * Synchronous lstat(2).
+ * 
+ * @param {String} path
+ * @returns {fs.Stats}
+ */
+NodeFsModule.prototype.lstatSync = function(path){return new fs.Stats;};
+
+/**
+ * Synchronous fstat(2)
+ * 
+ * @param {Object} fd
+ * @returns {fs.Stats}
+ */
+NodeFsModule.prototype.fstatSync = function(fd){return new fs.Stats;};
+
+/**
+ * Asynchronous link(2). No arguments other than a possible exception are given
+ * to the completion callback.
+ * 
+ * @param {String} srcpath
+ * @param {String} dstpath
+ * @param {Function} callback
+ */
+NodeFsModule.prototype.link = function(srcpath, dstpath, callback){};
+
+/**
+ * Synchronous link(2).
+ * 
+ * @param {String} srcpath
+ * @param {String} dstpath
+ */
+NodeFsModule.prototype.linkSync = function(srcpath, dstpath){};
+
+/**
+ * Asynchronous symlink(2). No arguments other than a possible exception are
+ * given to the completion callback.
+ * 
+ * @param {String} linkdata
+ * @param {String} path
+ * @param {Function} callback
+ */
+NodeFsModule.prototype.symlink = function(linkdata, path, callback){};
+
+/**
+ * Synchronous symlink(2).
+ * 
+ * @param {String} linkdata
+ * @param {String} path
+ */
+NodeFsModule.prototype.symlinkSync = function(linkdata, path){};
+
+/**
+ * Asynchronous readlink(2). The callback gets two arguments (<code>err</code>,
+ * <code>resolvedPath</code>).
+ * 
+ * @param {String} path
+ * @param {Function} callback
+ */
+NodeFsModule.prototype.readlink = function(path, callback){};
+
+/**
+ * Synchronous readlink(2). 
+ * 
+ * @param {String} path
+ * @returns {String} resolved path
+ */
+NodeFsModule.prototype.readlinkSync = function(path){return "";};
+
+/**
+ * Asynchronous realpath(2). The callback gets two arguments (<code>err</code>,
+ * <code>resolvedPath</code>).
+ * 
+ * @param {String} path
+ * @param {Function} callback
+ */
+NodeFsModule.prototype.realpath = function(path, callback){};
+
+/**
+ * Synchronous realpath(2)
+ * 
+ * @param {String} path
+ * @returns {String} resolved path
+ */
+NodeFsModule.prototype.realpathSync = function(path){return "";};
+
+/**
+ * Asynchronous unlink(2). No arguments other than a possible exception are
+ * given to the completion callback.
+ * 
+ * @param {String} path
+ * @param {Function} callback
+ */
+NodeFsModule.prototype.unlink = function(path, callback){};
+
+/**
+ * Synchronous unlink(2).
+ * 
+ * @param {String} path
+ */
+NodeFsModule.prototype.unlinkSync = function(path){};
+
+/**
+ * Asynchronous rmdir(2). No arguments other than a possible exception are given
+ * to the completion callback.
+ * 
+ * @param {String} path
+ * @param {Function} callback
+ */
+NodeFsModule.prototype.rmdir = function(path, callback){};
+
+/**
+ * Synchronous rmdir(2).
+ * 
+ * @param {String} path
+ */
+NodeFsModule.prototype.rmdirSync = function(path){};
+
+/**
+ * Asynchronous mkdir(2). No arguments other than a possible exception are given
+ * to the completion callback.
+ * 
+ * @param {String} path
+ * @param {Number} mode
+ * @param {Function} callback
+ */
+NodeFsModule.prototype.mkdir = function(path, mode, callback){};
+
+/**
+ * Synchronous mkdir(2).
+ * 
+ * @param {String} path
+ * @param {Number} mode
+ */
+NodeFsModule.prototype.mkdirSync = function(path, mode){};
+
+/**
+ * Asynchronous readdir(3). Reads the contents of a directory. The
+ * <code>callback</code> gets two arguments (<code>err</code>,
+ * <code>files</code>) where files is an array of the names of the files in
+ * the directory excluding '.' and '..'.
+ * 
+ * @param {String} path
+ * @param {Function} callback
+ */
+NodeFsModule.prototype.readdir = function(path, callback){};
+
+/**
+ * Synchronous readdir(3). Returns an array of filenames excluding '.' and '..'.
+ * 
+ * @param {String} path
+ * @returns {Array}
+ */
+NodeFsModule.prototype.readdirSync = function(path){return [];};
+
+/**
+ * Asynchronous close(2). No arguments other than a possible exception are given
+ * to the completion callback.
+ * 
+ * @param {Object} fd
+ * @param {Function} callback
+ */
+NodeFsModule.prototype.close = function(fd, callback){};
+
+/**
+ * Synchronous close(2).
+ * 
+ * @param {Object} fd
+ */
+NodeFsModule.prototype.closeSync = function(fd){};
+
+/**
+ * Asynchronous file open. See open(2). The <code>callback</code> gets two 
+ * arguments (<code>err</code>, <code>fd</code>).
+ * 
+ * @param {String} path
+ * @param {String} flags can be 'r', 'r+', 'w', 'w+', 'a' or 'a+'
+ * @param {Number} mode defaults to 0666
+ * @param {Function} callback
+ */
+NodeFsModule.prototype.open = function(path, flags, mode, callback){};
+
+/**
+ * Synchronous open(2).
+ * 
+ * @param {String} path
+ * @param {String} flags can be 'r', 'r+', 'w', 'w+', 'a' or 'a+'
+ * @param {Number} mode defaults to 0666
+ * @returns {Object}
+ */
+NodeFsModule.prototype.openSync = function(path, flags, mode){return {};};
+
+/**
+ * Write buffer to the file specified by fd. Note that it is unsafe to use
+ * fs.write multiple times on the same file without waiting for the callback.
+ * For this scenario, fs.createWriteStream is strongly recommended.
+ * 
+ * @param {Object}
+ *            fd
+ * @param {Buffer}
+ *            buffer
+ * @param {Number}
+ *            offset Beginning of part of <code>buffer</code> to be written
+ * @param {Number}
+ *            length Length of part of <code>buffer</code> to be written
+ * @param {Number}
+ *            position Offset from the beginning of the file where this data
+ *            should be written. If position is <code>null</code>, the data
+ *            will be written at the current position. See pwrite(2).
+ * @param {Function}
+ *            callback will be given three arguments (<code>err</code>,
+ *            <code>written</code>, <code>buffer</code>) where
+ *            <code>written</code> specifies how many bytes were written into
+ *            buffer.
+ */
+NodeFsModule.prototype.write = function(fd, buffer, offset, length, position, callback){};
+
+/**
+ * Synchronous version of buffer-based fs.write(). Returns the number of bytes
+ * written.<br><br>
+ * <p><b>Alternative:</b></p>
+ * <code>writeSync(fd, str, position, encoding)</code>
+ * 
+ * @param {Object}
+ *            fd
+ * @param {Buffer}
+ *            buffer
+ * @param {Number}
+ *            offset Beginning of part of <code>buffer</code> to be written
+ * @param {Number}
+ *            length Length of part of <code>buffer</code> to be written
+ * @param {Number}
+ *            position Offset from the beginning of the file where this data
+ *            should be written. If position is <code>null</code>, the data
+ *            will be written at the current position. See pwrite(2).
+ *            
+ * @returns {Number} number of bytes written
+ */
+NodeFsModule.prototype.writeSync = function(fd, buffer, offset, length, position){};
+
+/**
+ * Read data from the file specified by <code>fd</code>.
+ * 
+ * @param {Object}
+ *            fd
+ * @param {Buffer}
+ *            buffer The data will be written to
+ * @param {Number}
+ *            offset Offset within the buffer where writing will start
+ * @param {Number}
+ *            length Number of bytes to read
+ * @param {Number}
+ *            position Where to begin reading from in the file. If
+ *            <code>position</code> is null, data will be read from the
+ *            current file position.
+ * @param {Function}
+ *            callback Function with three arguments: (<code>err</code>,
+ *            <code>bytesRead</code>, <code>buffer</code>).
+ */
+NodeFsModule.prototype.read = function(fd, buffer, offset, length, position, callback){};
+
+/**
+ * Synchronous version of buffer-based {@link NodeFsModule#read}
+ * <p><b>Alternative:</b></p>
+ * <code>readSync(fd, length, position, encoding)</code>
+ * 
+ * @param {Object}
+ *            fd
+ * @param {Buffer}
+ *            buffer The data will be written to
+ * @param {Number}
+ *            offset Offset within the buffer where writing will start
+ * @param {Number}
+ *            length Number of bytes to read
+ * @param {Number}
+ *            position Where to begin reading from in the file. If
+ *            <code>position</code> is null, data will be read from the
+ *            current file position.
+ * 
+ * @returns {Number} number of bytes read.
+ */
+NodeFsModule.prototype.readSync = function(fd, buffer, offset, length, position){return 0;};
+
+/**
+ * <p>
+ * Asynchronously reads the entire contents of a file. Example:
+ * </p>
+ * 
+ * <pre>
+ * fs.readFile('/etc/passwd', function(err, data) {
+ * 	if (err)
+ * 		throw err;
+ * 	console.log(data);
+ * });
+ * </pre>
+ * 
+ * <p>
+ * The callback is passed two arguments (<code>err</code>, <code>data</code>),
+ * where <code>data</code> is the contents of the file.
+ * </p>
+ * <p>
+ * If no <code>encoding</code> is specified, then the raw buffer is returned.
+ * </p>
+ * 
+ * @param {String} filename
+ * @param {String} encoding
+ * @param {Function} callback
+ */
+NodeFsModule.prototype.readFile = function(filename, encoding, callback){};
+
+/**
+ * Synchronous version of {@link NodeFsModule#readFile}
+ * 
+ * @param {String}
+ *            filename
+ * @param {String}
+ *            encoding
+ * @returns {String} contents of the filename. If <code>encoding</code> is
+ *          specified then this function returns a string. Otherwise it returns
+ *          a buffer.
+ */
+NodeFsModule.prototype.readFileSync = function(filename, encoding){};
+
+/**
+ * <p>
+ * Asynchronously writes data to a file, replacing the file if it already
+ * exists. data can be a string or a buffer.
+ * </p>
+ * <p>
+ * Example:
+ * </p>
+ * 
+ * <pre>
+ * fs.writeFile('message.txt', 'Hello Node', function(err) {
+ * 	if (err)
+ * 		throw err;
+ * 	console.log('It\'s saved!');
+ * });
+ * </pre>
+ * @param {String} filename
+ * @param {String} data
+ * @param {String} encoding
+ * @param {Function} callback
+ */
+NodeFsModule.prototype.writeFile = function(filename, data, encoding, callback){};
+
+/**
+ * The synchronous version of {@link NodeFsModule#writeFile}
+ * 
+ * @param {String} filename
+ * @param {String} data
+ * @param {String} encoding
+ */
+NodeFsModule.prototype.writeFileSync = function(filename, data, encoding){};
+
+/**
+ * Watch for changes on filename. The callback listener will be called each time
+ * the file is accessed.
+ * 
+ * <pre>
+ * fs.watchFile(f, function(curr, prev) {
+ * 	console.log('the current mtime is: ' + curr.mtime);
+ * 	console.log('the previous mtime was: ' + prev.mtime);
+ * });
+ * </pre>
+ * 
+ * <p>
+ * These stat objects are instances of {@link fs.Stat}.
+ * </p>
+ * <p>
+ * If you want to be notified when the file was modified, not just accessed you
+ * need to compare <code>curr.mtime</code> and <code>prev.mtime</code>.
+ * </p>
+ * 
+ * @param {String}
+ *            filename
+ * @param {Object}
+ *            options Optional. Should be an object containing two members a
+ *            boolean, <code>persistent</code>, and <code>interval</code>,
+ *            a polling value in milliseconds. The default is
+ *            <code>{ persistent: true, interval: 0 }</code>.
+ * @param {Function}
+ *            listener Gets two arguments: the current stat object and the
+ *            previous stat object
+ */
+NodeFsModule.prototype.watchFile = function(filename, options, listener){};
+
+/**
+ * Stop watching for changes on filename.
+ * 
+ * @param {String} filename
+ */
+NodeFsModule.prototype.unwatchFile = function(filename){};
+
+/**
+ * Returns a new {@link ReadableStream} object
+ * <p>
+ * <code>options</code> can include <code>start</code> and <code>end</code>
+ * values to read a range of bytes from the file instead of the entire file.
+ * Both <code>start</code> and <code>end</code> are inclusive and
+ * <code>start</code> at 0. When used, both the limits must be specified
+ * always.
+ * </p>
+ * <p>
+ * An example to read the last 10 bytes of a file which is 100 bytes long:
+ * </p>
+ * 
+ * <pre>
+ * fs.createReadStream('sample.txt', {
+ * 	start : 90,
+ * 	end : 99
+ * });
+ * </pre>
+ * 
+ * @param {String}
+ *            path
+ * @param {Object}
+ *            options
+ * @param {String}
+ *            options.flags Default 'r' 
+ * @param {String}
+ *            options.encoding
+ * @param {Object}
+ *            options.fd
+ * @param {Number}
+ *            options.mode Default 0666
+ * @param {Number}
+ *            options.bufferSize Default 64 * 1024
+ * @returns ReadableStream
+ */
+NodeFsModule.prototype.createReadStream = function(path, options){ return new ReadableStream; };
+
+/**
+ * Returns a new WriteStream object (See Writable Stream).
+ * @param {String}
+ *            path
+ * @param {Object}
+ *            options
+ * @param {String}
+ *            options.flags Default 'w' 
+ * @param {String}
+ *            options.encoding
+ * @param {Number}
+ *            options.mode Default 0666
+ * @returns WritableStream
+ */
+NodeFsModule.prototype.createWriteStream = function(path, options){ return new WritableStream; };
+
+/**
+ * @type NodeFsModule
+ */
+var fs = new NodeFsModule;
+
+/**
+ * File stats object
+ * @type fs.Stats
+ */
+fs.Stats = function() {};
+fs.Stats.prototype = {
+	dev : 2049,
+	ino : 305352,
+	mode : 16877,
+	nlink : 12,
+	uid : 1000,
+	gid : 1000,
+	rdev : 0,
+	size : 4096,
+	blksize : 4096,
+	blocks : 8,
+	atime : '2009-06-29T11:11:55Z',
+	mtime : '2009-06-29T11:11:40Z',
+	ctime : '2009-06-29T11:11:40Z',
+	/** @returns Boolean */
+	isFile: function(){return true;},
+	/** @returns Boolean */
+	isDirectory: function(){return true;},
+	/** @returns Boolean */
+	isBlockDevice: function(){return true;},
+	/** @returns Boolean */
+	isCharacterDevice: function(){return true;},
+	/** @returns Boolean */
+	isSymbolicLink: function(){return true;},
+	/** @returns Boolean */
+	isFIFO: function(){return true;},
+	/** @returns Boolean */
+	isSocket: function(){return true;}
+};

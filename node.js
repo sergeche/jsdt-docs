@@ -2714,3 +2714,77 @@ NodeUrlParsedObject.prototype = {
 	 */
 	hash: '#hash'
 };
+
+/**
+ * This module provides utilities for dealing with query strings.
+ * Call <code>require('querystring')</code> to use it.
+ * @constructor
+ */
+function NodeQuerystringModule() {};
+
+/**
+ * <p>
+ * Serialize an object to a query string. Optionally override the default
+ * separator and assignment characters.
+ * </p>
+ * <p>
+ * Example:
+ * </p>
+ * 
+ * <pre>
+ * querystring.stringify({
+ * 	foo : 'bar'
+ * })
+ * // returns
+ * 'foo=bar'
+ * 
+ * querystring.stringify({
+ * 	foo : 'bar',
+ * 	baz : 'bob'
+ * }, ';', ':')
+ * // returns
+ * 'foo:bar;baz:bob'
+ * </pre>
+ * @param {Object} obj
+ * @param {String} sep
+ * @param {String} eq
+ * @returns {String}
+ */
+NodeQuerystringModule.prototype.stringify = function(obj, sep, eq){return "";};
+
+/**
+ * <p>
+ * Deserialize a query string to an object. Optionally override the default
+ * separator and assignment characters.
+ * </p>
+ * <p>
+ * Example:
+ * </p>
+ * 
+ * <pre>
+ * querystring.parse('a=b&amp;b=c')
+ * // returns
+ * { a: 'b', b: 'c' }
+ * </pre>
+ * @param {String} str
+ * @param {String} se
+ * @param {String} eq
+ * @returns {Object}
+ */
+NodeQuerystringModule.prototype.parse = function(str, se, eq){return {};};
+
+/**
+ * The escape function used by {@link NodeQuerystringModule#stringify},
+ * provided so that it could be overridden if necessary.
+ * @param {String} str
+ * @returns {String}
+ */
+NodeQuerystringModule.prototype.escape = function(str) {return "";};
+
+/**
+ * The unescape function used by {@link NodeQuerystringModule#parse}, provided so that it could be
+ * overridden if necessary.
+ * @param {String} str
+ * @returns {String}
+ */
+NodeQuerystringModule.prototype.unescape = function(str) {return "";};

@@ -2706,8 +2706,9 @@ NodeUrlParsedObject.prototype = {
 	/**
 	 * Either the 'params' portion of the query string, or a querystring-parsed
 	 * object (like <code>{'query':'string'}</code>).
+	 * @type {Object}
 	 */
-	query: 'query=string', //or {'query':'string'}
+	query: new Object,
 	
 	/**
 	 * The 'fragment' portion of the URL including the pound-sign.

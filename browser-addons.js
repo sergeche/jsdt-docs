@@ -52,3 +52,5 @@ Document.prototype.dispatchEvent=function(event){return false;};
  * @see HTMLElement  
  */  
 Document.prototype.createElement=function(tagName){return new HTMLElement();}; 
+
+HTMLElement.prototype.outerHTML = '';

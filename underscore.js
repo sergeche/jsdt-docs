@@ -30,7 +30,7 @@ _.forEach = _.each;
  * _.map([1, 2, 3], function(num){ return num * 3; });
  * _.map({one : 1, two : 2, three : 3}, function(num, key){ return num * 3; });
  */
-_.map = function(list, iterator, context){};
+_.map = function(list, iterator, context){return new Array;};
 
 /**
  * Also known as <b>inject</b> and <b>foldl</b>, <b>reduce</b> boils down a
@@ -45,7 +45,7 @@ _.map = function(list, iterator, context){};
  * @example
  * var sum = _.reduce([1, 2, 3], function(memo, num){ return memo + num; }, 0);
  */
-_.reduce = function(list, iterator, memo, context){};
+_.reduce = function(list, iterator, memo, context){return new Object;};
 _.inject = _.reduce;
 _.foldl = _.reduce;
 
@@ -63,7 +63,7 @@ _.foldl = _.reduce;
  * var list = [[0, 1], [2, 3], [4, 5]];
  * var flat = _.reduceRight(list, function(a, b) { return a.concat(b); }, []);
  */
-_.reduceRight = function(list, iterator, memo, context){};
+_.reduceRight = function(list, iterator, memo, context){return new Object;};
 _.foldr = _.reduceRight;
 
 /**
@@ -78,7 +78,7 @@ _.foldr = _.reduceRight;
  * @example
  * var even = _.detect([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
  */
-_.detect = function(list, iterator, context){};
+_.detect = function(list, iterator, context){return new Object;};
 
 /**
  * Looks through each value in the <b>list</b>, returning an array of all
@@ -91,7 +91,7 @@ _.detect = function(list, iterator, context){};
  * @example
  * var evens = _.select([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
  */
-_.select = function(list, iterator, context){};
+_.select = function(list, iterator, context){return new Array;};
 _.filter = _.select;
 
 /**
@@ -104,7 +104,7 @@ _.filter = _.select;
  * @example
  * var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
  */
-_.reject = function(list, iterator, context){};
+_.reject = function(list, iterator, context){return new Array;};
 
 /**
  * Returns <i>true</i> if all of the values in the <b>list</b> pass the <b>iterator</b>
@@ -118,7 +118,7 @@ _.reject = function(list, iterator, context){};
  * @example
  * _.all([true, 1, null, 'yes']);
  */
-_.all = function(list, iterator, context){};
+_.all = function(list, iterator, context){return true;};
 _.every = _.all;
 
 /**
@@ -133,7 +133,7 @@ _.every = _.all;
  * @example
  * _.any([null, 0, 'yes', false]);
  */
-_.any = function(list, iterator, context){};
+_.any = function(list, iterator, context){return true;};
 _.some = _.any;
 
 /**
@@ -146,7 +146,7 @@ _.some = _.any;
  * @example
  * _.include([1, 2, 3], 3);
  */
-_.include = function(list, value){};
+_.include = function(list, value){return true;};
 _.contains = _.include;
 
 /**
@@ -155,11 +155,11 @@ _.contains = _.include;
  * method invocation.
  * @param {Array} list
  * @param {Object} methodName
- * @param {Object} *arguments
+ * @param {Object} args
  * @example
  * _.invoke([[5, 1, 7], [3, 2, 1]], 'sort');
  */
-_.invoke = function(list, methodName, arguments){};
+_.invoke = function(list, methodName, args){};
 
 /**
  * An convenient version of what is perhaps the most common use-case for
@@ -171,7 +171,7 @@ _.invoke = function(list, methodName, arguments){};
  * var stooges = [{name : 'moe', age : 40}, {name : 'larry', age : 50}, {name : 'curly', age : 60}];
  * _.pluck(stooges, 'name');
  */
-_.pluck = function(list, propertyName){};
+_.pluck = function(list, propertyName){return new Array;};
 
 /**
  * Returns the maximum value in <b>list</b>. If <b>iterator</b> is passed,
@@ -185,7 +185,7 @@ _.pluck = function(list, propertyName){};
  * var stooges = [{name : 'moe', age : 40}, {name : 'larry', age : 50}, {name : 'curly', age : 60}];
  * _.max(stooges, function(stooge){ return stooge.age; });
  */
-_.max = function(list, iterator, context){};
+_.max = function(list, iterator, context){return new Object;};
 
 /**
  * Returns the minimum value in <b>list</b>. If <b>iterator</b> is passed,
@@ -199,7 +199,7 @@ _.max = function(list, iterator, context){};
  * var numbers = [10, 5, 100, 2, 1000];
  * _.min(numbers);
  */
-_.min = function(list, iterator, context){};
+_.min = function(list, iterator, context){return new Object;};
 
 /**
  * Returns a sorted <b>list</b>, ranked by the results of running each
@@ -211,7 +211,7 @@ _.min = function(list, iterator, context){};
  * @example
  * _.sortBy([1, 2, 3, 4, 5, 6], function(num){ return Math.sin(num); });
  */
-_.sortBy = function(list, iterator, context){};
+_.sortBy = function(list, iterator, context){return new Array;};
 
 /**
  * Uses a binary search to determine the index at which the <b>value</b>
@@ -225,7 +225,7 @@ _.sortBy = function(list, iterator, context){};
  * @example
  * _.sortedIndex([10, 20, 30, 40, 50], 35);
  */
-_.sortedIndex = function(list, value, iterator){};
+_.sortedIndex = function(list, value, iterator){return 0;};
 
 /**
  * Converts the <b>list</b> (anything that can be iterated over), into a
@@ -235,7 +235,7 @@ _.sortedIndex = function(list, value, iterator){};
  * @example
  * (function(){ return _.toArray(arguments).slice(0); })(1, 2, 3);
  */
-_.toArray = function(list){};
+_.toArray = function(list){return new Array;};
 
 /**
  * Return the number of values in the <b>list</b>.
@@ -244,7 +244,7 @@ _.toArray = function(list){};
  * @example
  * _.size({one : 1, two : 2, three : 3});
  */
-_.size = function(list){};
+_.size = function(list){return 0;};
 
 /**
  * Returns the first element of an <b>array</b>. Passing <b>n</b> will
@@ -255,7 +255,7 @@ _.size = function(list){};
  * @example
  * _.first([5, 4, 3, 2, 1]);
  */
-_.first = function(array, n){};
+_.first = function(array, n){return new Object;};
 _.head = _.first;
 
 /**
@@ -267,7 +267,7 @@ _.head = _.first;
  * @example
  * _.rest([5, 4, 3, 2, 1]);
  */
-_.rest = function(array, index){};
+_.rest = function(array, index){return new Array;};
 _.tail = _.rest;
 
 /**
@@ -277,7 +277,7 @@ _.tail = _.rest;
  * @example
  * _.last([5, 4, 3, 2, 1]);
  */
-_.last = function(array){};
+_.last = function(array){return new Object;};
 
 /**
  * Returns a copy of the <b>array</b> with all falsy values removed.
@@ -288,7 +288,7 @@ _.last = function(array){};
  * @example
  * _.compact([0, 1, false, 2, '', 3]);
  */
-_.compact = function(array){};
+_.compact = function(array){return new Array;};
 
 /**
  * Flattens a nested <b>array</b> (the nesting can be to any depth).
@@ -297,7 +297,7 @@ _.compact = function(array){};
  * @example
  * _.flatten([1, [2], [3, [[[4]]]]]);
  */
-_.flatten = function(array){};
+_.flatten = function(array){return new Array;};
 
 /**
  * Returns a copy of the <b>array</b> with all instances of the <b>values</b>
@@ -308,7 +308,7 @@ _.flatten = function(array){};
  * @example
  * _.without([1, 2, 1, 0, 3, 1, 4], 0, 1);
  */
-_.without = function(array, values){};
+_.without = function(array, values){return new Array;};
 
 /**
  * Produces a duplicate-free version of the <b>array</b>, using <i>===</i> to test
@@ -320,7 +320,7 @@ _.without = function(array, values){};
  * @example
  * _.uniq([1, 2, 1, 3, 1, 4]);
  */
-_.uniq = function(array, isSorted){};
+_.uniq = function(array, isSorted){return new Array;};
 _.unique = _.uniq;
 
 /**
@@ -331,7 +331,7 @@ _.unique = _.uniq;
  * @example
  * _.intersect([1, 2, 3], [101, 2, 1, 10], [2, 1]);
  */
-_.intersect = function(arrays){};
+_.intersect = function(arrays){return new Array;};
 
 /**
  * Merges together the values of each of the <b>arrays</b> with the
@@ -342,7 +342,7 @@ _.intersect = function(arrays){};
  * @example
  * _.zip(['moe', 'larry', 'curly'], [30, 40, 50], [true, false, false]);
  */
-_.zip = function(arrays){};
+_.zip = function(arrays){return new Array;};
 
 /**
  * Returns the index at which <b>value</b> can be found in the <b>array</b>,
@@ -357,7 +357,7 @@ _.zip = function(arrays){};
  * @example
  * _.indexOf([1, 2, 3], 2);
  */
-_.indexOf = function(array, value, isSorted){};
+_.indexOf = function(array, value, isSorted){return 0;};
 
 /**
  * Returns the index of the last occurrence of <b>value</b> in the <b>array</b>,
@@ -369,7 +369,7 @@ _.indexOf = function(array, value, isSorted){};
  * @example
  * _.lastIndexOf([1, 2, 3, 1, 2, 3], 2);
  */
-_.lastIndexOf = function(array, value){};
+_.lastIndexOf = function(array, value){return 0;};
 
 /**
  * A function to create flexibly-numbered lists of integers, handy for
@@ -388,7 +388,7 @@ _.lastIndexOf = function(array, value){};
  * _.range(0, -10, -1);
  * _.range(0);
  */
-_.range = function(start, stop, step){};
+_.range = function(start, stop, step){return new Array;};
 
 /**
  * Bind a <b>function</b> to an <b>object</b>, meaning that whenever
@@ -404,7 +404,7 @@ _.range = function(start, stop, step){};
  * func = _.bind(func, {name : 'moe'}, 'hi');
  * func();
  */
-_.bind = function(fn, object, arguments){};
+_.bind = function(fn, object, arguments){return function(){};};
 
 /**
  * Binds a number of methods on the <b>object</b>, specified by
@@ -440,7 +440,7 @@ _.bindAll = function(object, methodNames){};
  * };
  * var fastFibonacci = _.memoize(fibonacci);
  */
-_.memoize = function(fn, hashFunction){};
+_.memoize = function(fn, hashFunction){return function(){};};
 
 /**
  * Much like <b>setTimeout</b>, invokes <b>function</b> after <b>wait</b>
@@ -448,13 +448,13 @@ _.memoize = function(fn, hashFunction){};
  * forwarded on to the <b>function</b> when it is invoked.
  * @param {Function} function
  * @param {Number} wait
- * @param {Object} *arguments
+ * @param {Object} args
  
  * @example
  * var log = _.bind(console.log, console);
  * _.delay(log, 1000, 'logged later');
  */
-_.delay = function(fn, wait, arguments){};
+_.delay = function(fn, wait, args){};
 
 /**
  * Defers invoking the <b>function</b> until the current call stack has cleared,
@@ -480,7 +480,7 @@ _.defer = function(fn){};
  * var throttled = _.throttle(updatePosition, 100);
  * $(window).scroll(throttled);
  */
-_.throttle = function(fn, wait){};
+_.throttle = function(fn, wait){return function(){};};
 
 /**
  * Repeated calls to a debounced function will postpone it's execution
@@ -495,7 +495,7 @@ _.throttle = function(fn, wait){};
  * var lazyLayout = _.debounce(calculateLayout, 300);
  * $(window).resize(lazyLayout);
  */
-_.debounce = function(fn, wait){};
+_.debounce = function(fn, wait){return function(){};};
 
 /**
  * Wraps the first <b>function</b> inside of the <b>wrapper</b> function,
@@ -512,7 +512,7 @@ _.debounce = function(fn, wait){};
  * });
  * hello();
  */
-_.wrap = function(fn, wrapper){};
+_.wrap = function(fn, wrapper){return function() {};};
 
 /**
  * Returns the composition of a list of <b>functions</b>, where each function
@@ -527,7 +527,7 @@ _.wrap = function(fn, wrapper){};
  * var welcome = _.compose(greet, exclaim);
  * welcome('moe');
  */
-_.compose = function(fn){};
+_.compose = function(fn){return function() {};};
 
 /**
  * Retrieve all the names of the <b>object</b>'s properties.
@@ -536,7 +536,7 @@ _.compose = function(fn){};
  * @example
  * _.keys({one : 1, two : 2, three : 3});
  */
-_.keys = function(object){};
+_.keys = function(object){return new Array;};
 
 /**
  * Return all of the values of the <b>object</b>'s properties.
@@ -545,7 +545,7 @@ _.keys = function(object){};
  * @example
  * _.values({one : 1, two : 2, three : 3});
  */
-_.values = function(object){};
+_.values = function(object){return new Array;};
 
 /**
  * Returns a sorted list of the names of every method in an object —
@@ -555,7 +555,7 @@ _.values = function(object){};
  * @example
  * _.functions(_);
  */
-_.functions = function(object){};
+_.functions = function(object){return new Array;};
 _.methods = _.functions;
 
 /**
@@ -563,12 +563,12 @@ _.methods = _.functions;
  * <b>destination</b> object. It's in-order, to the last source will override
  * properties of the same name in previous arguments.
  * @param {Object} destination
- * @param {Object} *sources
+ * @param {Object} sources
  * @return {Object}
  * @example
  * _.extend({name : 'moe'}, {age : 50});
  */
-_.extend = function(destination, sources){};
+_.extend = function(destination, sources){ return new Object; };
 
 /**
  * Create a shallow-copied clone of the <b>object</b>. Any nested objects
@@ -578,7 +578,7 @@ _.extend = function(destination, sources){};
  * @example
  * _.clone({name : 'moe'});
  */
-_.clone = function(object){};
+_.clone = function(object){return new Object;};
 
 /**
  * Invokes <b>interceptor</b> with the <b>object</b>, and then returns <b>object</b>.
@@ -607,7 +607,7 @@ _.tap = function(object, interceptor){};
  * moe == clone;
  * _.isEqual(moe, clone);
  */
-_.isEqual = function(object, other){};
+_.isEqual = function(object, other){ return true; };
 
 /**
  * Returns <i>true</i> if <b>object</b> contains no values.
@@ -617,7 +617,7 @@ _.isEqual = function(object, other){};
  * _.isEmpty([1, 2, 3]);
  * _.isEmpty({});
  */
-_.isEmpty = function(object){};
+_.isEmpty = function(object){ return true; };
 
 /**
  * Returns <i>true</i> if <b>object</b> is a DOM element.
@@ -626,7 +626,7 @@ _.isEmpty = function(object){};
  * @example
  * _.isElement(jQuery('body')[0]);
  */
-_.isElement = function(object){};
+_.isElement = function(object){return true;};
 
 /**
  * Returns <i>true</i> if <b>object</b> is an Array.
@@ -636,7 +636,7 @@ _.isElement = function(object){};
  * (function(){ return _.isArray(arguments); })();
  * _.isArray([1,2,3]);
  */
-_.isArray = function(object){};
+_.isArray = function(object){return true;};
 
 /**
  * Returns <i>true</i> if <b>object</b> is an Arguments object.
@@ -646,7 +646,7 @@ _.isArray = function(object){};
  * (function(){ return _.isArguments(arguments); })(1, 2, 3);
  * _.isArguments([1,2,3]);
  */
-_.isArguments = function(object){};
+_.isArguments = function(object){return true;};
 
 /**
  * Returns <i>true</i> if <b>object</b> is a Function.
@@ -655,7 +655,7 @@ _.isArguments = function(object){};
  * @example
  * _.isFunction(alert);
  */
-_.isFunction = function(object){};
+_.isFunction = function(object){return true;};
 
 /**
  * Returns <i>true</i> if <b>object</b> is a String.
@@ -664,7 +664,7 @@ _.isFunction = function(object){};
  * @example
  * _.isString("moe");
  */
-_.isString = function(object){};
+_.isString = function(object){return true;};
 
 /**
  * Returns <i>true</i> if <b>object</b> is a Number.
@@ -673,7 +673,7 @@ _.isString = function(object){};
  * @example
  * _.isNumber(8.4 * 5);
  */
-_.isNumber = function(object){};
+_.isNumber = function(object){return true;};
 
 /**
  * Returns <i>true</i> if <b>object</b> is either <i>true</i> or <i>false</i>.
@@ -682,7 +682,7 @@ _.isNumber = function(object){};
  * @example
  * _.isBoolean(null);
  */
-_.isBoolean = function(object){};
+_.isBoolean = function(object){return true;};
 
 /**
  * Returns <i>true</i> if <b>object</b> is a Date.
@@ -691,7 +691,7 @@ _.isBoolean = function(object){};
  * @example
  * _.isDate(new Date());
  */
-_.isDate = function(object){};
+_.isDate = function(object){return true;};
 
 /**
  * Returns <i>true</i> if <b>object</b> is a RegExp.
@@ -700,7 +700,7 @@ _.isDate = function(object){};
  * @example
  * _.isRegExp(/moe/);
  */
-_.isRegExp = function(object){};
+_.isRegExp = function(object){return true;};
 
 /**
  * Returns <i>true</i> if <b>object</b> is <i>NaN</i>.<br> Note: this is not
@@ -713,7 +713,7 @@ _.isRegExp = function(object){};
  * isNaN(undefined);
  * _.isNaN(undefined);
  */
-_.isNaN = function(object){};
+_.isNaN = function(object){return true;};
 
 /**
  * Returns <i>true</i> if the value of <b>object</b> is <i>null</i>.
@@ -723,7 +723,7 @@ _.isNaN = function(object){};
  * _.isNull(null);
  * _.isNull(undefined);
  */
-_.isNull = function(object){};
+_.isNull = function(object){return true;};
 
 /**
  * Returns <i>true</i> if <b>variable</b> is <i>undefined</i>.
@@ -732,7 +732,7 @@ _.isNull = function(object){};
  * @example
  * _.isUndefined(window.missingVariable);
  */
-_.isUndefined = function(variable){};
+_.isUndefined = function(variable){return true;};
 
 /**
  * Give control of the "_" variable back to its previous owner. Returns
@@ -741,7 +741,7 @@ _.isUndefined = function(variable){};
  * @example
  * var underscore = _.noConflict();
  */
-_.noConflict = function(){};
+_.noConflict = function(){return new Object;};
 
 /**
  * Returns the same value that is used as the argument. In math:
@@ -754,7 +754,7 @@ _.noConflict = function(){};
  * var moe = {name : 'moe'};
  * moe === _.identity(moe);
  */
-_.identity = function(value){};
+_.identity = function(value){return new Object;};
 
 /**
  * Invokes the given iterator function <b>n</b> times.
@@ -788,7 +788,7 @@ _.mixin = function(object){};
  * @example
  * _.uniqueId('contact_');
  */
-_.uniqueId = function(prefix){};
+_.uniqueId = function(prefix){return '';};
 
 /**
  * Compiles JavaScript templates into functions that can be evaluated
@@ -810,7 +810,7 @@ _.uniqueId = function(prefix){};
  * var list = "<% _.each(people, function(name) { %> <li><%= name %></li> <% }); %>";
  * _.template(list, {people : ['moe', 'curly', 'larry']});
  */
-_.template = function(templateString, context){};
+_.template = function(templateString, context){return function(){};};
 
 /**
  * Returns a wrapped object. Calling methods on this object will continue
@@ -826,7 +826,7 @@ _.template = function(templateString, context){};
  * .first()
  * .value();
  */
-_.chain = function(obj){};
+_.chain = function(obj){return _;};
 
 /**
  * Extracts the value of a wrapped object.
@@ -834,4 +834,4 @@ _.chain = function(obj){};
  * @example
  * _([1, 2, 3]).value();
  */
-_.value = function(obj){};
+_.value = function(obj){return '';};

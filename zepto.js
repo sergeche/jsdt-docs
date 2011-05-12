@@ -5,6 +5,8 @@
  */
 function Zepto(){}
 
+Zepto.prototype = new Array;
+
 /**
  * Access a single matched element.
  * @param {Number} num Element's index in array
@@ -120,7 +122,7 @@ Zepto.prototype.is = function(expr){};
  * <br>
  * Removes any elements inside the array of elements from the set of matched elements.<br>
  * <br>
- * @param {String|Zepto} expr
+ * @param {String} expr
  * @return {Zepto}
  */
 Zepto.prototype.not = function(expr){};
@@ -160,28 +162,28 @@ Zepto.prototype.text = function(value){};
 
 /**
  * Append content to the inside of every matched element.
- * @param {Element|Zepto|String} content
+ * @param {Element} content
  * @return {Zepto}
  */
 Zepto.prototype.append = function(content){};
 
 /**
  * Prepend content to the inside of every matched element.
- * @param {Element|Zepto|String} content
+ * @param {Element} content
  * @return {Zepto}
  */
 Zepto.prototype.prepend = function(content){};
 
 /**
  * Insert content before each of the matched elements.
- * @param {Element|Zepto|String} content
+ * @param {Element} content
  * @return {Zepto}
  */
 Zepto.prototype.before = function(content){};
 
 /**
  * Insert content after each of the matched elements.
- * @param {Element|Zepto|String} content
+ * @param {Element} content
  * @return {Zepto}
  */
 Zepto.prototype.after = function(content){};
@@ -396,7 +398,7 @@ Zepto.prototype.swipeRight = function(fn){};
 
 /**
  * Zepto.js is a minimalist framework for mobile WebKit browsers, with a Zepto-compatible chaining syntax.
- * @param {String|Function} selector
+ * @param {String} selector
  * @return {Zepto}
  */
 function $(selector){return new Zepto();};

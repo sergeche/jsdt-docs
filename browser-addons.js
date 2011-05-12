@@ -54,3 +54,23 @@ Document.prototype.dispatchEvent=function(event){return false;};
 Document.prototype.createElement=function(tagName){return new HTMLElement();}; 
 
 HTMLElement.prototype.outerHTML = '';
+
+var JSON = {
+	/** 
+	 * Parses JSON string into object
+	 * @param {String} str
+	 * @returns {Object}
+	 */
+	parse: function(str) {
+		return {};
+	},
+	
+	/**
+	 * Serializes JavaScript object into string
+	 * @param {Object} obj
+	 * @returns {String}
+	 */
+	stringify: function(obj) {
+		return '';
+	}
+};

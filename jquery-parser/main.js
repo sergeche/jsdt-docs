@@ -18,6 +18,9 @@ var TARGET_VERSION = 'latest';
 /** Generate JSDoc for Eclipse JSDT (it has some quirks and limitations) */
 var ECLIPSE_JSDT = true;
 
+/** Store methods with the same name in different files */
+var MULTIPLE_FILES = true;
+
 /** Where to save generated JSDoc */
 var OUTPUT = './jquery-jsdoc.js';
 
@@ -66,6 +69,9 @@ function processType(type) {
  * @returns String
  */
 function nodeContent(node, do_escape) {
+	if (!node) 
+		return '';
+	
 	var re_name = new RegExp('<\\/?' + node.name() + '>|<\\!\\[CDATA\\[|\\]\\]>', 'ig');
 	var result = node.toString().replace(re_name, '');
 	return do_escape ? escapeForJS(result) : result;
@@ -93,40 +99,53 @@ function getType(type) {
  * Creates JSDoc entry for parsed XML element
  * @constructor
  */
-function JSDocEntry(elem) {
+function JSDocEntry(elem, signature) {
 	this._elem = elem;
+	this._signature = signature;
 	
+	this.args = [];
 	// parse arguments
-	this.args = elem.find('signature[1]/argument').map(function(n, i) {
-		var name = n.attr('name').value().replace(/\(.*?\)/g, '');
-		var type = getType(processType(n.attr('type').value()));
-		
-		if (name == 'function')
-			name = 'fn';
-		else if (name == 'false' || name == 'true' || name == 'switch')
-			name = '_' + name;
-		else if (name == 'jQuery object') {
-			name = 'jq';
-			type = 'jQuery';
-		} else if (name.charAt(0) == '-') {
-			name = 'neg_' + name.substring(1);
-		}
-		
-		return {
-			name: name,
-			type: type,
-			desc: nodeContent(n.get('desc'))
-		};
-	});
+	if (signature)
+		this.args = signature.find('argument').map(function(n, i) {
+			var name = n.attr('name').value().replace(/\(.*?\)/g, '');
+			var type = getType(processType(n.attr('type').value()));
+			
+			if (name == 'function')
+				name = 'fn';
+			else if (name == 'false' || name == 'true' || name == 'switch')
+				name = '_' + name;
+			else if (name == 'jQuery object') {
+				name = 'jq';
+				type = 'jQuery';
+			} else if (name.charAt(0) == '-') {
+				name = 'neg_' + name.substring(1);
+			}
+			
+			return {
+				name: name,
+				type: type,
+				desc: nodeContent(n.get('desc'))
+			};
+		});
 }
 
 JSDocEntry.prototype = {
+	/**
+	 * Returns attribute value
+	 * @param {String} name
+	 * @returns {String}
+	 */
+	getAttribute: function(name) {
+		var attr = this._elem.attr(name);
+		return attr !== null ? attr.value() : '';
+	},
+	
 	/**
 	 * Returns method name
 	 * @returns {String}
 	 */
 	getName: function() {
-		return this._elem.attr('name').value();
+		return this.getAttribute('name');
 	},
 	
 	/**
@@ -134,7 +153,7 @@ JSDocEntry.prototype = {
 	 * @returns {String}
 	 */
 	getType: function() {
-		return this._elem.attr('type').value();
+		return this.getAttribute('type');
 	},
 	
 	/**
@@ -143,7 +162,7 @@ JSDocEntry.prototype = {
 	 */
 	getDefinition: function() {
 		/** @type String */
-		var name = this._elem.attr('name').value();
+		var name = this.getName() || '';
 		var prefix = DEFINITION_PREFIX;
 		if (name.indexOf('.') != -1) {
 			var n = name.split('.');
@@ -161,7 +180,7 @@ JSDocEntry.prototype = {
 	 * @returns {String}
 	 */
 	getReturnType: function() {
-		return getType(processType(this._elem.attr('return').value()));
+		return getType(processType(this.getAttribute('return')));
 	},
 	
 	/**
@@ -169,8 +188,13 @@ JSDocEntry.prototype = {
 	 * @returns {String}
 	 */
 	getVersion: function() {
-		var v = this._elem.get('signature[1]/added');
-		return v ? v.text() : '1.0';
+		var def_version = '1.0';
+		if (this._signature) {
+			var v = this._signature.get('added');
+			return v ? v.text() : def_version;
+		}
+		
+		return def_version;
 	},
 	
 	/**
@@ -234,7 +258,7 @@ JSDocEntry.prototype = {
 		
 		lines.push('\n@since ' + this.getVersion());
 		
-		if (type == 'method')
+		if (type == 'method' && this.getReturnType() != 'undefined')
 			lines.push('\n@returns {' + this.getReturnType() + '}');
 		else
 			lines.push('\n@type ' + this.getReturnType());
@@ -282,32 +306,80 @@ JSDocEntry.prototype = {
 	
 	dump: function() {
 		return this.dumpJSDoc() + '\n' + this.dumpDefinition();
+	},
+	
+	toString: function() {
+		return this.dump();
 	}
 };
+
+function createFile(ix, data) {
+	var fname = OUTPUT;
+	if (ix != null)
+		fname = OUTPUT.replace(/(\.\w+$)/, '-' + (ix + 1) + '$1');
+	
+	fs.open(fname, 'w', function(err, fd) {
+		if (!err) {
+			if (!ix) {
+				fs.readFile('__header.js', 'utf8', function(err, header) {
+					writeFile(fd, header + data.join('\n\n'));
+				});
+			} else {
+				writeFile(fd, data.join('\n\n'));
+			}
+		} else {
+			console.log(err);
+		}
+	});
+}
+
+function writeFile(fd, str) {
+	var buf = new Buffer(str);
+	fs.write(fd, buf, 0, buf.length, function() {
+		fs.close(fd);
+	});
+}
 
 console.log('Loading API');
 request({uri: API_LOCATION}, function(error, response, body) {
 	if (!error && response.statusCode == 200) {
 		var xmlDoc = libxmljs.parseXmlString(body);
-		var elems = xmlDoc.find('//entries/entry[@type = "method"]');
+		var method_map = {};
 		
 		var result = [];
+		var multifile = [];
+		
 		xmlDoc.find('//entries/entry[@type = "method" or @type = "property"]').forEach(function(item) {
-			var jsdoc = new JSDocEntry(item);
-			if (jsdoc.getName() != 'jQuery' && (TARGET_VERSION == 'latest' || jsdoc.getVersion() <= TARGET_VERSION))
-				result.push(jsdoc.dump());
-			jsdoc = null;
+			var signatures = item.find('signature');
+			if (!signatures.length)
+				signatures.push(null);
+			
+			signatures.forEach(function(signature) {
+				var jsdoc = new JSDocEntry(item, signature);
+				var name = jsdoc.getName();
+				if (name && name != 'jQuery' && (TARGET_VERSION == 'latest' || jsdoc.getVersion() <= TARGET_VERSION)) {
+					if (!(name in method_map)) {
+						method_map[name] = -1;
+					}
+					
+					method_map[name]++;
+					if (!multifile[method_map[name]]) {
+						multifile[method_map[name]] = [];
+					}
+					
+					var dump = jsdoc.dump();
+					multifile[method_map[name]].push(dump);
+					result.push(dump);
+				}
+			});
 		});
 		
-		fs.open(OUTPUT, 'w', function(err, fd) {
-			if (!err) {
-				fs.readFile('__header.js', 'utf8', function(err, data) {
-					var buf = new Buffer(data + result.join('\n\n'));
-					fs.write(fd, buf, 0, buf.length, function() {
-						console.log('Done creating file');
-					});
-				});
+		if (MULTIPLE_FILES) {
+			for (var i = 0, il = multifile.length; i < il; i++) {
+				createFile(i, multifile[i]);
 			}
-		});
+		}
+		
+		createFile(null, result);
 	}
 });

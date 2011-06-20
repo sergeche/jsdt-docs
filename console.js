@@ -44,4 +44,28 @@ var console = {
     * @param {Object} message
     */
    dir: function(message){}
+	
+   /**
+    * Start measuring timer
+    * @param {Object} message
+    */
+   time: function(message){}
+   
+   /**
+    * Stop measuring timer
+    * @param {Object} message
+    */
+   timeEnd: function(message){}
+   
+   /**
+    * Start profiling
+    * @param {Object} message
+    */
+   profile: function(message){}
+   
+   /**
+    * Stop profiling
+    * @param {Object} message
+    */
+   profileEnd: function(message){}
 };

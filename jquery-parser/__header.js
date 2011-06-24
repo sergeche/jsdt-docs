@@ -5,6 +5,8 @@
 function jQuery() {}
 jQuery.prototype = new Array;
 
+jQuery.fn = jQuery.prototype;
+
 jQuery.Deferred = function() {
 	return new __jQueryDeferred;
 };

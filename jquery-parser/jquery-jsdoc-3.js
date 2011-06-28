@@ -1,7 +1,13 @@
 /**
  * Set one or more properties for the set of matched elements.
  * 
- * <p>The <code>.prop()</code> method is a convenient way to set the value of properties—especially when setting multiple properties or using values returned by a function. Properties generally affect the dynamic state of a DOM element without changing the serialized HTML attribute. Examples include the <code>value</code> property of input elements, the <code>disabled</code> property of inputs and buttons, or the <code>checked</code> property of a checkbox.</p>
+ * <p>The <code>.prop()</code> method is a convenient way to set the value of properties—especially when setting multiple properties or using values returned by a function. Properties generally affect the dynamic state of a DOM element without changing the serialized HTML attribute. Examples include the <code>value</code> property of input elements, the <code>disabled</code> property of inputs and buttons, or the <code>checked</code> property of a checkbox. Most often, <code>.prop()</code> should be used to set disabled and checked instead of the <code><a href="http://api.jquery.com/attr">.attr()</a></code> method. The <code><a href="http://api.jquery.com/val">.val()</a></code> method should be used for getting and setting value.</p>
+ * <pre>
+ * $("input").prop("disabled", false);
+ * $("input").prop("checked", true);
+ * $("input").val("someValue");
+ * </pre>
+ * <p>Also note that the <code><a href="http://api.jquery.com/removeProp">.removeProp()</a></code> method should not be used to set these properties to false. Once a native property is removed, it cannot be added again. See <code><a href="http://api.jquery.com/removeProp">.removeProp()</a></code> for more information.</p>
  * 
  * @example
  * <p>Disable all checkboxes on the page.</p>
@@ -397,8 +403,12 @@ jQuery.prototype.index = function(element) {return 0;};
  * alert($('body').data('foo'));
  * alert($('body').data());
  * </pre>
- * <p>The above lines alert the data values that were set on the <code>body</code> element. If nothing was set on that element, null is returned.</p>
- * 
+ * <p>The above lines alert the data values that were set on the <code>body</code> element. If no data at all was set on that element, <code>undefined</code> is returned.</p>
+ * <pre>
+ * alert( $("body").data("foo")); //undefined
+ * $("body").data("bar", "foobar");
+ * alert( $("body").data("foobar")); //foobar
+ * </pre>
  * <p><strong>HTML 5 data- Attributes</strong></p>
  * <p>As of jQuery 1.4.3 <a href="http://ejohn.org/blog/html-5-data-attributes/">HTML 5 data- attributes</a> will be automatically pulled in to jQuery's data object. The treatment of attributes with embedded dashes was changed in jQuery 1.6 to conform to the <a href="http://www.w3.org/TR/html5/elements.html#embedding-custom-non-visible-data-with-the-data-attributes">W3C HTML5 specification</a>.</p>
  * 
@@ -1445,7 +1455,7 @@ jQuery.prototype.mousedown = function() {return new jQuery();};
  * 
  * <p>Any handler that has been attached with <code>.live()</code> can be removed with <code>.die()</code>. This method is analogous to <code>.unbind()</code>, which is used to remove handlers attached with <code>.bind()</code>.
  * See the discussions of <code>.live()</code> and <code>.unbind()</code> for further details.</p>
- * <p><strong>Note:</strong> Up to jQuery 1.4.4, in order for <code>.die()</code> to function correctly, the selector used with it must match exactly the selector initially used with <code>.live()</code>.</p>
+ * <p><strong>Note:</strong> In order for <code>.die()</code> to function correctly, the selector used with it must match exactly the selector initially used with <code>.live()</code>.</p>
  * 
  * @example
  * <p>Can bind and unbind events to the colored button.</p>
@@ -1515,7 +1525,7 @@ jQuery.prototype.die = function(eventTypes) {return new jQuery();};
  *   <pre>$('body').append('&lt;div class="clickme"&gt;Another target&lt;/div&gt;');</pre>
  *   <p>Then clicks on the new element will also trigger the handler.</p>
  *   <p>To <em>unbind</em> the click handlers from all <code>&lt;div class="clickme"&gt;</code> that were bound using <code>.live()</code>, use the <code><a href="http://api.jquery.com/die/">.die()</a></code> method:</p>
- * <pre>$('.clickme').die('click');</pre>
+ * <pre>$(".clickme").die("click");</pre>
  *   <h4 id="event-delegation">Event Delegation</h4>
  *   <p>The <code>.live()</code> method is able to affect elements that have not yet been added to the DOM through the use of event delegation: a handler bound to an ancestor element is responsible for events that are triggered on its descendants. The handler passed to <code>.live()</code> is never bound to an element; instead, <code>.live()</code> binds a special handler to the root of the DOM tree. In the example above, when the new element is clicked, the following steps occur:</p>
  *   <ol>
@@ -1523,7 +1533,7 @@ jQuery.prototype.die = function(eventTypes) {return new jQuery();};
  *     <li>No handler is directly bound to the <code>&lt;div&gt;</code>, so the event bubbles up the DOM tree.</li>
  *     <li>The event bubbles up until it reaches the root of the tree, which is where <code>.live()</code> binds its special handlers by default. <br/><em>* As of jQuery 1.4, event bubbling can optionally stop at a DOM element "context".</em></li>
  *     <li>The special <code>click</code> handler bound by <code>.live()</code> executes.</li>
- *     <li>This handler tests the <code>target</code> of the event object to see whether it should continue. This test is performed by checking if <code>$(event.target).closest('.clickme')</code> is able to locate a matching element.</li>
+ *     <li>This handler tests the <code>target</code> of the event object to see whether it should continue. This test is performed by checking if <code>$(event.target).closest(".clickme")</code> is able to locate a matching element.</li>
  *     <li>If a matching element is found, the original handler is called on it.</li>
  *   </ol>
  *   <p>Because the test in step 5 is not performed until the event occurs, elements can be added at any time and still respond to events.</p>
@@ -1531,8 +1541,8 @@ jQuery.prototype.die = function(eventTypes) {return new jQuery();};
  * 
  *   <h4 id="multiple-events">Multiple Events</h4>
  *   <p>As of jQuery 1.4.1 <code>.live()</code> can accept multiple, space-separated events, similar to the functionality provided in <a href="/bind">.bind()</a>. For example, you can "live bind" the <code>mouseover</code> and <code>mouseout</code> events at the same time like so: </p>
- * <pre>$('.hoverme').live('mouseover mouseout', function(event) {
- *   if (event.type == 'mouseover') {
+ * <pre>$(".hoverme").live("mouseover mouseout", function(event) {
+ *   if ( event.type == "mouseover" ) {
  *     // do something on mouseover
  *   } else {
  *     // do something on mouseout
@@ -1540,7 +1550,7 @@ jQuery.prototype.die = function(eventTypes) {return new jQuery();};
  * });</pre>
  *   <p>As of jQuery 1.4.3, you can bind multiple live event handlers simultaneously by passing a map of event type/handler pairs:</p>
  * 
- * <pre>$('a').live({
+ * <pre>$("a").live({
  *   click: function() {
  *     // do something on click
  *   },
@@ -1549,10 +1559,10 @@ jQuery.prototype.die = function(eventTypes) {return new jQuery();};
  *   }
  * });</pre>
  *   <h4 id="event-data">Event Data</h4>
- *   <p>As of jQuery 1.4, the optional <code>eventData</code> parameter allows us to pass additional information to the handler. One handy use of this parameter is to work around issues caused by closures. See the <code>.bind()</code> method's "<a href="/bind/#passing-event-data">Passing Event Data</a>" discussion for more information.</p>
+ *   <p>As of jQuery 1.4, the optional <code>eventData</code> parameter is available for passing additional information to the handler. One handy use of this parameter is to work around issues caused by closures. See the <code>.bind()</code> method's "<a href="/bind/#passing-event-data">Passing Event Data</a>" discussion for more information.</p>
  *   <h4 id="event-context">Event Context</h4>
  *   <p>As of jQuery 1.4, live events can be bound to a DOM element "context" rather than to the default document root. To set this context, use the <a href="http://api.jquery.com/jquery/#selector-context"><code>jQuery()</code> function's second argument</a>, passing in a single DOM element (as opposed to a jQuery collection or a selector).</p>
- * <pre>$('div.clickme', $('#container')[0]).live('click', function() {
+ * <pre>$("div.clickme", $("#container")[0]).live("click", function() {
  *   // Live handler called.
  * });</pre>
  *   <p>The live handler in this example is called only when <code>&lt;div class="clickme"&gt;</code> is a descendant of an element with an ID of "container."</p>
@@ -1561,11 +1571,12 @@ jQuery.prototype.die = function(eventTypes) {return new jQuery();};
  *   <ul>
  *     <li>DOM traversal methods are not supported for finding elements to send to <code>.live()</code>. Rather, the <code>.live()</code> method should always be called directly after a selector, as in the example above.</li>
  *     <li>To stop further handlers from executing after one bound using <code>.live()</code>, the handler must return <code>false</code>. Calling <code>.stopPropagation()</code> will not accomplish this.</li>
+ *     <li>The <code>paste</code> and <code>reset</code> events, in addition to <code>change</code> when used with inputs of type "file," are not fully supported by the <code>.live()</code> method, due to issues with simulating event bubbling in Internet Explorer. In these cases, the <code>.bind()</code> method can be used instead.</li>
  *     <li>In <b>jQuery 1.3.x</b> only the following JavaScript events (in addition to custom events) could be bound with <code>.live()</code>: <code>click</code>, <code>dblclick</code>, <code>keydown</code>, <code>keypress</code>, <code>keyup</code>, <code>mousedown</code>, <code>mousemove</code>, <code>mouseout</code>, <code>mouseover</code>, and <code>mouseup</code>.</li>
  *   </ul>
  *   <blockquote>
  *     <ul>
- *       <li>As of <b>jQuery 1.4</b> the <code>.live()</code> method supports custom events as well as all <em>JavaScript events that bubble</em>.</li> 
+ *       <li>As of <b>jQuery 1.4</b> the <code>.live()</code> method supports custom events as well as all <em>JavaScript events that bubble</em>.</li>
  *       <li>As of <b>jQuery 1.4.1</b> even <code>focus</code> and <code>blur</code> work with live (mapping to the more appropriate, bubbling, events <code>focusin</code> and <code>focusout</code>).</li>
  *       <li>As of <b>jQuery 1.4.1</b> the <code>hover</code> event can be specified (mapping to <code>mouseenter</code> and  <code>mouseleave</code>, which, in turn, are mapped to <code>mouseover</code> and <code>mouseout</code>).</li>
  *     </ul>
@@ -1574,50 +1585,45 @@ jQuery.prototype.die = function(eventTypes) {return new jQuery();};
  * @example
  * <p>Click a paragraph to add another. Note that .live() binds the click event to all paragraphs - even new ones.</p>
  * <pre><code>
- *     $("p").live("click", function(){
- *       $(this).after("<p>Another paragraph!</p>");
- *     });
+ * $("p").live("click", function(){
+ *   $(this).after("<p>Another paragraph!</p>");
+ * });
  * </code></pre>
  * @example
- * <p>Display each paragraph's text in an alert box whenever it is clicked:</p>
- * <pre><code>$("p").live("click", function(){
- *   alert( $(this).text() );
- * });</code></pre>
- * @example
- * <p>Cancel a default action and prevent it from bubbling up, return false:</p>
+ * <p>Cancel a default action and prevent it from bubbling up by returning false.</p>
  * <pre><code>$("a").live("click", function() { return false; })</code></pre>
  * @example
- * <p>To cancel only the default action by using the preventDefault method.</p>
+ * <p>Cancel only the default action by using the preventDefault method.</p>
  * <pre><code>$("a").live("click", function(event){
  *   event.preventDefault();
  * });</code></pre>
  * @example
- * <p>Bind custom events:</p>
+ * <p>Bind custom events with .live().</p>
  * <pre><code>
- *   $("p").live("myCustomEvent", function(e, myName, myValue) {
- *     $(this).text("Hi there!");
- *     $("span").stop().css("opacity", 1)
- *              .text("myName = " + myName)
- *              .fadeIn(30).fadeOut(1000);
- *   });
- *   $("button").click(function () {
- *     $("p").trigger("myCustomEvent");
- *   });
+ * $("p").live("myCustomEvent", function(e, myName, myValue) {
+ *   $(this).text("Hi there!");
+ *   $("span").stop().css("opacity", 1)
+ *            .text("myName = " + myName)
+ *            .fadeIn(30).fadeOut(1000);
+ * });
+ * $("button").click(function () {
+ *   $("p").trigger("myCustomEvent");
+ * });
  * </code></pre>
  * @example
- * <p>Click a paragraph to add another. Note that .live() binds the click, mouseover, and mouseout events to all paragraphs - even new ones.</p>
+ * <p>Use a map to bind multiple live event handlers. Note that .live() binds the click, mouseover, and mouseout events to all paragraphs — even new ones.</p>
  * <pre><code>
- *   $("p").live("click", function(){
- *       $(this).after("<p>Another paragraph!</p>");
- *     });
- *     $("p").live({
- *       "mouseover": function() {
- *         $(this).addClass("over");
- *       },
- *       "mouseout": function() {
- *         $(this).removeClass("over");
- *       }
- *     });
+ * $("p").live({
+ *   click: function() {
+ *     $(this).after("<p>Another paragraph!</p>");
+ *   },
+ *   mouseover: function() {
+ *     $(this).addClass("over");
+ *   },
+ *   mouseout: function() {
+ *     $(this).removeClass("over");
+ *   }
+ * });
  * </code></pre>
  * 
  * @param {Object} events A map of one or more JavaScript event types and functions to execute for them.
@@ -1652,6 +1658,7 @@ jQuery.prototype.live = function(events) {return new jQuery();};
  *   alert('The quick brown fox jumps over the lazy dog.');
  * });</pre>
  * <p>Even though the two functions are identical in content, they are created separately and so JavaScript is free to keep them as distinct function objects. To unbind a particular handler, we need a reference to that function and not a different one that happens to do the same thing.</p>
+ * <blockquote><p><strong>Note: </strong>Because the <code><a href="http://api.jquery.com/live/">.live()</a></code> method binds event handlers to <code>document</code> by default, calling .unbind() on <code>document</code> will unbind the handlers bound by <code>.live()</code>, as well. For example, <code>$(document).unbind('click');</code> will remove not only <code>$(document).bind('click', fn1)</code> <br/>but also <br/> <code>$('a.foo').live('click', fn2)</code>.</p></blockquote>
  * <h4>Using Namespaces</h4>
  * <p>Instead of maintaining references to handlers in order to unbind them, we can namespace the events and use this capability to narrow the scope of our unbinding actions. As shown in the discussion for the <code>.bind()</code> method, namespaces are defined by using a period (<code>.</code>) character when binding a handler:</p>
  * <pre>$('#foo').bind('click.myEvents', handler);</pre>
@@ -1818,6 +1825,7 @@ jQuery.prototype.unbind = function(event) {return new jQuery();};
  * <blockquote><p>See the <code>.trigger()</code> method reference for a way to pass data to a handler at the time the event happens rather than when the handler is bound.</p></blockquote>
  * 
  * <p>As of jQuery 1.4 we can no longer attach data (and thus, events) to object, embed, or applet elements because critical errors occur when attaching data to Java applets.</p>
+ * <p><strong>Note: </strong>Although demonstrated in the next example, it is inadvisable to bind handlers to both the <code>click</code> and <code>dblclick</code> events for the same element. The sequence of events triggered varies from browser to browser, with some receiving two click events before the <code>dblclick</code> and others only one. Double-click sensitivity (maximum time between clicks that is detected as a double click) can vary by operating system and browser, and is often user-configurable.</p>
  * 
  * @example
  * <p>Handle click and double-click for the paragraph.  Note: the coordinates are window relative, so in this case relative to the demo iframe.</p>
@@ -2362,9 +2370,9 @@ jQuery.prototype.toggle = function(duration, easing, callback) {return new jQuer
  * <pre><code>
  * 
  *     $("p").hide();
- *     $("a").click(function () {
+ *     $("a").click(function ( event ) {
+ *       event.preventDefault();
  *       $(this).hide();
- *       return true;
  *     });
  * </code></pre>
  * @example
@@ -2786,7 +2794,7 @@ jQuery.prototype.html = function(fn) {return new jQuery();};
  * &lt;/ul&gt;
  * </pre>
  * <p>You can attach a click handler to the &lt;ul&gt; element, and then limit the code to be triggered only when a list item itself, not one of its children, is clicked:</p>
- * <pre>$("ul:).click(function(event) {
+ * <pre>$("ul").click(function(event) {
  *   var $target = $(event.target);
  *   if ( $target.is("li") ) {
  *     $target.css("background-color", "red");
@@ -2794,6 +2802,7 @@ jQuery.prototype.html = function(fn) {return new jQuery();};
  * });</pre>
  * <p>Now, when the user clicks on the word "list" in the first item or anywhere in the third item, the clicked list item will be given a red background. However, when the user clicks on item 1 in the first item or anywhere in the second item, nothing will occur, because in those cases the target of the event would be <code>&lt;strong&gt;</code> or <code>&lt;span&gt;</code>, respectively.
  * </p>
+ * <p>Be aware that for selector strings with positional selectors such as <code>:first</code>, <code>:gt()</code>, or <code>:even</code>, the positional filtering is done against the jQuery object passed to <code>.is()</code>, <em>not</em> against the containing document. So for the HTML shown above, an expression such as <code>$("li:first").is("li:last")</code> returns <code>true</code>, but <code>$("li:first-child").is("li:last-child")</code> returns <code>false</code>.</p>
  * 
  * <h4>Using a Function</h4>
  * <p>The second form of this method evaluates expressions related to elements based on a function rather than a selector. For each element, if the function returns <code>true</code>, <code>.is()</code> returns <code>true</code> as well. For example, given a somewhat more involved HTML snippet:</p>
@@ -2933,7 +2942,7 @@ jQuery.prototype.is = function(jq) {return new Boolean();};
  * <p>This alteration to the code will cause the third and sixth list items to be highlighted, as it uses the modulus operator (<code>%</code>) to select every item with an <code>index</code> value that, when divided by 3, has a remainder of <code>2</code>.</p>
  * 
  * @example
- * <p>Change the color of all divs then put a border around only some of them.</p>
+ * <p>Change the color of all divs; then add a border to those with a "middle" class.</p>
  * <pre><code>
  * 
  *     $("div").css("background", "#c8ebcc")
@@ -2941,13 +2950,7 @@ jQuery.prototype.is = function(jq) {return new Boolean();};
  *             .css("border-color", "red");
  * </code></pre>
  * @example
- * <p>Selects all paragraphs and removes those without a class "selected".</p>
- * <pre><code>$("p").filter(".selected")</code></pre>
- * @example
- * <p>Selects all paragraphs and removes those that aren't of class "selected" or the first one.</p>
- * <pre><code>$("p").filter(".selected, :first")</code></pre>
- * @example
- * <p>Change the color of all divs then put a border to specific ones.</p>
+ * <p>Change the color of all divs; then add a border to the second one (index == 1) and the div with an id of "fourth."</p>
  * <pre><code>
  *     $("div").css("background", "#b4b0da")
  *             .filter(function (index) {
@@ -2957,10 +2960,12 @@ jQuery.prototype.is = function(jq) {return new Boolean();};
  * 
  * </code></pre>
  * @example
- * <p>Remove all elements that have a descendant ol element</p>
- * <pre><code>$("div").filter(function(index) {
- *    return $("ol", this).length == 0;
- *  });</code></pre>
+ * <p>Select all divs and filter the selection with a DOM element, keeping only the one with an id of "unique".</p>
+ * <pre><code>$("div").filter( document.getElementById("unique") )</code></pre>
+ * @example
+ * <p>Select all divs and filter the selection with a jQuery object, keeping only the one with an id of "unique".</p>
+ * <pre><code>
+ * $("div").filter( $("#unique") )</code></pre>
  * 
  * @param {Element} element An element to match the current set of elements against.
  * 

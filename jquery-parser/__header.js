@@ -14,14 +14,15 @@ jQuery.Deferred = function() {
 /**
  * @constructor
  */
-function __jQueryDeferred() {}
-__jQueryDeferred.prototype = new Object;
+function __jQueryPromise() {}
+__jQueryPromise.prototype = new Object;
 
 /**
  * @constructor
+ * @base __jQueryPromise
  */
-function __jQueryPromise() {}
-__jQueryPromise.prototype = new Object;
+function __jQueryDeferred() {}
+__jQueryDeferred.prototype = new __jQueryPromise;
 
 /**
  * @constructor
@@ -29,12 +30,11 @@ __jQueryPromise.prototype = new Object;
 function __jQueryEvent() {}
 __jQueryEvent.prototype = new Event;
 
-/** 
- * @returns {jQuery} 
+/**
+ * @returns {jQuery}
  */
 function $(selector) {
 	return new jQuery;
 }
 
 $.prototype = new jQuery;
-

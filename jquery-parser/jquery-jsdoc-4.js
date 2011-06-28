@@ -1,7 +1,13 @@
 /**
  * Set one or more properties for the set of matched elements.
  * 
- * <p>The <code>.prop()</code> method is a convenient way to set the value of properties—especially when setting multiple properties or using values returned by a function. Properties generally affect the dynamic state of a DOM element without changing the serialized HTML attribute. Examples include the <code>value</code> property of input elements, the <code>disabled</code> property of inputs and buttons, or the <code>checked</code> property of a checkbox.</p>
+ * <p>The <code>.prop()</code> method is a convenient way to set the value of properties—especially when setting multiple properties or using values returned by a function. Properties generally affect the dynamic state of a DOM element without changing the serialized HTML attribute. Examples include the <code>value</code> property of input elements, the <code>disabled</code> property of inputs and buttons, or the <code>checked</code> property of a checkbox. Most often, <code>.prop()</code> should be used to set disabled and checked instead of the <code><a href="http://api.jquery.com/attr">.attr()</a></code> method. The <code><a href="http://api.jquery.com/val">.val()</a></code> method should be used for getting and setting value.</p>
+ * <pre>
+ * $("input").prop("disabled", false);
+ * $("input").prop("checked", true);
+ * $("input").val("someValue");
+ * </pre>
+ * <p>Also note that the <code><a href="http://api.jquery.com/removeProp">.removeProp()</a></code> method should not be used to set these properties to false. Once a native property is removed, it cannot be added again. See <code><a href="http://api.jquery.com/removeProp">.removeProp()</a></code> for more information.</p>
  * 
  * @example
  * <p>Disable all checkboxes on the page.</p>
@@ -90,8 +96,12 @@ jQuery.prototype.undelegate = function(selector, events) {return new jQuery();};
  * alert($('body').data('foo'));
  * alert($('body').data());
  * </pre>
- * <p>The above lines alert the data values that were set on the <code>body</code> element. If nothing was set on that element, null is returned.</p>
- * 
+ * <p>The above lines alert the data values that were set on the <code>body</code> element. If no data at all was set on that element, <code>undefined</code> is returned.</p>
+ * <pre>
+ * alert( $("body").data("foo")); //undefined
+ * $("body").data("bar", "foobar");
+ * alert( $("body").data("foobar")); //foobar
+ * </pre>
  * <p><strong>HTML 5 data- Attributes</strong></p>
  * <p>As of jQuery 1.4.3 <a href="http://ejohn.org/blog/html-5-data-attributes/">HTML 5 data- attributes</a> will be automatically pulled in to jQuery's data object. The treatment of attributes with embedded dashes was changed in jQuery 1.6 to conform to the <a href="http://www.w3.org/TR/html5/elements.html#embedding-custom-non-visible-data-with-the-data-attributes">W3C HTML5 specification</a>.</p>
  * 
@@ -296,13 +306,12 @@ jQuery.prototype.closest = function(element) {return new jQuery();};
  * collection = collection.add(document.getElementById("a"));
  * collection.css("background", "yellow");</code></pre>
  * 
- * @param {Selector} selector A string representing a selector expression to find additional elements to add to the set of matched elements.
- * @param {Element} context The point in the document at which the selector should begin matching; similar to the context argument of the <code>$(selector, context)</code> method.
+ * @param {jQuery} jq An existing jQuery object to add to the set of matched elements.
  * 
- * @since 1.4
+ * @since 1.3.2
  * @returns {jQuery}
 **/
-jQuery.prototype.add = function(selector, context) {return new jQuery();};
+jQuery.prototype.add = function(jq) {return new jQuery();};
 
 /**
  * Display or hide the matched elements.
@@ -476,7 +485,7 @@ jQuery.prototype.css = function(map) {return new jQuery();};
  * &lt;/ul&gt;
  * </pre>
  * <p>You can attach a click handler to the &lt;ul&gt; element, and then limit the code to be triggered only when a list item itself, not one of its children, is clicked:</p>
- * <pre>$("ul:).click(function(event) {
+ * <pre>$("ul").click(function(event) {
  *   var $target = $(event.target);
  *   if ( $target.is("li") ) {
  *     $target.css("background-color", "red");
@@ -484,6 +493,7 @@ jQuery.prototype.css = function(map) {return new jQuery();};
  * });</pre>
  * <p>Now, when the user clicks on the word "list" in the first item or anywhere in the third item, the clicked list item will be given a red background. However, when the user clicks on item 1 in the first item or anywhere in the second item, nothing will occur, because in those cases the target of the event would be <code>&lt;strong&gt;</code> or <code>&lt;span&gt;</code>, respectively.
  * </p>
+ * <p>Be aware that for selector strings with positional selectors such as <code>:first</code>, <code>:gt()</code>, or <code>:even</code>, the positional filtering is done against the jQuery object passed to <code>.is()</code>, <em>not</em> against the containing document. So for the HTML shown above, an expression such as <code>$("li:first").is("li:last")</code> returns <code>true</code>, but <code>$("li:first-child").is("li:last-child")</code> returns <code>false</code>.</p>
  * 
  * <h4>Using a Function</h4>
  * <p>The second form of this method evaluates expressions related to elements based on a function rather than a selector. For each element, if the function returns <code>true</code>, <code>.is()</code> returns <code>true</code> as well. For example, given a somewhat more involved HTML snippet:</p>
@@ -623,7 +633,7 @@ jQuery.prototype.is = function(element) {return new Boolean();};
  * <p>This alteration to the code will cause the third and sixth list items to be highlighted, as it uses the modulus operator (<code>%</code>) to select every item with an <code>index</code> value that, when divided by 3, has a remainder of <code>2</code>.</p>
  * 
  * @example
- * <p>Change the color of all divs then put a border around only some of them.</p>
+ * <p>Change the color of all divs; then add a border to those with a "middle" class.</p>
  * <pre><code>
  * 
  *     $("div").css("background", "#c8ebcc")
@@ -631,13 +641,7 @@ jQuery.prototype.is = function(element) {return new Boolean();};
  *             .css("border-color", "red");
  * </code></pre>
  * @example
- * <p>Selects all paragraphs and removes those without a class "selected".</p>
- * <pre><code>$("p").filter(".selected")</code></pre>
- * @example
- * <p>Selects all paragraphs and removes those that aren't of class "selected" or the first one.</p>
- * <pre><code>$("p").filter(".selected, :first")</code></pre>
- * @example
- * <p>Change the color of all divs then put a border to specific ones.</p>
+ * <p>Change the color of all divs; then add a border to the second one (index == 1) and the div with an id of "fourth."</p>
  * <pre><code>
  *     $("div").css("background", "#b4b0da")
  *             .filter(function (index) {
@@ -647,10 +651,12 @@ jQuery.prototype.is = function(element) {return new Boolean();};
  * 
  * </code></pre>
  * @example
- * <p>Remove all elements that have a descendant ol element</p>
- * <pre><code>$("div").filter(function(index) {
- *    return $("ol", this).length == 0;
- *  });</code></pre>
+ * <p>Select all divs and filter the selection with a DOM element, keeping only the one with an id of "unique".</p>
+ * <pre><code>$("div").filter( document.getElementById("unique") )</code></pre>
+ * @example
+ * <p>Select all divs and filter the selection with a jQuery object, keeping only the one with an id of "unique".</p>
+ * <pre><code>
+ * $("div").filter( $("#unique") )</code></pre>
  * 
  * @param {jQuery} jq An existing jQuery object to match the current set of elements against.
  * 

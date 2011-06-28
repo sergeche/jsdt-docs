@@ -6,9 +6,9 @@
 
 /** API location */
 var API_LOCATION = 'http://api.jquery.com/api/';
-//var API_LOCATION = 'http://localhost:8015/jsdt-docs/jquery-parser/api.xml';
+//var API_LOCATION = 'http://localhost:8015/jquery-parser/api.xml';
 
-/** 
+/**
  * Target jQuery version. Use keyword 'latest' to generate JSDoc for latest
  * jQuery version or specify precise version number, like '1.2'. All API
  * methods greater than specified version will be omitted
@@ -37,10 +37,17 @@ var prefix_map = {
 
 var class_map = {
 	'Promise': '__jQueryPromise',
+	'Deferred': '__jQueryDeferred',
 	'Integer': 'Number',
 	'XMLDocument': 'Document',
 	'boolean': 'Boolean'
 };
+
+var promiseMethods = "done fail isResolved isRejected promise then always pipe".split( " " );
+var promiseHash = {};
+for (var i = 0, il = promiseMethods.length; i < il; i++) {
+	promiseHash[promiseMethods[i]] = 1;
+}
 
 /** @type NodeHttpModule */
 var request = require('request');
@@ -55,12 +62,12 @@ var libxmljs = require("libxmljs");
  */
 function processType(type) {
 	if (ECLIPSE_JSDT) {
-		// Eclipse JSDT supports only one return type, so I have to remove 
+		// Eclipse JSDT supports only one return type, so I have to remove
 		// other types from definition using split() method
 		return type.split(',')[0];
-	} else {
-		return type.replace(/,\s+/g, '|');
 	}
+
+	return type.replace(/,\s+/g, '|');
 }
 
 /**
@@ -69,9 +76,9 @@ function processType(type) {
  * @returns String
  */
 function nodeContent(node, do_escape) {
-	if (!node) 
+	if (!node)
 		return '';
-	
+
 	var re_name = new RegExp('<\\/?' + node.name() + '>|<\\!\\[CDATA\\[|\\]\\]>', 'ig');
 	var result = node.toString().replace(re_name, '');
 	return do_escape ? escapeForJS(result) : result;
@@ -102,14 +109,14 @@ function getType(type) {
 function JSDocEntry(elem, signature) {
 	this._elem = elem;
 	this._signature = signature;
-	
+
 	this.args = [];
 	// parse arguments
 	if (signature)
-		this.args = signature.find('argument').map(function(n, i) {
+		this.args = signature.find('argument').map(function(n, j) {
 			var name = n.attr('name').value().replace(/\(.*?\)/g, '');
 			var type = getType(processType(n.attr('type').value()));
-			
+
 			if (name == 'function')
 				name = 'fn';
 			else if (name == 'false' || name == 'true' || name == 'switch')
@@ -120,7 +127,7 @@ function JSDocEntry(elem, signature) {
 			} else if (name.charAt(0) == '-') {
 				name = 'neg_' + name.substring(1);
 			}
-			
+
 			return {
 				name: name,
 				type: type,
@@ -139,7 +146,7 @@ JSDocEntry.prototype = {
 		var attr = this._elem.attr(name);
 		return attr !== null ? attr.value() : '';
 	},
-	
+
 	/**
 	 * Returns method name
 	 * @returns {String}
@@ -147,7 +154,7 @@ JSDocEntry.prototype = {
 	getName: function() {
 		return this.getAttribute('name');
 	},
-	
+
 	/**
 	 * Returns element type
 	 * @returns {String}
@@ -155,7 +162,7 @@ JSDocEntry.prototype = {
 	getType: function() {
 		return this.getAttribute('type');
 	},
-	
+
 	/**
 	 * Returns method definition
 	 * @returns {String}
@@ -166,6 +173,10 @@ JSDocEntry.prototype = {
 		var prefix = DEFINITION_PREFIX;
 		if (name.indexOf('.') != -1) {
 			var n = name.split('.');
+
+			if (n[0] == 'deferred' && n[1] in promiseHash)
+				n[0] = 'Promise';
+
 			if (n[0] in prefix_map)
 				prefix = prefix_map[n[0]];
 			else
@@ -174,7 +185,7 @@ JSDocEntry.prototype = {
 		}
 		return prefix ? prefix + '.' + name : name;
 	},
-	
+
 	/**
 	 * Returns formatted method's return type
 	 * @returns {String}
@@ -182,9 +193,9 @@ JSDocEntry.prototype = {
 	getReturnType: function() {
 		return getType(processType(this.getAttribute('return')));
 	},
-	
+
 	/**
-	 * Returns library version since this method is available 
+	 * Returns library version since this method is available
 	 * @returns {String}
 	 */
 	getVersion: function() {
@@ -193,10 +204,10 @@ JSDocEntry.prototype = {
 			var v = this._signature.get('added');
 			return v ? v.text() : def_version;
 		}
-		
+
 		return def_version;
 	},
-	
+
 	/**
 	 * Returns short description of method
 	 * @returns {String}
@@ -204,7 +215,7 @@ JSDocEntry.prototype = {
 	getShortDescription: function() {
 		return  nodeContent(this._elem.get('desc'), true);
 	},
-	
+
 	/**
 	 * Returns long description of method
 	 * @returns {String}
@@ -212,7 +223,7 @@ JSDocEntry.prototype = {
 	getLongDescription: function() {
 		return nodeContent(this._elem.get('longdesc'), true);
 	},
-	
+
 	/**
 	 * Returns JSDoc definition of arguments
 	 * @returns {Array}
@@ -222,7 +233,7 @@ JSDocEntry.prototype = {
 			return '@param {' + arg.type + '} ' + arg.name + ' ' + arg.desc + '\n';
 		});
 	},
-	
+
 	/**
 	 * Returns list of method examples for JSDoc
 	 * @returns {Array}
@@ -233,42 +244,42 @@ JSDocEntry.prototype = {
 				+ '<pre><code>' + nodeContent(example.get('code'), true) + '</code></pre>\n';
 		});
 	},
-	
+
 	/**
-	 * Dump formatted JSDoc 
+	 * Dump formatted JSDoc
 	 * @returns {String}
 	 */
 	dumpJSDoc: function() {
 		var type = this.getType();
 		var lines = [this.getShortDescription()];
-		
+
 		if (type == 'method')
 			lines.push('\n\n', this.getLongDescription());
-		
+
 		var examples = this.getJSDocExamples();
 		if (examples.length) {
 			lines.push('\n');
 			lines = lines.concat(examples);
 		}
-		
+
 		if (this.args.length) {
 			lines.push('\n');
 			lines = lines.concat(this.getJSDocArguments());
 		}
-		
+
 		lines.push('\n@since ' + this.getVersion());
-		
+
 		if (type == 'method' && this.getReturnType() != 'undefined')
 			lines.push('\n@returns {' + this.getReturnType() + '}');
 		else
 			lines.push('\n@type ' + this.getReturnType());
-			
-		
+
+
 		// normalize and format lines of code
 		lines = lines.join('').split(/\r?\n/g);
 		return '/' + '**\n' + lines.map(function(line) {return ' * ' + line;}).join('\n') + '\n**' + '/';
 	},
-	
+
 	/**
 	 * Dump method definition
 	 * @returns {String}
@@ -276,13 +287,13 @@ JSDocEntry.prototype = {
 	dumpDefinition: function() {
 		var type = this.getType(), kw = '';
 		var result = this.getDefinition() + ' = ';
-		
+
 		if (type == 'method') {
 			result += 'function(' + this.args.map(function(arg) {return arg.name;}).join(', ') + ') {';
 			kw = 'return ';
 		}
-		
-		
+
+
 		if (ECLIPSE_JSDT && this.getReturnType() != 'undefined') {
 			switch (this.getReturnType()) {
 				case 'undefined':
@@ -300,14 +311,14 @@ JSDocEntry.prototype = {
 					result += kw + 'new ' + this.getReturnType() + '();';
 			}
 		}
-		
+
 		return result + (type == 'method' ? '};' : '');
 	},
-	
+
 	dump: function() {
 		return this.dumpJSDoc() + '\n' + this.dumpDefinition();
 	},
-	
+
 	toString: function() {
 		return this.dump();
 	}
@@ -317,11 +328,11 @@ function createFile(ix, data) {
 	var fname = OUTPUT;
 	if (ix != null)
 		fname = OUTPUT.replace(/(\.\w+$)/, '-' + (ix + 1) + '$1');
-	
+
 	fs.open(fname, 'w', function(err, fd) {
 		if (!err) {
 			if (!ix) {
-				fs.readFile('__header.js', 'utf8', function(err, header) {
+				fs.readFile('__header.js', 'utf8', function(err1, header) {
 					writeFile(fd, header + data.join('\n\n'));
 				});
 			} else {
@@ -345,15 +356,15 @@ request({uri: API_LOCATION}, function(error, response, body) {
 	if (!error && response.statusCode == 200) {
 		var xmlDoc = libxmljs.parseXmlString(body);
 		var method_map = {};
-		
+
 		var result = [];
 		var multifile = [];
-		
+
 		xmlDoc.find('//entries/entry[@type = "method" or @type = "property"]').forEach(function(item) {
 			var signatures = item.find('signature');
 			if (!signatures.length)
 				signatures.push(null);
-			
+
 			signatures.forEach(function(signature) {
 				var jsdoc = new JSDocEntry(item, signature);
 				var name = jsdoc.getName();
@@ -361,25 +372,25 @@ request({uri: API_LOCATION}, function(error, response, body) {
 					if (!(name in method_map)) {
 						method_map[name] = -1;
 					}
-					
+
 					method_map[name]++;
 					if (!multifile[method_map[name]]) {
 						multifile[method_map[name]] = [];
 					}
-					
+
 					var dump = jsdoc.dump();
 					multifile[method_map[name]].push(dump);
 					result.push(dump);
 				}
 			});
 		});
-		
+
 		if (MULTIPLE_FILES) {
-			for (var i = 0, il = multifile.length; i < il; i++) {
-				createFile(i, multifile[i]);
+			for (var j = 0, jl = multifile.length; j < jl; j++) {
+				createFile(j, multifile[j]);
 			}
 		}
-		
+
 		createFile(null, result);
 	}
 });

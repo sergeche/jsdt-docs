@@ -1,7 +1,13 @@
 /**
  * Set one or more properties for the set of matched elements.
  * 
- * <p>The <code>.prop()</code> method is a convenient way to set the value of properties—especially when setting multiple properties or using values returned by a function. Properties generally affect the dynamic state of a DOM element without changing the serialized HTML attribute. Examples include the <code>value</code> property of input elements, the <code>disabled</code> property of inputs and buttons, or the <code>checked</code> property of a checkbox.</p>
+ * <p>The <code>.prop()</code> method is a convenient way to set the value of properties—especially when setting multiple properties or using values returned by a function. Properties generally affect the dynamic state of a DOM element without changing the serialized HTML attribute. Examples include the <code>value</code> property of input elements, the <code>disabled</code> property of inputs and buttons, or the <code>checked</code> property of a checkbox. Most often, <code>.prop()</code> should be used to set disabled and checked instead of the <code><a href="http://api.jquery.com/attr">.attr()</a></code> method. The <code><a href="http://api.jquery.com/val">.val()</a></code> method should be used for getting and setting value.</p>
+ * <pre>
+ * $("input").prop("disabled", false);
+ * $("input").prop("checked", true);
+ * $("input").val("someValue");
+ * </pre>
+ * <p>Also note that the <code><a href="http://api.jquery.com/removeProp">.removeProp()</a></code> method should not be used to set these properties to false. Once a native property is removed, it cannot be added again. See <code><a href="http://api.jquery.com/removeProp">.removeProp()</a></code> for more information.</p>
  * 
  * @example
  * <p>Disable all checkboxes on the page.</p>
@@ -153,17 +159,46 @@ jQuery.prototype.delegate = function(selector, eventType, eventData, handler) {r
  * 
  * <p>This method is most useful for attaching event handlers to an element where the context is pointing back to a different object. Additionally, jQuery makes sure that even if you bind the function returned from <code>jQuery.proxy()</code> it will still unbind the correct function if passed the original.</p>
  * @example
- * <p>Enforce the context of the function using the "function, context" signature. Unbind the handler after first click.</p>
+ * <p>Change the context of functions bound to a click handler using the "function, context" signature. Unbind the first handler after first click.</p>
  * <pre><code>
- *   var obj = {
- *     name: "John",
- *     test: function() {
- *       $("#log").append( this.name );
- *       $("#test").unbind("click", obj.test);
- *     }
- *   };
+ * var me = {
+ *   type: "zombie",
+ *   test: function(event) {
+ *     // Without proxy, `this` would refer to the event target
+ *     // use event.target to reference that element.
+ *     var element = event.target;
+ *     $(element).css("background-color", "red");
  * 
- *   $("#test").click( jQuery.proxy( obj.test, obj ) );
+ *     // With proxy, `this` refers to the me object encapsulating
+ *     // this function.
+ *     $("#log").append( "Hello " + this.type + "<br>" );
+ *     $("#test").unbind("click", this.test);
+ *   }
+ * };
+ * 
+ * var you = {
+ *   type: "person",
+ *   test: function(event) {
+ *     $("#log").append( this.type + " " );
+ *   }
+ * };
+ * 
+ * // execute you.test() in the context of the `you` object
+ * // no matter where it is called
+ * // i.e. the `this` keyword will refer to `you`
+ * var youClick = $.proxy( you.test, you );
+ * 
+ * 
+ * // attach click handlers to #test
+ * $("#test")
+ *   // this === "zombie"; handler unbound after first click
+ *   .click( $.proxy( me.test, me ) )
+ *   // this === "person"
+ *   .click( youClick )
+ *   // this === "zombie"
+ *   .click( $.proxy( you.test, me ) )
+ *   // this === "<button> element"
+ *   .click( you.test );
  * </code></pre>
  * @example
  * <p>Enforce the context of the function using the "context, function name" signature. Unbind the handler after first click.</p>
@@ -276,6 +311,89 @@ jQuery.prototype.focusin = function(eventData, handler) {return new jQuery();};
  * @returns {jQuery}
 **/
 jQuery.prototype.has = function(contained) {return new jQuery();};
+
+/**
+ * Get the ancestors of each element in the current set of matched elements, up to but not including the element matched by the selector, DOM node, or jQuery object.
+ * 
+ * <p>Given a selector expression that represents a set of DOM elements, the <code>.parentsUntil()</code> method traverses through the ancestors of these elements until it reaches an element matched by the selector passed in the method's argument. The resulting jQuery object contains all of the ancestors up to but not including the one matched by the <code>.parentsUntil()</code> selector.</p>
+ *     <p>If the selector is not matched or is not supplied, all ancestors will be selected; in these cases it selects the same elements as the <code>.parents()</code> method does when no selector is provided.</p>
+ *     <p><strong>As of jQuery 1.6</strong>, A DOM node or jQuery object, instead of a selector, may be used for the first <strong>.parentsUntil()</strong> argument.</p>
+ *     <p>The method optionally accepts a selector expression for its second argument. If this argument is supplied, the elements will be filtered by testing whether they match it.</p>
+ * 
+ * @example
+ * <p>Find the ancestors of &lt;li class="item-a"&gt; up to &lt;ul class="level-1"&gt; and give them a red background color. Also, find ancestors of &lt;li class="item-2"&gt; that have a class of "yes" up to &lt;ul class="level-1"&gt; and give them a green border.</p>
+ * <pre><code>
+ * $("li.item-a").parentsUntil(".level-1")
+ *   .css("background-color", "red");
+ * 
+ * $("li.item-2").parentsUntil( $("ul.level-1"), ".yes" )
+ *   .css("border", "3px solid green");
+ *     
+ * </code></pre>
+ * 
+ * @param {Element} element A DOM node or jQuery object indicating where to stop matching ancestor elements.
+ * @param {Selector} filter A string containing a selector expression to match elements against.
+ * 
+ * @since 1.6
+ * @returns {jQuery}
+**/
+jQuery.prototype.parentsUntil = function(element, filter) {return new jQuery();};
+
+/**
+ * Get all preceding siblings of each element up to but not including the element matched by the selector, DOM node, or jQuery object.
+ * 
+ * <p>Given a selector expression that represents a set of DOM elements, the <code>.prevUntil()</code> method searches through the predecessors of these elements in the DOM tree, stopping when it reaches an element matched by the method's argument. The new jQuery object that is returned contains all previous siblings up to but not including the one matched by the <code>.prevUntil()</code> selector; the elements are returned in order from the closest sibling to the farthest.</p>
+ *   <p>If the selector is not matched or is not supplied, all previous siblings will be selected; in these cases it selects the same elements as the <code>.prevAll()</code> method does when no filter selector is provided.</p>
+ *   <p><strong>As of jQuery 1.6</strong>, A DOM node or jQuery object, instead of a selector, may be used for the first <strong>.prevUntil()</strong> argument.</p>
+ *   <p>The method optionally accepts a selector expression for its second argument. If this argument is supplied, the elements will be filtered by testing whether they match it.</p>
+ *   
+ * @example
+ * <p>Find the siblings that precede &lt;dt id="term-2"&gt; up to the preceding &lt;dt&gt; and give them a red background color. Also, find previous &lt;dd&gt; siblings of &lt;dt id="term-3"&gt; up to &lt;dt id="term-1"&gt; and give them a green text color.</p>
+ * <pre><code>  
+ * $("#term-2").prevUntil("dt")
+ *   .css("background-color", "red");
+ *   
+ * var term1 = document.getElementById('term-1');
+ * $("#term-3").prevUntil(term1, "dd")
+ *   .css("color", "green");
+ * </code></pre>
+ * 
+ * @param {Element} element A DOM node or jQuery object indicating where to stop matching preceding sibling elements.
+ * @param {Selector} filter A string containing a selector expression to match elements against.
+ * 
+ * @since 1.6
+ * @returns {jQuery}
+**/
+jQuery.prototype.prevUntil = function(element, filter) {return new jQuery();};
+
+/**
+ * Get all following siblings of each element up to but not including the element matched by the selector, DOM node, or jQuery object passed.
+ * 
+ * <p>Given a selector expression that represents a set of DOM elements, the <code>.nextUntil()</code> method searches through the successors of these elements in the DOM tree, stopping when it reaches an element matched by the method's argument. The new jQuery object that is returned contains all following siblings up to but not including the one matched by the <code>.nextUntil()</code> argument.</p>
+ *   <p>If the selector is not matched or is not supplied, all following siblings will be selected; in these cases it selects the same elements as the <code>.nextAll()</code> method does when no filter selector is provided.</p>
+ *   <p><strong>As of jQuery 1.6</strong>, A DOM node or jQuery object, instead of a selector, may be passed to the <code>.nextUntil()</code> method.</p>
+ *   <p>The method optionally accepts a selector expression for its second argument. If this argument is supplied, the elements will be filtered by testing whether they match it.</p>
+ * 
+ * 
+ * @example
+ * <p>Find the siblings that follow &lt;dt id="term-2"&gt; up to the next &lt;dt&gt; and give them a red background color. Also, find &lt;dd&gt; siblings that follow &lt;dt id="term-1"&gt; up to &lt;dt id="term-3"&gt; and give them a green text color. </p>
+ * <pre><code>  
+ * $("#term-2").nextUntil("dt")
+ *   .css("background-color", "red");
+ * 
+ * var term3 = document.getElementById("term-3");
+ * $("#term-1").nextUntil(term3, "dd")
+ *   .css("color", "green");
+ * 
+ * </code></pre>
+ * 
+ * @param {Element} element A DOM node or jQuery object indicating where to stop matching following sibling elements.
+ * @param {Selector} filter A string containing a selector expression to match elements against.
+ * 
+ * @since 1.6
+ * @returns {jQuery}
+**/
+jQuery.prototype.nextUntil = function(element, filter) {return new jQuery();};
 
 /**
  * Add a collection of DOM elements onto the jQuery stack.
@@ -1732,6 +1850,17 @@ jQuery.prototype.unload = function(eventData, handler) {return new jQuery();};
  * <li>It doesn't correctly bubble up the DOM tree</li>
  * <li>Can cease to fire for images that already live in the browser's cache</li>
  * </ul></p></blockquote>
+ * <blockquote><p><strong>Note:</strong> The <code>.live()</code> and <code>.delegate()</code> methods cannot be used to detect the <code>load</code> event of an iframe. The load event does not correctly bubble up the parent document and the event.target isn't set by Firefox, IE9 or Chrome, which is required to do event delegation.</p></blockquote>
+ * <blockquote><p><strong>Note:</strong> When calling <code>.load()</code> using a URL without a suffixed selector expression, the content is passed to <code>.html()</code> prior to scripts being removed. This executes the script blocks before they are discarded. If <code>.load()</code> is however called with a selector expression appended to the URL, the scripts are stripped out prior to the DOM being updated, which is why they are never executed. An example of both cases can be seen below:
+ * </p></blockquote>
+ * <p>Here, any JavaScript loaded into <code>#a</code> as a part of the document will successfully execute.</p>
+ * <pre>
+ * $('#a').load('article.html');
+ * </pre>
+ * <p>However in this case, script blocks in the document being loaded into <code>#b</code> are stripped out prior to being executed:</p>
+ * <pre>
+ * $('#b').load('article.html #target');
+ * </pre>
  * 
  * @example
  * <p>Run a function when the page is fully loaded including graphics.</p>
@@ -1760,7 +1889,7 @@ jQuery.prototype.load = function(eventData, handler) {return new jQuery();};
  * 
  * <p>Any handler that has been attached with <code>.live()</code> can be removed with <code>.die()</code>. This method is analogous to <code>.unbind()</code>, which is used to remove handlers attached with <code>.bind()</code>.
  * See the discussions of <code>.live()</code> and <code>.unbind()</code> for further details.</p>
- * <p><strong>Note:</strong> Up to jQuery 1.4.4, in order for <code>.die()</code> to function correctly, the selector used with it must match exactly the selector initially used with <code>.live()</code>.</p>
+ * <p><strong>Note:</strong> In order for <code>.die()</code> to function correctly, the selector used with it must match exactly the selector initially used with <code>.live()</code>.</p>
  * 
  * @example
  * <p>Can bind and unbind events to the colored button.</p>
@@ -1831,7 +1960,7 @@ jQuery.prototype.die = function(eventType, handler) {return new jQuery();};
  *   <pre>$('body').append('&lt;div class="clickme"&gt;Another target&lt;/div&gt;');</pre>
  *   <p>Then clicks on the new element will also trigger the handler.</p>
  *   <p>To <em>unbind</em> the click handlers from all <code>&lt;div class="clickme"&gt;</code> that were bound using <code>.live()</code>, use the <code><a href="http://api.jquery.com/die/">.die()</a></code> method:</p>
- * <pre>$('.clickme').die('click');</pre>
+ * <pre>$(".clickme").die("click");</pre>
  *   <h4 id="event-delegation">Event Delegation</h4>
  *   <p>The <code>.live()</code> method is able to affect elements that have not yet been added to the DOM through the use of event delegation: a handler bound to an ancestor element is responsible for events that are triggered on its descendants. The handler passed to <code>.live()</code> is never bound to an element; instead, <code>.live()</code> binds a special handler to the root of the DOM tree. In the example above, when the new element is clicked, the following steps occur:</p>
  *   <ol>
@@ -1839,7 +1968,7 @@ jQuery.prototype.die = function(eventType, handler) {return new jQuery();};
  *     <li>No handler is directly bound to the <code>&lt;div&gt;</code>, so the event bubbles up the DOM tree.</li>
  *     <li>The event bubbles up until it reaches the root of the tree, which is where <code>.live()</code> binds its special handlers by default. <br/><em>* As of jQuery 1.4, event bubbling can optionally stop at a DOM element "context".</em></li>
  *     <li>The special <code>click</code> handler bound by <code>.live()</code> executes.</li>
- *     <li>This handler tests the <code>target</code> of the event object to see whether it should continue. This test is performed by checking if <code>$(event.target).closest('.clickme')</code> is able to locate a matching element.</li>
+ *     <li>This handler tests the <code>target</code> of the event object to see whether it should continue. This test is performed by checking if <code>$(event.target).closest(".clickme")</code> is able to locate a matching element.</li>
  *     <li>If a matching element is found, the original handler is called on it.</li>
  *   </ol>
  *   <p>Because the test in step 5 is not performed until the event occurs, elements can be added at any time and still respond to events.</p>
@@ -1847,8 +1976,8 @@ jQuery.prototype.die = function(eventType, handler) {return new jQuery();};
  * 
  *   <h4 id="multiple-events">Multiple Events</h4>
  *   <p>As of jQuery 1.4.1 <code>.live()</code> can accept multiple, space-separated events, similar to the functionality provided in <a href="/bind">.bind()</a>. For example, you can "live bind" the <code>mouseover</code> and <code>mouseout</code> events at the same time like so: </p>
- * <pre>$('.hoverme').live('mouseover mouseout', function(event) {
- *   if (event.type == 'mouseover') {
+ * <pre>$(".hoverme").live("mouseover mouseout", function(event) {
+ *   if ( event.type == "mouseover" ) {
  *     // do something on mouseover
  *   } else {
  *     // do something on mouseout
@@ -1856,7 +1985,7 @@ jQuery.prototype.die = function(eventType, handler) {return new jQuery();};
  * });</pre>
  *   <p>As of jQuery 1.4.3, you can bind multiple live event handlers simultaneously by passing a map of event type/handler pairs:</p>
  * 
- * <pre>$('a').live({
+ * <pre>$("a").live({
  *   click: function() {
  *     // do something on click
  *   },
@@ -1865,10 +1994,10 @@ jQuery.prototype.die = function(eventType, handler) {return new jQuery();};
  *   }
  * });</pre>
  *   <h4 id="event-data">Event Data</h4>
- *   <p>As of jQuery 1.4, the optional <code>eventData</code> parameter allows us to pass additional information to the handler. One handy use of this parameter is to work around issues caused by closures. See the <code>.bind()</code> method's "<a href="/bind/#passing-event-data">Passing Event Data</a>" discussion for more information.</p>
+ *   <p>As of jQuery 1.4, the optional <code>eventData</code> parameter is available for passing additional information to the handler. One handy use of this parameter is to work around issues caused by closures. See the <code>.bind()</code> method's "<a href="/bind/#passing-event-data">Passing Event Data</a>" discussion for more information.</p>
  *   <h4 id="event-context">Event Context</h4>
  *   <p>As of jQuery 1.4, live events can be bound to a DOM element "context" rather than to the default document root. To set this context, use the <a href="http://api.jquery.com/jquery/#selector-context"><code>jQuery()</code> function's second argument</a>, passing in a single DOM element (as opposed to a jQuery collection or a selector).</p>
- * <pre>$('div.clickme', $('#container')[0]).live('click', function() {
+ * <pre>$("div.clickme", $("#container")[0]).live("click", function() {
  *   // Live handler called.
  * });</pre>
  *   <p>The live handler in this example is called only when <code>&lt;div class="clickme"&gt;</code> is a descendant of an element with an ID of "container."</p>
@@ -1877,11 +2006,12 @@ jQuery.prototype.die = function(eventType, handler) {return new jQuery();};
  *   <ul>
  *     <li>DOM traversal methods are not supported for finding elements to send to <code>.live()</code>. Rather, the <code>.live()</code> method should always be called directly after a selector, as in the example above.</li>
  *     <li>To stop further handlers from executing after one bound using <code>.live()</code>, the handler must return <code>false</code>. Calling <code>.stopPropagation()</code> will not accomplish this.</li>
+ *     <li>The <code>paste</code> and <code>reset</code> events, in addition to <code>change</code> when used with inputs of type "file," are not fully supported by the <code>.live()</code> method, due to issues with simulating event bubbling in Internet Explorer. In these cases, the <code>.bind()</code> method can be used instead.</li>
  *     <li>In <b>jQuery 1.3.x</b> only the following JavaScript events (in addition to custom events) could be bound with <code>.live()</code>: <code>click</code>, <code>dblclick</code>, <code>keydown</code>, <code>keypress</code>, <code>keyup</code>, <code>mousedown</code>, <code>mousemove</code>, <code>mouseout</code>, <code>mouseover</code>, and <code>mouseup</code>.</li>
  *   </ul>
  *   <blockquote>
  *     <ul>
- *       <li>As of <b>jQuery 1.4</b> the <code>.live()</code> method supports custom events as well as all <em>JavaScript events that bubble</em>.</li> 
+ *       <li>As of <b>jQuery 1.4</b> the <code>.live()</code> method supports custom events as well as all <em>JavaScript events that bubble</em>.</li>
  *       <li>As of <b>jQuery 1.4.1</b> even <code>focus</code> and <code>blur</code> work with live (mapping to the more appropriate, bubbling, events <code>focusin</code> and <code>focusout</code>).</li>
  *       <li>As of <b>jQuery 1.4.1</b> the <code>hover</code> event can be specified (mapping to <code>mouseenter</code> and  <code>mouseleave</code>, which, in turn, are mapped to <code>mouseover</code> and <code>mouseout</code>).</li>
  *     </ul>
@@ -1890,50 +2020,45 @@ jQuery.prototype.die = function(eventType, handler) {return new jQuery();};
  * @example
  * <p>Click a paragraph to add another. Note that .live() binds the click event to all paragraphs - even new ones.</p>
  * <pre><code>
- *     $("p").live("click", function(){
- *       $(this).after("<p>Another paragraph!</p>");
- *     });
+ * $("p").live("click", function(){
+ *   $(this).after("<p>Another paragraph!</p>");
+ * });
  * </code></pre>
  * @example
- * <p>Display each paragraph's text in an alert box whenever it is clicked:</p>
- * <pre><code>$("p").live("click", function(){
- *   alert( $(this).text() );
- * });</code></pre>
- * @example
- * <p>Cancel a default action and prevent it from bubbling up, return false:</p>
+ * <p>Cancel a default action and prevent it from bubbling up by returning false.</p>
  * <pre><code>$("a").live("click", function() { return false; })</code></pre>
  * @example
- * <p>To cancel only the default action by using the preventDefault method.</p>
+ * <p>Cancel only the default action by using the preventDefault method.</p>
  * <pre><code>$("a").live("click", function(event){
  *   event.preventDefault();
  * });</code></pre>
  * @example
- * <p>Bind custom events:</p>
+ * <p>Bind custom events with .live().</p>
  * <pre><code>
- *   $("p").live("myCustomEvent", function(e, myName, myValue) {
- *     $(this).text("Hi there!");
- *     $("span").stop().css("opacity", 1)
- *              .text("myName = " + myName)
- *              .fadeIn(30).fadeOut(1000);
- *   });
- *   $("button").click(function () {
- *     $("p").trigger("myCustomEvent");
- *   });
+ * $("p").live("myCustomEvent", function(e, myName, myValue) {
+ *   $(this).text("Hi there!");
+ *   $("span").stop().css("opacity", 1)
+ *            .text("myName = " + myName)
+ *            .fadeIn(30).fadeOut(1000);
+ * });
+ * $("button").click(function () {
+ *   $("p").trigger("myCustomEvent");
+ * });
  * </code></pre>
  * @example
- * <p>Click a paragraph to add another. Note that .live() binds the click, mouseover, and mouseout events to all paragraphs - even new ones.</p>
+ * <p>Use a map to bind multiple live event handlers. Note that .live() binds the click, mouseover, and mouseout events to all paragraphs — even new ones.</p>
  * <pre><code>
- *   $("p").live("click", function(){
- *       $(this).after("<p>Another paragraph!</p>");
- *     });
- *     $("p").live({
- *       "mouseover": function() {
- *         $(this).addClass("over");
- *       },
- *       "mouseout": function() {
- *         $(this).removeClass("over");
- *       }
- *     });
+ * $("p").live({
+ *   click: function() {
+ *     $(this).after("<p>Another paragraph!</p>");
+ *   },
+ *   mouseover: function() {
+ *     $(this).addClass("over");
+ *   },
+ *   mouseout: function() {
+ *     $(this).removeClass("over");
+ *   }
+ * });
  * </code></pre>
  * 
  * @param {String} eventType A string containing a JavaScript event type, such as "click" or "keydown." As of jQuery 1.4 the string can contain multiple, space-separated event types or custom event names, as well.
@@ -1962,7 +2087,7 @@ jQuery.prototype.live = function(eventType, eventData, handler) {return new jQue
  * });
  * $('#foo').trigger('custom', ['Custom', 'Event']);
  * </pre>
- *     <p>The event object is always passed as the first parameter to an event handler, but if additional parameters are specified during a <code>.trigger()</code> call as they are here, these parameters will be passed along to the handler as well.</p>
+ *     <p>The event object is always passed as the first parameter to an event handler, but if additional parameters are specified during a <code>.trigger()</code> call, these parameters will be passed along to the handler as well. To pass more than one parameter, use an array as shown here. As of jQuery 1.6.2, a single parameter can be passed without using an array.</p>
  *     <p>Note the difference between the extra parameters we're passing here and the <code>eventData</code> parameter to the <a href="/bind/">.bind()</a> method. Both are mechanisms for passing information to an event handler, but the <code>extraParameters</code> argument to <code>.trigger()</code> allows information to be determined at the time the event is triggered, while the <code>eventData</code> argument to <code>.bind()</code> requires the information to be already computed at the time the handler is bound.</p>    
  *   
  * @example
@@ -2046,6 +2171,7 @@ jQuery.prototype.trigger = function(event) {return new jQuery();};
  *   alert('The quick brown fox jumps over the lazy dog.');
  * });</pre>
  * <p>Even though the two functions are identical in content, they are created separately and so JavaScript is free to keep them as distinct function objects. To unbind a particular handler, we need a reference to that function and not a different one that happens to do the same thing.</p>
+ * <blockquote><p><strong>Note: </strong>Because the <code><a href="http://api.jquery.com/live/">.live()</a></code> method binds event handlers to <code>document</code> by default, calling .unbind() on <code>document</code> will unbind the handlers bound by <code>.live()</code>, as well. For example, <code>$(document).unbind('click');</code> will remove not only <code>$(document).bind('click', fn1)</code> <br/>but also <br/> <code>$('a.foo').live('click', fn2)</code>.</p></blockquote>
  * <h4>Using Namespaces</h4>
  * <p>Instead of maintaining references to handlers in order to unbind them, we can namespace the events and use this capability to narrow the scope of our unbinding actions. As shown in the discussion for the <code>.bind()</code> method, namespaces are defined by using a period (<code>.</code>) character when binding a handler:</p>
  * <pre>$('#foo').bind('click.myEvents', handler);</pre>
@@ -2213,6 +2339,7 @@ jQuery.prototype.unbind = function(eventType, _false) {return new jQuery();};
  * <blockquote><p>See the <code>.trigger()</code> method reference for a way to pass data to a handler at the time the event happens rather than when the handler is bound.</p></blockquote>
  * 
  * <p>As of jQuery 1.4 we can no longer attach data (and thus, events) to object, embed, or applet elements because critical errors occur when attaching data to Java applets.</p>
+ * <p><strong>Note: </strong>Although demonstrated in the next example, it is inadvisable to bind handlers to both the <code>click</code> and <code>dblclick</code> events for the same element. The sequence of events triggered varies from browser to browser, with some receiving two click events before the <code>dblclick</code> and others only one. Double-click sensitivity (maximum time between clicks that is detected as a double click) can vary by operating system and browser, and is often user-configurable.</p>
  * 
  * @example
  * <p>Handle click and double-click for the paragraph.  Note: the coordinates are window relative, so in this case relative to the demo iframe.</p>
@@ -2303,7 +2430,7 @@ jQuery.prototype.bind = function(eventType, eventData, _false) {return new jQuer
  * <p>Shorthand CSS properties (e.g. margin, background, border) are not supported. For example, if you want to retrieve the rendered margin, use: <code>$(elem).css('marginTop')</code> and <code>$(elem).css('marginRight')</code>, and so on.</p>
  * <p>In addition to numeric values, each property can take the strings <code>'show'</code>, <code>'hide'</code>, and <code>'toggle'</code>. These shortcuts allow for custom hiding and showing animations that take into account the display type of the element.</p>
  * <p>Animated properties can also be relative. If a value is supplied with a leading <code>+=</code> or <code>-=</code> sequence of characters, then the target value is computed by adding or subtracting the given number from the current value of the property.</p>
- * <p>Unlike shorthand animation methods such as <code>.slideDown()</code> and <code>.fadeIn()</code>, the <code>.animate()</code> method does <em>not</em> make hidden elements visible as part of the effect. For example, given <code>$('someElement').hide().animate({height:'20px'}, 500})</code>, the animation will run, but <em>the element will remain hidden</em>.</p>
+ * <p>Unlike shorthand animation methods such as <code>.slideDown()</code> and <code>.fadeIn()</code>, the <code>.animate()</code> method does <em>not</em> make hidden elements visible as part of the effect. For example, given <code>$('someElement').hide().animate({height:'20px'}, 500)</code>, the animation will run, but <em>the element will remain hidden</em>.</p>
  * <h4 id="duration">Duration</h4>
  * <p>Durations are given in milliseconds; higher values indicate slower animations, not faster ones. The strings <code>'fast'</code> and <code>'slow'</code> can be supplied to indicate durations of <code>200</code> and <code>600</code> milliseconds, respectively.</p>
  * 
@@ -2339,7 +2466,8 @@ jQuery.prototype.bind = function(eventType, eventData, _false) {return new jQuer
  * 
  * <p>The <code>opacity</code> of the image is already at its target value, so this property is not animated by the second click. Since the target value for <code>left</code> is a relative value, the image moves even farther to the right during this second animation.</p>
  * <p>Directional properties (<code>top</code>, <code>right</code>, <code>bottom</code>, <code>left</code>) have no discernible effect on elements if their  <code>position</code> style property is <code>static</code>, which it is by default.</p>
- * <blockquote><p>The <a href="http://jqueryui.com">jQuery UI</a> project extends the <code>.animate()</code> method by allowing some non-numeric styles such as colors to be animated. The project also includes mechanisms for specifying animations through CSS classes rather than individual attributes.</p></blockquote>
+ * <blockquote><p><strong>Note: </strong>The <a href="http://jqueryui.com">jQuery UI</a> project extends the <code>.animate()</code> method by allowing some non-numeric styles such as colors to be animated. The project also includes mechanisms for specifying animations through CSS classes rather than individual attributes.</p></blockquote>
+ * <blockquote><p><strong>Note:</strong> if attempting to animate an element with a height or width of 0px, where contents of the element are visible due to overflow, jQuery may clip this overflow during animation. By fixing the dimensions of the original element being hidden however, it is possible to ensure that the animation runs smoothly. A <a href="http://www.google.com/search?q=clearfix">clearfix</a> can be used to automatically fix the dimensions of your main element without the need to set this manually.</p></blockquote>
  * 
  * <h4 id="step">Step Function</h4>
  * <p>The second version of <code>.animate()</code> provides a <code>step</code> option — a callback function that is fired at each step of the animation. This function is useful for enabling custom animation types or altering the animation as it is occurring. It accepts two arguments (<code>now</code> and <code>fx</code>), and <code>this</code> is set to the DOM element being animated.
@@ -2603,8 +2731,6 @@ jQuery.prototype.fadeTo = function(duration, opacity, easing, callback) {return 
  * 
  *     <p>The <code>.fadeOut()</code> method animates the opacity of the matched elements. Once the opacity reaches 0, the <code>display</code> style property is set to <code>none</code>, so the element no longer affects the layout of the page.</p>
  *     <p>Durations are given in milliseconds; higher values indicate slower animations, not faster ones. The strings <code>'fast'</code> and <code>'slow'</code> can be supplied to indicate durations of <code>200</code> and <code>600</code> milliseconds, respectively. If any other string is supplied, or if the <code>duration</code> parameter is omitted, the default duration of  <code>400</code> milliseconds is used.</p>
- *     <p>As of jQuery 1.4.3, an optional string naming an easing function may be used. Easing functions specify the speed at which the animation progresses at different points within the animation. The only easing implementations in the jQuery library are the default, called <code>swing</code>, and one that progresses at a constant pace, called <code>linear</code>. More easing functions are available with the use of plug-ins, most notably the <a href="http://jqueryui.com">jQuery UI suite</a>.</p>
- *     <p>If supplied, the callback is fired once the animation is complete. This can be useful for stringing different animations together in sequence. The callback is not sent any arguments, but <code>this</code> is set to the DOM element being animated. If multiple elements are animated, it is important to note that the callback is executed once per matched element, not once for the animation as a whole.</p>
  *     <p>We can animate any element, such as a simple image:</p>
  * <pre>&lt;div id="clickme"&gt;
  *   Click here
@@ -2622,6 +2748,14 @@ jQuery.prototype.fadeTo = function(duration, opacity, easing, callback) {return 
  *       <img src="/images/0042_06_39.png" alt=""/>
  *       <img src="/images/0042_06_40.png" alt=""/>
  *     </p>
+ * <blockquote>
+ * <p><strong>Note: </strong>To avoid unnecessary DOM manipulation, <code>.fadeOut()</code> will not hide an element that is already considered hidden. For information on which elements jQuery considers hidden, see <a href="http://api.jquery.com/hidden-selector"> :hidden Selector</a>.</p>
+ * </blockquote>
+ *     <h4 id="easing">Easing</h4>
+ *     <p><strong>As of jQuery 1.4.3</strong>, an optional string naming an easing function may be used. Easing functions specify the speed at which the animation progresses at different points within the animation. The only easing implementations in the jQuery library are the default, called <code>swing</code>, and one that progresses at a constant pace, called <code>linear</code>. More easing functions are available with the use of plug-ins, most notably the <a href="http://jqueryui.com">jQuery UI suite</a>.</p>
+ *     <h4 id="callback-function">Callback Function</h4>
+ *     <p>If supplied, the callback is fired once the animation is complete. This can be useful for stringing different animations together in sequence. The callback is not sent any arguments, but <code>this</code> is set to the DOM element being animated. If multiple elements are animated, it is important to note that the callback is executed once per matched element, not once for the animation as a whole.</p>
+ * <p><strong>As of jQuery 1.6</strong>, the <code><a href="http://api.jquery.com/promise/">.promise()</a></code> method can be used in conjunction with the <code><a href="http://api.jquery.com/deferred.done/">deferred.done()</a></code> method to execute a single callback for the animation as a whole when <em>all</em> matching elements have completed their animations ( See the <a href="http://api.jquery.com/promise/#example-1">example for .promise()</a> ).  </p>
  *   
  * @example
  * <p>Animates all paragraphs to fade out, completing the animation within 600 milliseconds.</p>
@@ -2681,8 +2815,6 @@ jQuery.prototype.fadeOut = function(duration, easing, callback) {return new jQue
  * 
  *     <p>The <code>.fadeIn()</code> method animates the opacity of the matched elements.</p>
  *     <p>Durations are given in milliseconds; higher values indicate slower animations, not faster ones. The strings <code>'fast'</code> and <code>'slow'</code> can be supplied to indicate durations of <code>200</code> and <code>600</code> milliseconds, respectively. If any other string is supplied, or if the <code>duration</code> parameter is omitted, the default duration of  <code>400</code> milliseconds is used.</p>
- *     <p>As of jQuery 1.4.3, an optional string naming an easing function may be used. Easing functions specify the speed at which the animation progresses at different points within the animation. The only easing implementations in the jQuery library are the default, called <code>swing</code>, and one that progresses at a constant pace, called <code>linear</code>. More easing functions are available with the use of plug-ins, most notably the <a href="http://jqueryui.com">jQuery UI suite</a>.</p>
- *     <p>If supplied, the callback is fired once the animation is complete. This can be useful for stringing different animations together in sequence. The callback is not sent any arguments, but <code>this</code> is set to the DOM element being animated. If multiple elements are animated, it is important to note that the callback is executed once per matched element, not once for the animation as a whole.</p>
  *     <p>We can animate any element, such as a simple image:</p>
  *     <pre>&lt;div id="clickme"&gt;
  *       Click here
@@ -2700,6 +2832,12 @@ jQuery.prototype.fadeOut = function(duration, easing, callback) {return new jQue
  *       <img src="/images/0042_06_35.png" alt=""/>
  *       <img src="/images/0042_06_36.png" alt=""/>
  *     </p>
+ * 
+ *     <h4 id="easing">Easing</h4>
+ *     <p><strong>As of jQuery 1.4.3</strong>, an optional string naming an easing function may be used. Easing functions specify the speed at which the animation progresses at different points within the animation. The only easing implementations in the jQuery library are the default, called <code>swing</code>, and one that progresses at a constant pace, called <code>linear</code>. More easing functions are available with the use of plug-ins, most notably the <a href="http://jqueryui.com">jQuery UI suite</a>.</p>
+ *     <h4 id="callback-function">Callback Function</h4>
+ *     <p>If supplied, the callback is fired once the animation is complete. This can be useful for stringing different animations together in sequence. The callback is not sent any arguments, but <code>this</code> is set to the DOM element being animated. If multiple elements are animated, it is important to note that the callback is executed once per matched element, not once for the animation as a whole. </p>
+ *   <p><strong>As of jQuery 1.6</strong>, the <code><a href="http://api.jquery.com/promise/">.promise()</a></code> method can be used in conjunction with the <code><a href="http://api.jquery.com/deferred.done/">deferred.done()</a></code> method to execute a single callback for the animation as a whole when <em>all</em> matching elements have completed their animations ( See the <a href="http://api.jquery.com/promise/#example-1">example for .promise()</a> ).  </p>
  *   
  * @example
  * <p>Animates hidden divs to fade in one by one, completing each animation within 600 milliseconds.</p>
@@ -2734,9 +2872,7 @@ jQuery.prototype.fadeIn = function(duration, easing, callback) {return new jQuer
  * 
  * 
  *   <p>The <code>.slideToggle()</code> method animates the height of the matched elements. This causes lower parts of the page to slide up or down, appearing to reveal or conceal the items. If the element is initially displayed, it will be hidden; if hidden, it will be shown. The <code>display</code> property is saved and restored as needed. If an element has a <code>display</code> value of <code>inline</code>, then is hidden and shown, it will once again be displayed <code>inline</code>. When the height reaches 0 after a hiding animation, the <code>display</code> style property is set to <code>none</code> to ensure that the element no longer affects the layout of the page.</p>
- *     <p>As of jQuery 1.4.3, an optional string naming an easing function may be used. Easing functions specify the speed at which the animation progresses at different points within the animation. The only easing implementations in the jQuery library are the default, called <code>swing</code>, and one that progresses at a constant pace, called <code>linear</code>. More easing functions are available with the use of plug-ins, most notably the <a href="http://jqueryui.com">jQuery UI suite</a>.</p>
  *   <p>Durations are given in milliseconds; higher values indicate slower animations, not faster ones. The strings <code>'fast'</code> and <code>'slow'</code> can be supplied to indicate durations of <code>200</code> and <code>600</code> milliseconds, respectively.</p>
- *   <p>If supplied, the callback is fired once the animation is complete. This can be useful for stringing different animations together in sequence. The callback is not sent any arguments, but <code>this</code> is set to the DOM element being animated. If multiple elements are animated, it is important to note that the callback is executed once per matched element, not once for the animation as a whole.</p>
  *   <p>We can animate any element, such as a simple image:</p>
  * <pre>&lt;div id="clickme"&gt;
  *   Click here
@@ -2764,6 +2900,11 @@ jQuery.prototype.fadeIn = function(duration, easing, callback) {return new jQuer
  *     <img src="/images/0042_06_31.png" alt=""/>
  *     <img src="/images/0042_06_32.png" alt=""/>
  *   </p>
+ *     <h4 id="easing">Easing</h4>
+ *     <p><strong>As of jQuery 1.4.3</strong>, an optional string naming an easing function may be used. Easing functions specify the speed at which the animation progresses at different points within the animation. The only easing implementations in the jQuery library are the default, called <code>swing</code>, and one that progresses at a constant pace, called <code>linear</code>. More easing functions are available with the use of plug-ins, most notably the <a href="http://jqueryui.com">jQuery UI suite</a>.</p>
+ *     <h4 id="callback-function">Callback Function</h4>
+ *   <p>If supplied, the callback is fired once the animation is complete. This can be useful for stringing different animations together in sequence. The callback is not sent any arguments, but <code>this</code> is set to the DOM element being animated. If multiple elements are animated, it is important to note that the callback is executed once per matched element, not once for the animation as a whole.</p>
+ *   <p><strong>As of jQuery 1.6</strong>, the <code><a href="http://api.jquery.com/promise/">.promise()</a></code> method can be used in conjunction with the <code><a href="http://api.jquery.com/deferred.done/">deferred.done()</a></code> method to execute a single callback for the animation as a whole when <em>all</em> matching elements have completed their animations ( See the <a href="http://api.jquery.com/promise/#example-1">example for .promise()</a> ).  </p>
  *   
  * @example
  * <p>Animates all paragraphs to slide up or down, completing the animation within 600 milliseconds.</p>
@@ -2799,8 +2940,6 @@ jQuery.prototype.slideToggle = function(duration, easing, callback) {return new 
  * 
  * <p>The <code>.slideUp()</code> method animates the height of the matched elements. This causes lower parts of the page to slide up, appearing to conceal the items. Once the height reaches 0, the <code>display</code> style property is set to <code>none</code> to ensure that the element no longer affects the layout of the page.</p>
  *   <p>Durations are given in milliseconds; higher values indicate slower animations, not faster ones. The strings <code>'fast'</code> and <code>'slow'</code> can be supplied to indicate durations of <code>200</code> and <code>600</code> milliseconds, respectively. If any other string is supplied, or if the <code>duration</code> parameter is omitted, the default duration of  <code>400</code> milliseconds is used.</p>
- *     <p>As of jQuery 1.4.3, an optional string naming an easing function may be used. Easing functions specify the speed at which the animation progresses at different points within the animation. The only easing implementations in the jQuery library are the default, called <code>swing</code>, and one that progresses at a constant pace, called <code>linear</code>. More easing functions are available with the use of plug-ins, most notably the <a href="http://jqueryui.com">jQuery UI suite</a>.</p>
- *   <p>If supplied, the callback is fired once the animation is complete. This can be useful for stringing different animations together in sequence. The callback is not sent any arguments, but <code>this</code> is set to the DOM element being animated. If multiple elements are animated, it is important to note that the callback is executed once per matched element, not once for the animation as a whole.</p>
  *   <p>We can animate any element, such as a simple image:</p>
  * <pre>&lt;div id="clickme"&gt;
  *   Click here
@@ -2819,6 +2958,11 @@ jQuery.prototype.slideToggle = function(duration, easing, callback) {return new 
  *   <img src="/images/0042_06_23.png" alt=""/> 
  *   <img src="/images/0042_06_24.png" alt=""/>
  *   </p>
+ *     <h4 id="easing">Easing</h4>
+ *     <p><strong>As of jQuery 1.4.3</strong>, an optional string naming an easing function may be used. Easing functions specify the speed at which the animation progresses at different points within the animation. The only easing implementations in the jQuery library are the default, called <code>swing</code>, and one that progresses at a constant pace, called <code>linear</code>. More easing functions are available with the use of plug-ins, most notably the <a href="http://jqueryui.com">jQuery UI suite</a>.</p>
+ *     <h4 id="callback-function">Callback Function</h4>
+ *   <p>If supplied, the callback is fired once the animation is complete. This can be useful for stringing different animations together in sequence. The callback is not sent any arguments, but <code>this</code> is set to the DOM element being animated. If multiple elements are animated, it is important to note that the callback is executed once per matched element, not once for the animation as a whole.</p>
+ * <p><strong>As of jQuery 1.6</strong>, the <code><a href="http://api.jquery.com/promise/">.promise()</a></code> method can be used in conjunction with the <code><a href="http://api.jquery.com/deferred.done/">deferred.done()</a></code> method to execute a single callback for the animation as a whole when <em>all</em> matching elements have completed their animations ( See the <a href="http://api.jquery.com/promise/#example-1">example for .promise()</a> ).  </p>
  *   
  * @example
  * <p>Animates all divs to slide up, completing the animation within 400 milliseconds.</p>
@@ -2858,8 +3002,6 @@ jQuery.prototype.slideUp = function(duration, easing, callback) {return new jQue
  * 
  * <p>The <code>.slideDown()</code> method animates the height of the matched elements. This causes lower parts of the page to slide down, making way for the revealed items.</p>
  * <p>Durations are given in milliseconds; higher values indicate slower animations, not faster ones. The strings <code>'fast'</code> and <code>'slow'</code> can be supplied to indicate durations of <code>200</code> and <code>600</code> milliseconds, respectively. If any other string is supplied, or if the <code>duration</code> parameter is omitted, the default duration of  <code>400</code> milliseconds is used.</p>
- *     <p>As of jQuery 1.4.3, an optional string naming an easing function may be used. Easing functions specify the speed at which the animation progresses at different points within the animation. The only easing implementations in the jQuery library are the default, called <code>swing</code>, and one that progresses at a constant pace, called <code>linear</code>. More easing functions are available with the use of plug-ins, most notably the <a href="http://jqueryui.com">jQuery UI suite</a>.</p>
- * <p>If supplied, the callback is fired once the animation is complete. This can be useful for stringing different animations together in sequence. The callback is not sent any arguments, but <code>this</code> is set to the DOM element being animated. If multiple elements are animated, it is important to note that the callback is executed once per matched element, not once for the animation as a whole.</p>
  * <p>We can animate any element, such as a simple image:</p>
  * <pre>&lt;div id="clickme"&gt;
  *   Click here
@@ -2877,6 +3019,11 @@ jQuery.prototype.slideUp = function(duration, easing, callback) {return new jQue
  * <img src="/images/0042_06_19.png" alt=""/>
  * <img src="/images/0042_06_20.png" alt=""/>
  * </p>
+ *     <h4 id="easing">Easing</h4>
+ *     <p><strong>As of jQuery 1.4.3</strong>, an optional string naming an easing function may be used. Easing functions specify the speed at which the animation progresses at different points within the animation. The only easing implementations in the jQuery library are the default, called <code>swing</code>, and one that progresses at a constant pace, called <code>linear</code>. More easing functions are available with the use of plug-ins, most notably the <a href="http://jqueryui.com">jQuery UI suite</a>.</p>
+ *     <h4 id="callback-function">Callback Function</h4>
+ * <p>If supplied, the callback is fired once the animation is complete. This can be useful for stringing different animations together in sequence. The callback is not sent any arguments, but <code>this</code> is set to the DOM element being animated. If multiple elements are animated, it is important to note that the callback is executed once per matched element, not once for the animation as a whole.</p>
+ * <p><strong>As of jQuery 1.6</strong>, the <code><a href="http://api.jquery.com/promise/">.promise()</a></code> method can be used in conjunction with the <code><a href="http://api.jquery.com/deferred.done/">deferred.done()</a></code> method to execute a single callback for the animation as a whole when <em>all</em> matching elements have completed their animations ( See the <a href="http://api.jquery.com/promise/#example-1">example for .promise()</a> ).  </p>
  * 
  * @example
  * <p>Animates all divs to slide down and show themselves over 600 milliseconds.</p>
@@ -3098,7 +3245,20 @@ jQuery.prototype.closest = function(selector, context) {return new jQuery();};
  * 
  *       <h4 id="jqXHR">The jqXHR Object</h4>
  *       <p>The jQuery XMLHttpRequest (jqXHR) object returned by <code>$.ajax()</code> <strong>as of jQuery 1.5</strong> is a superset of the browser's native XMLHttpRequest object. For example, it contains <code>responseText</code> and <code>responseXML</code> properties, as well as a <code>getResponseHeader()</code> method. When the transport mechanism is something other than XMLHttpRequest (for example, a script tag for a JSONP request) the <code>jqXHR</code> object simulates native XHR functionality where possible. </p>
- *       <p><strong>As of jQuery 1.5.1</strong>, the <code>jqXHR</code> object also contains the <code>overrideMimeType</code> method. </p>
+ *      <p><strong>As of jQuery 1.5.1</strong>, the <code>jqXHR</code> object also contains the <code>overrideMimeType()</code> method (it was available in jQuery 1.4.x, as well, but was temporarily removed in jQuery 1.5). The <code>.overrideMimeType()</code> method may be used in the <code>beforeSend()</code> callback function, for example, to modify the response content-type header:</p>
+ * <pre>
+ * $.ajax({
+ *   url: 'http://fiddle.jshell.net/favicon.png',
+ *   beforeSend: function( xhr ) {
+ *     xhr.overrideMimeType( 'text/plain; charset=x-user-defined' );
+ *   },
+ *   success: function( data ) {
+ *     if (console &amp;&amp; console.log){
+ *       console.log( 'Sample of data:', data.slice(0,100) );
+ *     }
+ *   }
+ * });
+ * </pre>
  * 
  *       <p>The jqXHR objects returned by <code>$.ajax()</code> implement the Promise interface, giving them all the properties, methods, and behavior of a Promise (see <a href="http://api.jquery.com/category/deferred-object/">Deferred object</a> for more information).  For convenience and consistency with the callback names used by <code>$.ajax()</code>, jqXHR also provides <code>.error()</code>, <code>.success()</code>, and <code>.complete()</code> methods. These methods take a function argument that is called when the <code>$.ajax()</code> request terminates, and the function receives the same arguments as the correspondingly-named <code>$.ajax()</code> callback. In jQuery 1.5 this allows you to assign multiple callbacks on a single request, and even to assign callbacks after the request may have completed. (If the request is already complete, the callback is fired immediately.)</p>
  * 
@@ -3465,8 +3625,10 @@ jQuery.prototype.toggle = function(duration, callback) {return new jQuery();};
  * <pre>[{name:"first",value:"Rick"},
  * {name:"last",value:"Astley"},
  * {name:"job",value:"Rock Star"}]</pre>
- *     <p>Note: Because some frameworks have limited ability to parse serialized arrays, we should exercise caution when passing an <code>obj</code> argument that contains objects or arrays nested within another array.</p>
- * <p>In jQuery 1.4 HTML5 input elements are serialized, as well.</p>
+ * <blockquote>
+ *     <p><strong>Note:</strong> Because some frameworks have limited ability to parse serialized arrays, we should exercise caution when passing an <code>obj</code> argument that contains objects or arrays nested within another array.</p>
+ * </blockquote>
+ * <p>In jQuery 1.4, HTML5 input elements are also serialized.</p>
  *     <p>We can display a query string representation of an object and a URI-decoded version of the same as follows:</p>
  * <pre>var myObject = {
  *   a: {
@@ -3572,9 +3734,9 @@ jQuery.param = function(obj, traditional) {return "";};
  * <pre><code>
  * 
  *     $("p").hide();
- *     $("a").click(function () {
+ *     $("a").click(function ( event ) {
+ *       event.preventDefault();
  *       $(this).hide();
- *       return true;
  *     });
  * </code></pre>
  * @example
@@ -3861,7 +4023,11 @@ jQuery.map = function(arrayOrObject, callback) {return new Array();};
  *   <pre>var object = $.extend({}, object1, object2);</pre>
  * 
  *   <p>The merge performed by <code>$.extend()</code> is not recursive by default; if a property of the first object is itself an object or array, it will be completely overwritten by a property with the same key in the second object. The values are not merged. This can be seen in the example below by examining the value of banana. However, by passing <code>true</code> for the first function argument, objects will be recursively merged.</p>
- *   <p>Undefined properties are not copied. However, properties inherited from the object's prototype <em>will</em> be copied over.</p>
+ *   <p>Undefined properties are not copied. However, properties inherited from the object's prototype <em>will</em> be copied over. For performance reasons, properties that have values of built-in JavaScript types such as Date or RegExp are not re-constructed, and will appear as plain Objects in the resulting object or array.</p>
+ * <blockquote>
+ * <p><strong>Note:</strong> When performing a deep extend, Object and Array are extended, however primitive types such string, boolean and number are not. For specific needs that fall outside of this behaviour, it is recommended to write a custom extend method as this will be significantly faster from a performance perspective. </p>
+ * </blockquote>
+ * 
  *   
  * @example
  * <p>Merge two objects, modifying the first.</p>
@@ -3876,7 +4042,20 @@ jQuery.map = function(arrayOrObject, callback) {return new Array();};
  *   durian: 100
  * };
  * 
+ * / * merge object2 into object1 * /
  * $.extend(object1, object2);
+ * 
+ * var printObj = function(obj) {
+ *   var arr = [];
+ *   $.each(obj, function(key, val) {
+ *     var next = key + ": ";
+ *     next += $.isPlainObject(val) ? printObj(val) : val;
+ *     arr.push( next );
+ *   });
+ *   return "{ " +  arr.join(", ") + " }";
+ * };
+ * 
+ * $("#log").append( printObj(object1) );
  * </code></pre>
  * @example
  * <p>Merge two objects recursively, modifying the first.</p>
@@ -3888,22 +4067,48 @@ jQuery.map = function(arrayOrObject, callback) {return new Array();};
  * };
  * var object2 = {
  *   banana: {price: 200},
- *   lime: 100
+ *   durian: 100
  * };
  * 
+ * / * merge object2 into object1, recursively * /
  * $.extend(true, object1, object2);
+ * 
+ * var printObj = function(obj) {
+ *   var arr = [];
+ *   $.each(obj, function(key, val) {
+ *     var next = key + ": ";
+ *     next += $.isPlainObject(val) ? printObj(val) : val;
+ *     arr.push( next );
+ *   });
+ *   return "{ " +  arr.join(", ") + " }";
+ * };
+ * 
+ * $("#log").append( printObj(object1) );
  * </code></pre>
  * @example
- * <p>Merge settings and options, modifying settings.</p>
- * <pre><code>var settings = { validate: false, limit: 5, name: "foo" };
- * var options = { validate: true, name: "bar" };
- * jQuery.extend(settings, options);</code></pre>
- * @example
  * <p>Merge defaults and options, without modifying the defaults. This is a common plugin development pattern.</p>
- * <pre><code>var empty = {}
+ * <pre><code>
  * var defaults = { validate: false, limit: 5, name: "foo" };
  * var options = { validate: true, name: "bar" };
- * var settings = $.extend(empty, defaults, options);</code></pre>
+ * 
+ * / * merge defaults and options, without modifying defaults * /
+ * var settings = $.extend({}, defaults, options);
+ * 
+ * var printObj = function(obj) {
+ *   var arr = [];
+ *   $.each(obj, function(key, val) {
+ *     var next = key + ": ";
+ *     next += $.isPlainObject(val) ? printObj(val) : val;
+ *     arr.push( next );
+ *   });
+ *   return "{ " +  arr.join(", ") + " }";
+ * };
+ * 
+ * 
+ * $("#log").append( "<div><b>settings -- </b>" + printObj(settings) + "</div>" );
+ * $("#log").append( "<div><b>options -- </b>" + printObj(options) + "</div>" );
+ * 
+ * </code></pre>
  * 
  * @param {Boolean} deep If true, the merge becomes recursive (aka. deep copy).
  * @param {Object} target The object to extend. It will receive the new properties.
@@ -4065,6 +4270,25 @@ jQuery.prototype.css = function(propertyName, value) {return new jQuery();};
  * <pre><code>
  *   $("b").clone().prependTo("p");
  * </code></pre>
+ * @example
+ * <p>When using <code>.clone()</code> to clone a collection of elements that are not attached to the DOM, their order when inserted into the DOM is not guaranteed. However, it may be possible to preserve sort order with a workaround, as demonstrated:</p>
+ * <pre><code>
+ * // sort order is not guaranteed here and may vary with browser  
+ * $('#copy').append($('#orig .elem')
+ *           .clone()
+ *           .children('a')
+ *           .prepend('foo - ')
+ *           .parent()
+ *           .clone()); 
+ *  
+ * // correct way to approach where order is maintained
+ * $('#copy-correct')
+ *           .append($('#orig .elem')
+ *           .clone()
+ *           .children('a')
+ *           .prepend('bar - ')
+ *           .end()); 
+ * </code></pre>
  * 
  * @param {Boolean} withDataAndEvents A Boolean indicating whether event handlers and data should be copied along with the elements. The default value is <code>false</code>. <em>*For 1.5.0 the default value is incorrectly <code>true</code>. This will be changed back to <code>false</code> in 1.5.1 and up.</em>
  * @param {Boolean} deepWithDataAndEvents A Boolean indicating whether event handlers and data for all children of the cloned element should be copied. By default its value matches the first argument's value (which defaults to <code>false</code>).
@@ -4128,10 +4352,6 @@ jQuery.prototype.clone = function(withDataAndEvents, deepWithDataAndEvents) {ret
  * <pre><code>
  * $("p").replaceWith( "<b>Paragraph. </b>" );
  * </code></pre>
- * @example
- * <p>Replace all paragraphs with empty div elements.</p>
- * <pre><code>
- *   $("p").replaceWith( document.createElement("div") );</code></pre>
  * @example
  * <p>On click, replace each paragraph with a div that is already in the DOM and selected with the <code>$()</code> function. Notice it doesn't clone the object but rather moves it to replace the paragraph.</p>
  * <pre><code>
@@ -4707,7 +4927,7 @@ jQuery.prototype.html = function(htmlString) {return new jQuery();};
  * &lt;/ul&gt;
  * </pre>
  * <p>You can attach a click handler to the &lt;ul&gt; element, and then limit the code to be triggered only when a list item itself, not one of its children, is clicked:</p>
- * <pre>$("ul:).click(function(event) {
+ * <pre>$("ul").click(function(event) {
  *   var $target = $(event.target);
  *   if ( $target.is("li") ) {
  *     $target.css("background-color", "red");
@@ -4715,6 +4935,7 @@ jQuery.prototype.html = function(htmlString) {return new jQuery();};
  * });</pre>
  * <p>Now, when the user clicks on the word "list" in the first item or anywhere in the third item, the clicked list item will be given a red background. However, when the user clicks on item 1 in the first item or anywhere in the second item, nothing will occur, because in those cases the target of the event would be <code>&lt;strong&gt;</code> or <code>&lt;span&gt;</code>, respectively.
  * </p>
+ * <p>Be aware that for selector strings with positional selectors such as <code>:first</code>, <code>:gt()</code>, or <code>:even</code>, the positional filtering is done against the jQuery object passed to <code>.is()</code>, <em>not</em> against the containing document. So for the HTML shown above, an expression such as <code>$("li:first").is("li:last")</code> returns <code>true</code>, but <code>$("li:first-child").is("li:last-child")</code> returns <code>false</code>.</p>
  * 
  * <h4>Using a Function</h4>
  * <p>The second form of this method evaluates expressions related to elements based on a function rather than a selector. For each element, if the function returns <code>true</code>, <code>.is()</code> returns <code>true</code> as well. For example, given a somewhat more involved HTML snippet:</p>
@@ -4898,7 +5119,7 @@ jQuery.prototype.eq = function(neg_index) {return new jQuery();};
  * <p>This alteration to the code will cause the third and sixth list items to be highlighted, as it uses the modulus operator (<code>%</code>) to select every item with an <code>index</code> value that, when divided by 3, has a remainder of <code>2</code>.</p>
  * 
  * @example
- * <p>Change the color of all divs then put a border around only some of them.</p>
+ * <p>Change the color of all divs; then add a border to those with a "middle" class.</p>
  * <pre><code>
  * 
  *     $("div").css("background", "#c8ebcc")
@@ -4906,13 +5127,7 @@ jQuery.prototype.eq = function(neg_index) {return new jQuery();};
  *             .css("border-color", "red");
  * </code></pre>
  * @example
- * <p>Selects all paragraphs and removes those without a class "selected".</p>
- * <pre><code>$("p").filter(".selected")</code></pre>
- * @example
- * <p>Selects all paragraphs and removes those that aren't of class "selected" or the first one.</p>
- * <pre><code>$("p").filter(".selected, :first")</code></pre>
- * @example
- * <p>Change the color of all divs then put a border to specific ones.</p>
+ * <p>Change the color of all divs; then add a border to the second one (index == 1) and the div with an id of "fourth."</p>
  * <pre><code>
  *     $("div").css("background", "#b4b0da")
  *             .filter(function (index) {
@@ -4922,10 +5137,12 @@ jQuery.prototype.eq = function(neg_index) {return new jQuery();};
  * 
  * </code></pre>
  * @example
- * <p>Remove all elements that have a descendant ol element</p>
- * <pre><code>$("div").filter(function(index) {
- *    return $("ol", this).length == 0;
- *  });</code></pre>
+ * <p>Select all divs and filter the selection with a DOM element, keeping only the one with an id of "unique".</p>
+ * <pre><code>$("div").filter( document.getElementById("unique") )</code></pre>
+ * @example
+ * <p>Select all divs and filter the selection with a jQuery object, keeping only the one with an id of "unique".</p>
+ * <pre><code>
+ * $("div").filter( $("#unique") )</code></pre>
  * 
  * @param {Function} fn A function used as a test for each element in the set. <code>this</code> is the current DOM element.
  * 
@@ -4991,7 +5208,7 @@ jQuery.prototype.filter = function(fn) {return new jQuery();};
  * </code></pre>
  * 
  * @param {String} className One or more class names (separated by spaces) to be toggled for each element in the matched set.
- * @param {Boolean} _switch A boolean value to determine whether the class should be added or removed.
+ * @param {Boolean} _switch A Boolean (not just truthy/falsy) value to determine whether the class should be added or removed.
  * 
  * @since 1.3
  * @returns {jQuery}

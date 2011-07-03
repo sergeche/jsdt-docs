@@ -60,6 +60,105 @@
 jQuery.prototype.undelegate = function(namespace) {return new jQuery();};
 
 /**
+ * Store arbitrary data associated with the matched elements.
+ * 
+ * <p>The <code>.data()</code> method allows us to attach data of any type to DOM elements in a way that is safe from circular references and therefore from memory leaks.</p>
+ * <p> We can set several distinct values for a single element and retrieve them later:</p>
+ * <pre>
+ * $('body').data('foo', 52);
+ * $('body').data('bar', { myType: 'test', count: 40 });
+ * 
+ * $('body').data('foo'); // 52
+ * $('body').data(); // {foo: 52, bar: { myType: 'test', count: 40 }}
+ * </pre>
+ * <p>In jQuery 1.4.3 setting an element's data object with <code>.data(obj)</code> extends the data previously stored with that element. jQuery itself uses the <code>.data()</code> method to save information under the names 'events' and 'handle', and also reserves any data name starting with an underscore ('_') for internal use.</p>
+ * <p>Prior to jQuery 1.4.3 (starting in jQuery 1.4) the .data() method completely replaced all data, instead of just extending the data object. If you are using third-party plugins it may not be advisable to completely replace the element's data object, since plugins may have also set data.</p>
+ * <p>Due to the way browsers interact with plugins and external code, the <code>.data()</code> method cannot be used on <code>&lt;object&gt;</code> (unless it's a Flash plugin), <code>&lt;applet&gt;</code> or <code>&lt;embed&gt;</code> elements.</p>
+ * 
+ * @example
+ * <p>Store then retrieve a value from the div element.</p>
+ * <pre><code>
+ * $("div").data("test", { first: 16, last: "pizza!" });
+ * $("span:first").text($("div").data("test").first);
+ * $("span:last").text($("div").data("test").last);
+ * </code></pre>
+ * 
+ * @param {Object} obj An object of key-value pairs of data to update.
+ * 
+ * @since 1.4.3
+ * @returns {jQuery}
+**/
+jQuery.prototype.data = function(obj) {return new jQuery();};
+
+/**
+ * Manipulate the queue of functions to be executed on the matched elements.
+ * 
+ * <p>Every element can have one to many queues of functions attached to it by jQuery. In most applications, only one queue (called <code>fx</code>) is used. Queues allow a sequence of actions to be called on an element asynchronously, without halting program execution. The typical example of this is calling multiple animation methods on an element. For example:</p>
+ * 				<pre>$('#foo').slideUp().fadeIn();</pre>
+ * 				<p>When this statement is executed, the element begins its sliding animation immediately, but the fading transition is placed on the <code>fx</code> queue to be called only once the sliding transition is complete.</p>
+ * 				<p>The <code>.queue()</code> method allows us to directly manipulate this queue of functions. Calling <code>.queue()</code> with a callback is particularly useful; it allows us to place a new function at the end of the queue.</p>
+ * 				<p>This feature is similar to providing a callback function with an animation method, but does not require the callback to be given at the time the animation is performed.</p>
+ * <pre>$('#foo').slideUp();
+ * $('#foo').queue(function() {
+ *   alert('Animation complete.');
+ *   $(this).dequeue();
+ * });</pre>
+ * <p>This is equivalent to:</p>
+ * <pre>$('#foo').slideUp(function() {
+ *   alert('Animation complete.');
+ * });</pre>
+ * <p>Note that when adding a function with <code>.queue()</code>, we should ensure that <code>.dequeue()</code> is eventually called so that the next function in line executes.</p>
+ * <p>In jQuery 1.4 the function that's called is passed in another function, as the first argument, that when called automatically dequeues the next item and keeps the queue moving. You would use it like so:</p>
+ * <pre>$("#test").queue(function(next) {
+ *     // Do some stuff...
+ *     next();
+ * });</pre>
+ * @example
+ * <p>Queue a custom function.</p>
+ * <pre><code>$(document.body).click(function () {
+ *       $("div").show("slow");
+ *       $("div").animate({left:'+=200'},2000);
+ *       $("div").queue(function () {
+ *         $(this).addClass("newcolor");
+ *         $(this).dequeue();
+ *       });
+ *       $("div").animate({left:'-=200'},500);
+ *       $("div").queue(function () {
+ *         $(this).removeClass("newcolor");
+ *         $(this).dequeue();
+ *       });
+ *       $("div").slideUp();
+ *     });</code></pre>
+ * @example
+ * <p>Set a queue array to delete the queue.</p>
+ * <pre><code>$("#start").click(function () {
+ *       $("div").show("slow");
+ *       $("div").animate({left:'+=200'},5000);
+ *       $("div").queue(function () {
+ *         $(this).addClass("newcolor");
+ *         $(this).dequeue();
+ *       });
+ *       $("div").animate({left:'-=200'},1500);
+ *       $("div").queue(function () {
+ *         $(this).removeClass("newcolor");
+ *         $(this).dequeue();
+ *       });
+ *       $("div").slideUp();
+ *     });
+ *     $("#stop").click(function () {
+ *       $("div").queue("fx", []);
+ *       $("div").stop();
+ *     });</code></pre>
+ * 
+ * @param {String} queueName A string containing the name of the queue. Defaults to <code>fx</code>, the standard effects queue.
+ * @param {Array} newQueue An array of functions to replace the current queue contents.
+ * 
+ * @since 1.2
+ * @returns {jQuery}
+**/
+jQuery.prototype.queue = function(queueName, newQueue) {return new jQuery();};
+
+/**
  * Gets an array of all the elements and selectors matched against the current element up through the DOM tree.
  * 
  * <p>This method is primarily meant to be used internally or by plugin authors.</p>

@@ -5,8 +5,8 @@
  */
 
 /** API location */
-var API_LOCATION = 'http://api.jquery.com/api/';
-//var API_LOCATION = 'http://localhost:8015/jquery-parser/api.xml';
+//var API_LOCATION = 'http://api.jquery.com/api/';
+var API_LOCATION = 'http://localhost:8015/jquery-parser/api.xml';
 
 /**
  * Target jQuery version. Use keyword 'latest' to generate JSDoc for latest
@@ -152,7 +152,19 @@ JSDocEntry.prototype = {
 	 * @returns {String}
 	 */
 	getName: function() {
-		return this.getAttribute('name');
+		return this.getAttribute('name') + '';
+	},
+
+	/**
+	 * Returns base name (i.e. 'get' in 'jQuery.prototype.get')
+	 * @returns {String}
+	 */
+	getBaseName: function() {
+		var name = this.getName().split('.');
+		if (name[0] != 'jQuery')
+			return this.getName();
+
+		return name[name.length - 1];
 	},
 
 	/**
@@ -367,7 +379,10 @@ request({uri: API_LOCATION}, function(error, response, body) {
 
 			signatures.forEach(function(signature) {
 				var jsdoc = new JSDocEntry(item, signature);
-				var name = jsdoc.getName();
+				// use base name as key since JSDT fails to resolve static and
+				// prototype methods, i.e. $.get and $.prototype.get will be
+				// treated as one method definition
+				var name = jsdoc.getBaseName();
 				if (name && name != 'jQuery' && (TARGET_VERSION == 'latest' || jsdoc.getVersion() <= TARGET_VERSION)) {
 					if (!(name in method_map)) {
 						method_map[name] = -1;

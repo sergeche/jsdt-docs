@@ -88,77 +88,65 @@ jQuery.prototype.prop = function(propertyName, fn) {return new jQuery();};
 jQuery.prototype.undelegate = function(selector, events) {return new jQuery();};
 
 /**
- * Returns value at named data store for the first element in the jQuery collection, as set by data(name, value).
+ * Store arbitrary data associated with the matched elements.
  * 
- * 
- * <p>The <code>.data()</code> method allows us to attach data of any type to DOM elements in a way that is safe from circular references and therefore from memory leaks. We can retrieve several distinct values for a single element one at a time, or as a set:</p>
+ * <p>The <code>.data()</code> method allows us to attach data of any type to DOM elements in a way that is safe from circular references and therefore from memory leaks.</p>
+ * <p> We can set several distinct values for a single element and retrieve them later:</p>
  * <pre>
- * alert($('body').data('foo'));
- * alert($('body').data());
+ * $('body').data('foo', 52);
+ * $('body').data('bar', { myType: 'test', count: 40 });
+ * 
+ * $('body').data('foo'); // 52
+ * $('body').data(); // {foo: 52, bar: { myType: 'test', count: 40 }}
  * </pre>
- * <p>The above lines alert the data values that were set on the <code>body</code> element. If no data at all was set on that element, <code>undefined</code> is returned.</p>
- * <pre>
- * alert( $("body").data("foo")); //undefined
- * $("body").data("bar", "foobar");
- * alert( $("body").data("foobar")); //foobar
- * </pre>
- * <p><strong>HTML 5 data- Attributes</strong></p>
- * <p>As of jQuery 1.4.3 <a href="http://ejohn.org/blog/html-5-data-attributes/">HTML 5 data- attributes</a> will be automatically pulled in to jQuery's data object. The treatment of attributes with embedded dashes was changed in jQuery 1.6 to conform to the <a href="http://www.w3.org/TR/html5/elements.html#embedding-custom-non-visible-data-with-the-data-attributes">W3C HTML5 specification</a>.</p>
- * 
- * <p>For example, given the following HTML:</p>
- * 
- * <pre>&lt;div data-role="page" data-last-value="43" data-hidden="true" data-options='{"name":"John"}'&gt;&lt;/div&gt;</pre>
- * 
- * <p>All of the following jQuery code will work.</p>
- * 
- * <pre>$("div").data("role") === "page";
- * $("div").data("lastValue") === 43;
- * $("div").data("hidden") === true;
- * $("div").data("options").name === "John";</pre>
- * 
- * <p>Every attempt is made to convert the string to a JavaScript value (this includes booleans, numbers, objects, arrays, and null) otherwise it is left as a string. To retrieve the value's attribute as a string without any attempt to convert it, use the <code><a href="/attr/">attr()</a></code> method. When the data attribute is an object (starts with '{') or array (starts with '[') then <code>jQuery.parseJSON</code> is used to parse the string; it must follow <a href="http://en.wikipedia.org/wiki/JSON#Data_types.2C_syntax_and_example">valid JSON syntax</a> <em>including quoted property names</em>. The data- attributes are pulled in the first time the data property is accessed and then are no longer accessed or mutated (all data values are then stored internally in jQuery).</p>
- * <p>Calling <code>.data()</code> with no parameters retrieves all of the values as a JavaScript object. This object can be safely cached in a variable as long as a new object is not set with <code>.data(obj)</code>. Using the object directly to get or set values is faster than making individual calls to <code>.data()</code> to get or set each value:</p>
- * <pre>
- * var mydata = $("#mydiv").data();
- * if ( mydata.count &lt; 9 ) {
- *     mydata.count = 43;
- *     mydata.status = "embiggened";
- * }
- * </pre>
+ * <p>In jQuery 1.4.3 setting an element's data object with <code>.data(obj)</code> extends the data previously stored with that element. jQuery itself uses the <code>.data()</code> method to save information under the names 'events' and 'handle', and also reserves any data name starting with an underscore ('_') for internal use.</p>
+ * <p>Prior to jQuery 1.4.3 (starting in jQuery 1.4) the .data() method completely replaced all data, instead of just extending the data object. If you are using third-party plugins it may not be advisable to completely replace the element's data object, since plugins may have also set data.</p>
+ * <p>Due to the way browsers interact with plugins and external code, the <code>.data()</code> method cannot be used on <code>&lt;object&gt;</code> (unless it's a Flash plugin), <code>&lt;applet&gt;</code> or <code>&lt;embed&gt;</code> elements.</p>
  * 
  * @example
- * <p>Get the data named "blah" stored at for an element.</p>
+ * <p>Store then retrieve a value from the div element.</p>
  * <pre><code>
- * $("button").click(function(e) {
- *   var value;
- * 
- *   switch ($("button").index(this)) {
- *     case 0 :
- *       value = $("div").data("blah");
- *       break;
- *     case 1 :
- *       $("div").data("blah", "hello");
- *       value = "Stored!";
- *       break;
- *     case 2 :
- *       $("div").data("blah", 86);
- *       value = "Stored!";
- *       break;
- *     case 3 :
- *       $("div").removeData("blah");
- *       value = "Removed!";
- *       break;
- *   }
- * 
- *   $("span").text("" + value);
- * });
- * 
+ * $("div").data("test", { first: 16, last: "pizza!" });
+ * $("span:first").text($("div").data("test").first);
+ * $("span:last").text($("div").data("test").last);
  * </code></pre>
  * 
- * @since 1.4
- * @returns {Object}
+ * @param {String} key A string naming the piece of data to set.
+ * @param {Object} value The new data value; it can be any Javascript type including Array or Object.
+ * 
+ * @since 1.2.3
+ * @returns {jQuery}
 **/
-jQuery.prototype.data = function() {return new Object();};
+jQuery.prototype.data = function(key, value) {return new jQuery();};
+
+/**
+ * Show the queue of functions to be executed on the matched elements.
+ * 
+ * <longdesc/>
+ * @example
+ * <p>Show the length of the queue.</p>
+ * <pre><code>$("#show").click(function () {
+ *       var n = $("div").queue("fx");
+ *       $("p").text("Queue length is: " + n.length);
+ *     });
+ *     function runIt() {
+ *       $("div").show("slow");
+ *       $("div").animate({left:'+=200'},2000);
+ *       $("div").slideToggle(1000);
+ *       $("div").slideToggle("fast");
+ *       $("div").animate({left:'-=200'},1500);
+ *       $("div").hide("slow");
+ *       $("div").show(1200);
+ *       $("div").slideUp("normal", runIt);
+ *     }
+ *     runIt();</code></pre>
+ * 
+ * @param {String} queueName A string containing the name of the queue. Defaults to <code>fx</code>, the standard effects queue.
+ * 
+ * @since 1.2
+ * @returns {Array}
+**/
+jQuery.prototype.queue = function(queueName) {return new Array();};
 
 /**
  * Get the first ancestor element that matches the selector, beginning at the current element and progressing up through the DOM tree.

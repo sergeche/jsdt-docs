@@ -662,35 +662,29 @@ jQuery.prototype.keydown = function(eventData, handler) {return new jQuery();};
 jQuery.prototype.index = function(selector) {return 0;};
 
 /**
- * Store arbitrary data associated with the matched elements.
+ * Remove a previously-stored piece of data.
  * 
- * <p>The <code>.data()</code> method allows us to attach data of any type to DOM elements in a way that is safe from circular references and therefore from memory leaks.</p>
- * <p> We can set several distinct values for a single element and retrieve them later:</p>
- * <pre>
- * $('body').data('foo', 52);
- * $('body').data('bar', { myType: 'test', count: 40 });
- * 
- * $('body').data('foo'); // 52
- * $('body').data(); // {foo: 52, bar: { myType: 'test', count: 40 }}
- * </pre>
- * <p>In jQuery 1.4.3 setting an element's data object with <code>.data(obj)</code> extends the data previously stored with that element. jQuery itself uses the <code>.data()</code> method to save information under the names 'events' and 'handle', and also reserves any data name starting with an underscore ('_') for internal use.</p>
- * <p>Prior to jQuery 1.4.3 (starting in jQuery 1.4) the .data() method completely replaced all data, instead of just extending the data object. If you are using third-party plugins it may not be advisable to completely replace the element's data object, since plugins may have also set data.</p>
- * <p>Due to the way browsers interact with plugins and external code, the <code>.data()</code> method cannot be used on <code>&lt;object&gt;</code> (unless it's a Flash plugin), <code>&lt;applet&gt;</code> or <code>&lt;embed&gt;</code> elements.</p>
- * 
+ * <p>The <code>.removeData()</code> method allows us to remove values that were previously set using <code>.data()</code>. When called with the name of a key, <code>.removeData()</code> deletes that particular value; when called with no arguments, all values are removed.</p><p>NOTE: Starting with jQuery 1.4.3, calling <code>.removeData()</code> will cause the value of the property being removed to revert to the value of the data attribute of the same name in the DOM, rather than being set to <code>undefined</code>.</p>
  * @example
- * <p>Store then retrieve a value from the div element.</p>
+ * <p>Set a data store for 2 names then remove one of them.</p>
  * <pre><code>
- * $("div").data("test", { first: 16, last: "pizza!" });
- * $("span:first").text($("div").data("test").first);
- * $("span:last").text($("div").data("test").last);
+ * 
+ *     $("span:eq(0)").text("" + $("div").data("test1"));
+ *     $("div").data("test1", "VALUE-1");
+ *     $("div").data("test2", "VALUE-2");
+ *     $("span:eq(1)").text("" + $("div").data("test1"));
+ *     $("div").removeData("test1");
+ *     $("span:eq(2)").text("" + $("div").data("test1"));
+ *     $("span:eq(3)").text("" + $("div").data("test2"));
+ * 
  * </code></pre>
  * 
- * @param {Object} obj An object of key-value pairs of data to update.
+ * @param {String} name A string naming the piece of data to delete.
  * 
- * @since 1.4.3
+ * @since 1.2.3
  * @returns {jQuery}
 **/
-jQuery.prototype.data = function(obj) {return new jQuery();};
+jQuery.prototype.removeData = function(name) {return new jQuery();};
 
 /**
  * Bind an event handler to the "scroll" JavaScript event, or trigger that event on an element.
@@ -780,72 +774,29 @@ jQuery.prototype.scroll = function(eventData, handler) {return new jQuery();};
 jQuery.prototype.resize = function(eventData, handler) {return new jQuery();};
 
 /**
- * Manipulate the queue of functions to be executed on the matched elements.
+ * Execute the next function on the queue for the matched elements.
  * 
- * <p>Every element can have one to many queues of functions attached to it by jQuery. In most applications, only one queue (called <code>fx</code>) is used. Queues allow a sequence of actions to be called on an element asynchronously, without halting program execution. The typical example of this is calling multiple animation methods on an element. For example:</p>
- * 				<pre>$('#foo').slideUp().fadeIn();</pre>
- * 				<p>When this statement is executed, the element begins its sliding animation immediately, but the fading transition is placed on the <code>fx</code> queue to be called only once the sliding transition is complete.</p>
- * 				<p>The <code>.queue()</code> method allows us to directly manipulate this queue of functions. Calling <code>.queue()</code> with a callback is particularly useful; it allows us to place a new function at the end of the queue.</p>
- * 				<p>This feature is similar to providing a callback function with an animation method, but does not require the callback to be given at the time the animation is performed.</p>
- * <pre>$('#foo').slideUp();
- * $('#foo').queue(function() {
- *   alert('Animation complete.');
- *   $(this).dequeue();
- * });</pre>
- * <p>This is equivalent to:</p>
- * <pre>$('#foo').slideUp(function() {
- *   alert('Animation complete.');
- * });</pre>
- * <p>Note that when adding a function with <code>.queue()</code>, we should ensure that <code>.dequeue()</code> is eventually called so that the next function in line executes.</p>
- * <p>In jQuery 1.4 the function that's called is passed in another function, as the first argument, that when called automatically dequeues the next item and keeps the queue moving. You would use it like so:</p>
- * <pre>$("#test").queue(function(next) {
- *     // Do some stuff...
- *     next();
- * });</pre>
+ * <p>When <code>.dequeue()</code> is called, the next function on the queue is removed from the queue, and then executed. This function should in turn (directly or indirectly) cause <code>.dequeue()</code> to be called, so that the sequence can continue.</p>
  * @example
- * <p>Queue a custom function.</p>
- * <pre><code>$(document.body).click(function () {
- *       $("div").show("slow");
- *       $("div").animate({left:'+=200'},2000);
- *       $("div").queue(function () {
- *         $(this).addClass("newcolor");
- *         $(this).dequeue();
- *       });
- *       $("div").animate({left:'-=200'},500);
- *       $("div").queue(function () {
- *         $(this).removeClass("newcolor");
- *         $(this).dequeue();
- *       });
- *       $("div").slideUp();
- *     });</code></pre>
- * @example
- * <p>Set a queue array to delete the queue.</p>
- * <pre><code>$("#start").click(function () {
- *       $("div").show("slow");
- *       $("div").animate({left:'+=200'},5000);
- *       $("div").queue(function () {
- *         $(this).addClass("newcolor");
- *         $(this).dequeue();
- *       });
- *       $("div").animate({left:'-=200'},1500);
- *       $("div").queue(function () {
- *         $(this).removeClass("newcolor");
- *         $(this).dequeue();
- *       });
- *       $("div").slideUp();
- *     });
- *     $("#stop").click(function () {
- *       $("div").queue("fx", []);
- *       $("div").stop();
- *     });</code></pre>
+ * <p>Use dequeue to end a custom queue function which allows the queue to keep going.</p>
+ * <pre><code>
+ * $("button").click(function () {
+ *   $("div").animate({left:'+=200px'}, 2000);
+ *   $("div").animate({top:'0px'}, 600);
+ *   $("div").queue(function () {
+ *     $(this).toggleClass("red");
+ *     $(this).dequeue();
+ *   });
+ *   $("div").animate({left:'10px', top:'30px'}, 700);
+ * });
+ * </code></pre>
  * 
  * @param {String} queueName A string containing the name of the queue. Defaults to <code>fx</code>, the standard effects queue.
- * @param {Array} newQueue An array of functions to replace the current queue contents.
  * 
  * @since 1.2
  * @returns {jQuery}
 **/
-jQuery.prototype.queue = function(queueName, newQueue) {return new jQuery();};
+jQuery.prototype.dequeue = function(queueName) {return new jQuery();};
 
 /**
  * Bind an event handler to the "keyup" JavaScript event, or trigger that event on an element.
@@ -1790,13 +1741,12 @@ jQuery.prototype.mousedown = function(eventData, handler) {return new jQuery();}
  *   })
  *   .attr("src", "missing.png");</code></pre>
  * 
- * @param {Object} eventData A map of data that will be passed to the event handler.
- * @param {Function} handler A function to execute each time the event is triggered.
+ * @param {Function} handler A function to execute when the event is triggered.
  * 
- * @since 1.4.3
+ * @since 1.0
  * @returns {jQuery}
 **/
-jQuery.prototype.error = function(eventData, handler) {return new jQuery();};
+jQuery.prototype.error = function(handler) {return new jQuery();};
 
 /**
  * Bind an event handler to the "unload" JavaScript event.
@@ -3232,6 +3182,82 @@ jQuery.prototype.find = function(jq) {return new jQuery();};
 jQuery.prototype.closest = function(selector, context) {return new jQuery();};
 
 /**
+ * Load data from the server using a HTTP GET request.
+ * 
+ * <p>This is a shorthand Ajax function, which is equivalent to:</p>
+ *     <pre>$.ajax({
+ *   url: <em>url</em>,
+ *   data: <em>data</em>,
+ *   success: <em>success</em>,
+ *   dataType: <em>dataType</em>
+ * });
+ * </pre>
+ *     <p>The <code>success</code> callback function is passed the returned data, which will be an XML root element, text string, JavaScript file, or JSON object, depending on the MIME type of the response. It is also passed the text status of the response. </p>
+ *     <p><strong>As of jQuery 1.5</strong>, the <code>success</code> callback function is also passed a <a href="http://api.jquery.com/jQuery.get/#jqxhr-object">"jqXHR" object</a> (in <strong>jQuery 1.4</strong>, it was passed the <code>XMLHttpRequest</code> object). However, since JSONP and cross-domain GET requests do not use <abbr title="XMLHTTPRequest">XHR</abbr>,  in those cases the <code>(j)XHR</code> and <code>textStatus</code> parameters passed to the success callback are undefined.</p>
+ *     <p>Most implementations will specify a success handler:</p>
+ *     <pre>$.get('ajax/test.html', function(data) {
+ *   $('.result').html(data);
+ *   alert('Load was performed.');
+ * });
+ * </pre>
+ *   <p>This example fetches the requested HTML snippet and inserts it on the page.</p>
+ *   <h4 id="jqxhr-object">The jqXHR Object</h4>
+ *   <p><strong>As of jQuery 1.5</strong>, all of jQuery's Ajax methods return  a superset of the <code>XMLHTTPRequest</code> object. This jQuery XHR object, or "jqXHR," returned by <code>$.get()</code> implements the Promise interface, giving it all the properties, methods, and behavior of a Promise (see <a href="http://api.jquery.com/category/deferred-object/">Deferred object</a> for more information). For convenience and consistency with the callback names used by <code><a href="http://api.jquery.com/jQuery.ajax/">$.ajax()</a></code>, it provides <code>.error()</code>, <code>.success()</code>, and <code>.complete()</code> methods. These methods take a function argument that is called when the request terminates, and the function receives the same arguments as the correspondingly-named <code>$.ajax()</code> callback.</p>
+ * 
+ *   <p>The Promise interface in jQuery 1.5 also allows jQuery's Ajax methods, including <code>$.get()</code>, to chain multiple <code>.success()</code>, <code>.complete()</code>, and <code>.error()</code> callbacks on a single request, and even to assign these callbacks after the request may have completed. If the request is already complete, the callback is fired immediately.</p>
+ *   <pre>// Assign handlers immediately after making the request,
+ *   // and remember the jqxhr object for this request
+ *   var jqxhr = $.get("example.php", function() {
+ *     alert("success");
+ *   })
+ *   .success(function() { alert("second success"); })
+ *   .error(function() { alert("error"); })
+ *   .complete(function() { alert("complete"); });
+ * 
+ *   // perform other work here ...
+ * 
+ *   // Set another completion function for the request above
+ *   jqxhr.complete(function(){ alert("second complete"); });</pre>
+ * 
+ * @example
+ * <p>Request the test.php page, but ignore the return results.</p>
+ * <pre><code>$.get("test.php");</code></pre>
+ * @example
+ * <p>Request the test.php page and send some additional data along (while still ignoring the return results).</p>
+ * <pre><code>$.get("test.php", { name: "John", time: "2pm" } );</code></pre>
+ * @example
+ * <p>pass arrays of data to the server (while still ignoring the return results).</p>
+ * <pre><code>$.get("test.php", { 'choices[]': ["Jon", "Susan"]} );</code></pre>
+ * @example
+ * <p>Alert out the results from requesting test.php (HTML or XML, depending on what was returned).</p>
+ * <pre><code>$.get("test.php", function(data){
+ * alert("Data Loaded: " + data);
+ * });</code></pre>
+ * @example
+ * <p>Alert out the results from requesting test.cgi with an additional payload of data (HTML or XML, depending on what was returned).</p>
+ * <pre><code>$.get("test.cgi", { name: "John", time: "2pm" },
+ *    function(data){
+ *      alert("Data Loaded: " + data);
+ *    });</code></pre>
+ * @example
+ * <p> Gets the test.php page contents which has been returned in json format (&lt;?php echo json_encode(array("name"=&gt;"John","time"=&gt;"2pm")); ?&gt;).</p>
+ * <pre><code>$.get("test.php", { "func": "getNameAndTime" },
+ *    function(data){
+ *      alert(data.name); // John
+ *      console.log(data.time); //  2pm
+ *    }, "json");</code></pre>
+ * 
+ * @param {String} url A string containing the URL to which the request is sent.
+ * @param {Map} data A map or string that is sent to the server with the request.
+ * @param {Function} success A callback function that is executed if the request succeeds.
+ * @param {String} dataType The type of data expected from the server. Default: Intelligent Guess (xml, json, script, or html).
+ * 
+ * @since 1.0
+ * @returns {jqXHR}
+**/
+jQuery.get = function(url, data, success, dataType) {return new jqXHR();};
+
+/**
  * Perform an asynchronous HTTP (Ajax) request.
  * 
  * 
@@ -4119,6 +4145,70 @@ jQuery.map = function(arrayOrObject, callback) {return new Array();};
  * @returns {Object}
 **/
 jQuery.extend = function(deep, target, object1, objectN) {return new Object();};
+
+/**
+ * A generic iterator function, which can be used to seamlessly iterate over both objects and arrays. Arrays and array-like objects with a length property (such as a function's arguments object) are iterated by numeric index, from 0 to length-1. Other objects are iterated via their named properties.
+ * 
+ * 
+ *     <p>The <code>$.each()</code> function is not the same as <a href="/each/">.each()</a>, which is used to iterate, exclusively, over a jQuery object. The <code>$.each()</code> function can be used to iterate over any collection, whether it is a map (JavaScript object) or an array. In the case of an array, the callback is passed an array index and a corresponding array value each time. (The value can also be accessed through the <code>this</code> keyword, but Javascript will always wrap the <code>this</code> value as an <code>Object</code> even if it is a simple string or number value.) The method returns its first argument, the object that was iterated.</p>
+ * 
+ * <pre>$.each([52, 97], function(index, value) { 
+ *   alert(index + ': ' + value); 
+ * });
+ * </pre>
+ * <p>This produces two messages:</p>
+ * <p>
+ *   <span class="output">0: 52</span><br/>
+ *   <span class="output">1: 97</span>
+ * </p>
+ *     <p>If a map is used as the collection, the callback is passed a key-value pair each time:</p>
+ * <pre>var map = { 
+ *   'flammable': 'inflammable', 
+ *   'duh': 'no duh' 
+ * }; 
+ * $.each(map, function(key, value) { 
+ *   alert(key + ': ' + value); 
+ * });</pre>
+ *     <p>Once again, this produces two messages:</p>
+ *     <p>
+ *       <span class="output">flammable: inflammable</span><br/>
+ *       <span class="output">duh: no duh</span>
+ *     </p>
+ *     
+ *     <p>We can break the <code>$.each()</code> loop at a particular iteration by making the callback function return <code>false</code>. Returning <em>non-false</em> is the same as a <code>continue</code> statement in a for loop; it will skip immediately to the next iteration.</p>
+ * @example
+ * <p>Iterates through the array displaying each number as both a word and numeral</p>
+ * <pre><code>
+ *     var arr = [ "one", "two", "three", "four", "five" ];
+ *     var obj = { one:1, two:2, three:3, four:4, five:5 };
+ * 
+ *     jQuery.each(arr, function() {
+ *       $("#" + this).text("Mine is " + this + ".");
+ *        return (this != "three"); // will stop running after "three"
+ *    });
+ * 
+ *     jQuery.each(obj, function(i, val) {
+ *       $("#" + i).append(document.createTextNode(" - " + val));
+ *     });
+ * </code></pre>
+ * @example
+ * <p>Iterates over items in an array, accessing both the current item and its index.</p>
+ * <pre><code>$.each( ['a','b','c'], function(i, l){
+ *    alert( "Index #" + i + ": " + l );
+ *  });</code></pre>
+ * @example
+ * <p>Iterates over the properties in an object, accessing both the current item and its key.</p>
+ * <pre><code>$.each( { name: "John", lang: "JS" }, function(k, v){
+ *    alert( "Key: " + k + ", Value: " + v );
+ *  });</code></pre>
+ * 
+ * @param {Object} collection The object or array to iterate over.
+ * @param {Function} callback The function that will be executed on every object.
+ * 
+ * @since 1.0
+ * @returns {Object}
+**/
+jQuery.each = function(collection, callback) {return new Object();};
 
 /**
  * Set the current vertical position of the scroll bar for each of the set of matched elements.

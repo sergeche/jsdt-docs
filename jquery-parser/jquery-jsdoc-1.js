@@ -2346,63 +2346,6 @@ jQuery.prototype.keydown = function(handler) {return new jQuery();};
 jQuery.prototype.index = function() {return 0;};
 
 /**
- * Remove a previously-stored piece of data.
- * 
- * <p>The <code>.removeData()</code> method allows us to remove values that were previously set using <code>.data()</code>. When called with the name of a key, <code>.removeData()</code> deletes that particular value; when called with no arguments, all values are removed.</p><p>NOTE: Starting with jQuery 1.4.3, calling <code>.removeData()</code> will cause the value of the property being removed to revert to the value of the data attribute of the same name in the DOM, rather than being set to <code>undefined</code>.</p>
- * @example
- * <p>Set a data store for 2 names then remove one of them.</p>
- * <pre><code>
- * 
- *     $("span:eq(0)").text("" + $("div").data("test1"));
- *     $("div").data("test1", "VALUE-1");
- *     $("div").data("test2", "VALUE-2");
- *     $("span:eq(1)").text("" + $("div").data("test1"));
- *     $("div").removeData("test1");
- *     $("span:eq(2)").text("" + $("div").data("test1"));
- *     $("span:eq(3)").text("" + $("div").data("test2"));
- * 
- * </code></pre>
- * 
- * @param {String} name A string naming the piece of data to delete.
- * 
- * @since 1.2.3
- * @returns {jQuery}
-**/
-jQuery.prototype.removeData = function(name) {return new jQuery();};
-
-/**
- * Store arbitrary data associated with the matched elements.
- * 
- * <p>The <code>.data()</code> method allows us to attach data of any type to DOM elements in a way that is safe from circular references and therefore from memory leaks.</p>
- * <p> We can set several distinct values for a single element and retrieve them later:</p>
- * <pre>
- * $('body').data('foo', 52);
- * $('body').data('bar', { myType: 'test', count: 40 });
- * 
- * $('body').data('foo'); // 52
- * $('body').data(); // {foo: 52, bar: { myType: 'test', count: 40 }}
- * </pre>
- * <p>In jQuery 1.4.3 setting an element's data object with <code>.data(obj)</code> extends the data previously stored with that element. jQuery itself uses the <code>.data()</code> method to save information under the names 'events' and 'handle', and also reserves any data name starting with an underscore ('_') for internal use.</p>
- * <p>Prior to jQuery 1.4.3 (starting in jQuery 1.4) the .data() method completely replaced all data, instead of just extending the data object. If you are using third-party plugins it may not be advisable to completely replace the element's data object, since plugins may have also set data.</p>
- * <p>Due to the way browsers interact with plugins and external code, the <code>.data()</code> method cannot be used on <code>&lt;object&gt;</code> (unless it's a Flash plugin), <code>&lt;applet&gt;</code> or <code>&lt;embed&gt;</code> elements.</p>
- * 
- * @example
- * <p>Store then retrieve a value from the div element.</p>
- * <pre><code>
- * $("div").data("test", { first: 16, last: "pizza!" });
- * $("span:first").text($("div").data("test").first);
- * $("span:last").text($("div").data("test").last);
- * </code></pre>
- * 
- * @param {String} key A string naming the piece of data to set.
- * @param {Object} value The new data value; it can be any Javascript type including Array or Object.
- * 
- * @since 1.2.3
- * @returns {jQuery}
-**/
-jQuery.prototype.data = function(key, value) {return new jQuery();};
-
-/**
  * Retrieve the DOM elements matched by the jQuery object.
  * 
  * <p>The <code>.get()</code> method grants us access to the DOM nodes underlying each jQuery object. Suppose we had a simple unordered list on the page:</p>
@@ -2649,60 +2592,6 @@ jQuery.prototype.scroll = function(handler) {return new jQuery();};
  * @returns {jQuery}
 **/
 jQuery.prototype.resize = function(handler) {return new jQuery();};
-
-/**
- * Execute the next function on the queue for the matched elements.
- * 
- * <p>When <code>.dequeue()</code> is called, the next function on the queue is removed from the queue, and then executed. This function should in turn (directly or indirectly) cause <code>.dequeue()</code> to be called, so that the sequence can continue.</p>
- * @example
- * <p>Use dequeue to end a custom queue function which allows the queue to keep going.</p>
- * <pre><code>
- * $("button").click(function () {
- *   $("div").animate({left:'+=200px'}, 2000);
- *   $("div").animate({top:'0px'}, 600);
- *   $("div").queue(function () {
- *     $(this).toggleClass("red");
- *     $(this).dequeue();
- *   });
- *   $("div").animate({left:'10px', top:'30px'}, 700);
- * });
- * </code></pre>
- * 
- * @param {String} queueName A string containing the name of the queue. Defaults to <code>fx</code>, the standard effects queue.
- * 
- * @since 1.2
- * @returns {jQuery}
-**/
-jQuery.prototype.dequeue = function(queueName) {return new jQuery();};
-
-/**
- * Show the queue of functions to be executed on the matched elements.
- * 
- * <longdesc/>
- * @example
- * <p>Show the length of the queue.</p>
- * <pre><code>$("#show").click(function () {
- *       var n = $("div").queue("fx");
- *       $("p").text("Queue length is: " + n.length);
- *     });
- *     function runIt() {
- *       $("div").show("slow");
- *       $("div").animate({left:'+=200'},2000);
- *       $("div").slideToggle(1000);
- *       $("div").slideToggle("fast");
- *       $("div").animate({left:'-=200'},1500);
- *       $("div").hide("slow");
- *       $("div").show(1200);
- *       $("div").slideUp("normal", runIt);
- *     }
- *     runIt();</code></pre>
- * 
- * @param {String} queueName A string containing the name of the queue. Defaults to <code>fx</code>, the standard effects queue.
- * 
- * @since 1.2
- * @returns {Array}
-**/
-jQuery.prototype.queue = function(queueName) {return new Array();};
 
 /**
  * Bind an event handler to the "keyup" JavaScript event, or trigger that event on an element.
@@ -3615,43 +3504,6 @@ jQuery.prototype.mouseup = function(handler) {return new jQuery();};
  * @returns {jQuery}
 **/
 jQuery.prototype.mousedown = function(handler) {return new jQuery();};
-
-/**
- * Bind an event handler to the "error" JavaScript event.
- * 
- * 
- * <p>This method is a shortcut for <code>.bind('error', handler)</code>.</p>
- * <p>The <code>error</code> event is sent to elements, such as images, that are referenced by a document and loaded by the browser. It is called if the element was not loaded correctly.</p>
- * <p>For example, consider a page with a simple image element:</p>
- * <pre>&lt;img alt="Book" id="book" /&gt;</pre>
- * <p>The event handler can be bound to the image:</p>
- * <pre>$('#book')
- *   .error(function() {
- *     alert('Handler for .error() called.')
- *   })
- *   .attr("src", "missing.png");
- * </pre>
- * <p>If the image cannot be loaded (for example, because it is not present at the supplied URL), the alert  is displayed:</p>
- * <p><span class="output">Handler for .error() called.</span></p>
- * <blockquote><p>The event handler <em>must</em> be attached before the browser fires the error event, which is why the example sets the src attribute after attaching the handler. Also, the error event may not be correctly fired when the page is served locally; <code>error</code> relies on HTTP status codes and will generally not be triggered if the URL uses the <code>file:</code> protocol.</p>
- * </blockquote>
- * <p>Note: A jQuery error event handler should not be attached to the window object. The browser fires the window's error event when a script error occurs. However, the window error event receives different arguments and has different return value requirements than conventional event handlers. Use <code>window.onerror</code> instead.
- * </p>
- * 
- * @example
- * <p>To hide the "broken image" icons for IE users, you can try:</p>
- * <pre><code>$("img")
- *   .error(function(){
- *     $(this).hide();
- *   })
- *   .attr("src", "missing.png");</code></pre>
- * 
- * @param {Function} handler A function to execute when the event is triggered.
- * 
- * @since 1.0
- * @returns {jQuery}
-**/
-jQuery.prototype.error = function(handler) {return new jQuery();};
 
 /**
  * Bind an event handler to the "unload" JavaScript event.
@@ -6516,82 +6368,6 @@ jQuery.prototype.closest = function(selector) {return new jQuery();};
 jQuery.getJSON = function(url, data, success) {return new jqXHR();};
 
 /**
- * Load data from the server using a HTTP GET request.
- * 
- * <p>This is a shorthand Ajax function, which is equivalent to:</p>
- *     <pre>$.ajax({
- *   url: <em>url</em>,
- *   data: <em>data</em>,
- *   success: <em>success</em>,
- *   dataType: <em>dataType</em>
- * });
- * </pre>
- *     <p>The <code>success</code> callback function is passed the returned data, which will be an XML root element, text string, JavaScript file, or JSON object, depending on the MIME type of the response. It is also passed the text status of the response. </p>
- *     <p><strong>As of jQuery 1.5</strong>, the <code>success</code> callback function is also passed a <a href="http://api.jquery.com/jQuery.get/#jqxhr-object">"jqXHR" object</a> (in <strong>jQuery 1.4</strong>, it was passed the <code>XMLHttpRequest</code> object). However, since JSONP and cross-domain GET requests do not use <abbr title="XMLHTTPRequest">XHR</abbr>,  in those cases the <code>(j)XHR</code> and <code>textStatus</code> parameters passed to the success callback are undefined.</p>
- *     <p>Most implementations will specify a success handler:</p>
- *     <pre>$.get('ajax/test.html', function(data) {
- *   $('.result').html(data);
- *   alert('Load was performed.');
- * });
- * </pre>
- *   <p>This example fetches the requested HTML snippet and inserts it on the page.</p>
- *   <h4 id="jqxhr-object">The jqXHR Object</h4>
- *   <p><strong>As of jQuery 1.5</strong>, all of jQuery's Ajax methods return  a superset of the <code>XMLHTTPRequest</code> object. This jQuery XHR object, or "jqXHR," returned by <code>$.get()</code> implements the Promise interface, giving it all the properties, methods, and behavior of a Promise (see <a href="http://api.jquery.com/category/deferred-object/">Deferred object</a> for more information). For convenience and consistency with the callback names used by <code><a href="http://api.jquery.com/jQuery.ajax/">$.ajax()</a></code>, it provides <code>.error()</code>, <code>.success()</code>, and <code>.complete()</code> methods. These methods take a function argument that is called when the request terminates, and the function receives the same arguments as the correspondingly-named <code>$.ajax()</code> callback.</p>
- * 
- *   <p>The Promise interface in jQuery 1.5 also allows jQuery's Ajax methods, including <code>$.get()</code>, to chain multiple <code>.success()</code>, <code>.complete()</code>, and <code>.error()</code> callbacks on a single request, and even to assign these callbacks after the request may have completed. If the request is already complete, the callback is fired immediately.</p>
- *   <pre>// Assign handlers immediately after making the request,
- *   // and remember the jqxhr object for this request
- *   var jqxhr = $.get("example.php", function() {
- *     alert("success");
- *   })
- *   .success(function() { alert("second success"); })
- *   .error(function() { alert("error"); })
- *   .complete(function() { alert("complete"); });
- * 
- *   // perform other work here ...
- * 
- *   // Set another completion function for the request above
- *   jqxhr.complete(function(){ alert("second complete"); });</pre>
- * 
- * @example
- * <p>Request the test.php page, but ignore the return results.</p>
- * <pre><code>$.get("test.php");</code></pre>
- * @example
- * <p>Request the test.php page and send some additional data along (while still ignoring the return results).</p>
- * <pre><code>$.get("test.php", { name: "John", time: "2pm" } );</code></pre>
- * @example
- * <p>pass arrays of data to the server (while still ignoring the return results).</p>
- * <pre><code>$.get("test.php", { 'choices[]': ["Jon", "Susan"]} );</code></pre>
- * @example
- * <p>Alert out the results from requesting test.php (HTML or XML, depending on what was returned).</p>
- * <pre><code>$.get("test.php", function(data){
- * alert("Data Loaded: " + data);
- * });</code></pre>
- * @example
- * <p>Alert out the results from requesting test.cgi with an additional payload of data (HTML or XML, depending on what was returned).</p>
- * <pre><code>$.get("test.cgi", { name: "John", time: "2pm" },
- *    function(data){
- *      alert("Data Loaded: " + data);
- *    });</code></pre>
- * @example
- * <p> Gets the test.php page contents which has been returned in json format (&lt;?php echo json_encode(array("name"=&gt;"John","time"=&gt;"2pm")); ?&gt;).</p>
- * <pre><code>$.get("test.php", { "func": "getNameAndTime" },
- *    function(data){
- *      alert(data.name); // John
- *      console.log(data.time); //  2pm
- *    }, "json");</code></pre>
- * 
- * @param {String} url A string containing the URL to which the request is sent.
- * @param {Map} data A map or string that is sent to the server with the request.
- * @param {Function} success A callback function that is executed if the request succeeds.
- * @param {String} dataType The type of data expected from the server. Default: Intelligent Guess (xml, json, script, or html).
- * 
- * @since 1.0
- * @returns {jqXHR}
-**/
-jQuery.get = function(url, data, success, dataType) {return new jqXHR();};
-
-/**
  * Perform an asynchronous HTTP (Ajax) request.
  * 
  * 
@@ -7809,70 +7585,6 @@ jQuery.grep = function(array, fn, invert) {return new Array();};
 jQuery.extend = function(target, object1, objectN) {return new Object();};
 
 /**
- * A generic iterator function, which can be used to seamlessly iterate over both objects and arrays. Arrays and array-like objects with a length property (such as a function's arguments object) are iterated by numeric index, from 0 to length-1. Other objects are iterated via their named properties.
- * 
- * 
- *     <p>The <code>$.each()</code> function is not the same as <a href="/each/">.each()</a>, which is used to iterate, exclusively, over a jQuery object. The <code>$.each()</code> function can be used to iterate over any collection, whether it is a map (JavaScript object) or an array. In the case of an array, the callback is passed an array index and a corresponding array value each time. (The value can also be accessed through the <code>this</code> keyword, but Javascript will always wrap the <code>this</code> value as an <code>Object</code> even if it is a simple string or number value.) The method returns its first argument, the object that was iterated.</p>
- * 
- * <pre>$.each([52, 97], function(index, value) { 
- *   alert(index + ': ' + value); 
- * });
- * </pre>
- * <p>This produces two messages:</p>
- * <p>
- *   <span class="output">0: 52</span><br/>
- *   <span class="output">1: 97</span>
- * </p>
- *     <p>If a map is used as the collection, the callback is passed a key-value pair each time:</p>
- * <pre>var map = { 
- *   'flammable': 'inflammable', 
- *   'duh': 'no duh' 
- * }; 
- * $.each(map, function(key, value) { 
- *   alert(key + ': ' + value); 
- * });</pre>
- *     <p>Once again, this produces two messages:</p>
- *     <p>
- *       <span class="output">flammable: inflammable</span><br/>
- *       <span class="output">duh: no duh</span>
- *     </p>
- *     
- *     <p>We can break the <code>$.each()</code> loop at a particular iteration by making the callback function return <code>false</code>. Returning <em>non-false</em> is the same as a <code>continue</code> statement in a for loop; it will skip immediately to the next iteration.</p>
- * @example
- * <p>Iterates through the array displaying each number as both a word and numeral</p>
- * <pre><code>
- *     var arr = [ "one", "two", "three", "four", "five" ];
- *     var obj = { one:1, two:2, three:3, four:4, five:5 };
- * 
- *     jQuery.each(arr, function() {
- *       $("#" + this).text("Mine is " + this + ".");
- *        return (this != "three"); // will stop running after "three"
- *    });
- * 
- *     jQuery.each(obj, function(i, val) {
- *       $("#" + i).append(document.createTextNode(" - " + val));
- *     });
- * </code></pre>
- * @example
- * <p>Iterates over items in an array, accessing both the current item and its index.</p>
- * <pre><code>$.each( ['a','b','c'], function(i, l){
- *    alert( "Index #" + i + ": " + l );
- *  });</code></pre>
- * @example
- * <p>Iterates over the properties in an object, accessing both the current item and its key.</p>
- * <pre><code>$.each( { name: "John", lang: "JS" }, function(k, v){
- *    alert( "Key: " + k + ", Value: " + v );
- *  });</code></pre>
- * 
- * @param {Object} collection The object or array to iterate over.
- * @param {Function} callback The function that will be executed on every object.
- * 
- * @since 1.0
- * @returns {Object}
-**/
-jQuery.each = function(collection, callback) {return new Object();};
-
-/**
  * <strong>Deprecated in jQuery 1.3 (see <a href="/jQuery.support">jQuery.support</a>)</strong>. States if the current page, in the user's browser, is being rendered using the <a href="http://www.w3.org/TR/REC-CSS2/box.html">W3C CSS Box Model</a>.
  * @example
  * <p>Returns the box model for the iframe.</p>
@@ -9021,96 +8733,6 @@ jQuery.prototype.text = function() {return "";};
  * @returns {String}
 **/
 jQuery.prototype.html = function() {return "";};
-
-/**
- * Pass each element in the current matched set through a function, producing a new jQuery object containing the return values.
- * 
- * <p>As the return value is a jQuery-wrapped array, it's very common to <code>get()</code> the returned object to work with a basic array.</p><p>The <code>.map()</code> method is particularly useful for getting or setting the value of a collection of elements. Consider a form with a set of checkboxes in it:</p>
- * <pre>
- * &lt;form method="post" action=""&gt;
- *   &lt;fieldset&gt;
- *     &lt;div&gt;
- *       &lt;label for="two"&gt;2&lt;/label&gt;
- *       &lt;input type="checkbox" value="2" id="two" name="number[]"&gt;
- *     &lt;/div&gt;
- *     &lt;div&gt;
- *       &lt;label for="four"&gt;4&lt;/label&gt;
- *       &lt;input type="checkbox" value="4" id="four" name="number[]"&gt;
- *     &lt;/div&gt;
- *     &lt;div&gt;
- *       &lt;label for="six"&gt;6&lt;/label&gt;
- *       &lt;input type="checkbox" value="6" id="six" name="number[]"&gt;
- *     &lt;/div&gt;
- *     &lt;div&gt;
- *       &lt;label for="eight"&gt;8&lt;/label&gt;
- *       &lt;input type="checkbox" value="8" id="eight" name="number[]"&gt;
- *     &lt;/div&gt;
- *   &lt;/fieldset&gt;
- * &lt;/form&gt;
- * </pre>
- * <p>We can get a comma-separated list of checkbox <code>ID</code>s:</p>
- * <pre>$(':checkbox').map(function() {
- *   return this.id;
- * }).get().join(',');</pre>
- * <p>The result of this call is the string, <code>"two,four,six,eight"</code>.</p>
- * <p>Within the callback function, <code>this</code> refers to the current DOM element for each iteration. The function can return an individual data item or an array of data items to be inserted into the resulting set. If an array is returned, the elements inside the array are inserted into the set. If the function returns <code>null</code> or <code>undefined</code>, no element will be inserted.</p>
- * 
- * @example
- * <p>Build a list of all the values within a form.</p>
- * <pre><code>
- *     $("p").append( $("input").map(function(){
- *       return $(this).val();
- *     }).get().join(", ") );
- * 
- * </code></pre>
- * @example
- * <p>A contrived example to show some functionality.</p>
- * <pre><code>
- * var mappedItems = $("li").map(function (index) {
- *   var replacement = $("<li>").text($(this).text()).get(0);
- *   if (index == 0) {
- *     / * make the first item all caps * /
- *     $(replacement).text($(replacement).text().toUpperCase());
- *   } else if (index == 1 || index == 3) {
- *     / * delete the second and fourth items * /
- *     replacement = null;
- *   } else if (index == 2) {
- *     / * make two of the third item and add some text * /
- *     replacement = [replacement,$("<li>").get(0)];
- *     $(replacement[0]).append("<b> - A</b>");
- *     $(replacement[1]).append("Extra <b> - B</b>");
- *   }
- * 
- *   / * replacement will be a dom element, null, 
- *      or an array of dom elements * /
- *   return replacement;
- * });
- * $("#results").append(mappedItems);
- * 
- * </code></pre>
- * @example
- * <p>Equalize the heights of the divs.</p>
- * <pre><code>
- * $.fn.equalizeHeights = function() {
- *   var maxHeight = this.map(function(i,e) {
- *     return $(e).height();
- *   }).get();
- *   
- *   return this.height( Math.max.apply(this, maxHeight) );
- * };
- * 
- * $('input').click(function(){
- *   $('div').equalizeHeights();
- * });
- * 
- * </code></pre>
- * 
- * @param {Function} callback A function object that will be invoked for each element in the current set.
- * 
- * @since 1.2
- * @returns {jQuery}
-**/
-jQuery.prototype.map = function(callback) {return new jQuery();};
 
 /**
  * Check the current matched set of elements against a selector, element, or jQuery object and return <code>true</code> if at least one of these elements matches the given arguments.

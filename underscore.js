@@ -1,5 +1,8 @@
-var _ = {};
-
+/** 
+ * @type {Underscore}
+ * @constructor 
+ */
+function Underscore() {}
 /**
  * Iterates over a <b>list</b> of elements, yielding each in turn to an <b>iterator</b>
  * function. The <b>iterator</b> is bound to the <b>context</b> object, if one is
@@ -14,8 +17,8 @@ var _ = {};
  * _.each([1, 2, 3], function(num){ alert(num); });
  * _.each({one : 1, two : 2, three : 3}, function(num, key){ alert(num); });
  */
-_.each = function(list, iterator, context){};
-_.forEach = _.each;
+Underscore.prototype.each = function(list, iterator, context){};
+Underscore.prototype.forEach= Underscore.prototype.each;
 
 /**
  * Produces a new array of values by mapping each value in <b>list</b>
@@ -30,7 +33,7 @@ _.forEach = _.each;
  * _.map([1, 2, 3], function(num){ return num * 3; });
  * _.map({one : 1, two : 2, three : 3}, function(num, key){ return num * 3; });
  */
-_.map = function(list, iterator, context){return new Array;};
+Underscore.prototype.map = function(list, iterator, context){return new Array;};
 
 /**
  * Also known as <b>inject</b> and <b>foldl</b>, <b>reduce</b> boils down a
@@ -45,9 +48,9 @@ _.map = function(list, iterator, context){return new Array;};
  * @example
  * var sum = _.reduce([1, 2, 3], function(memo, num){ return memo + num; }, 0);
  */
-_.reduce = function(list, iterator, memo, context){return new Object;};
-_.inject = _.reduce;
-_.foldl = _.reduce;
+Underscore.prototype.reduce = function(list, iterator, memo, context){return new Object;};
+Underscore.prototype.inject= Underscore.prototype.reduce;
+Underscore.prototype.foldl= Underscore.prototype.reduce;
 
 /**
  * The right-associative version of <b>reduce</b>. Delegates to the
@@ -63,8 +66,8 @@ _.foldl = _.reduce;
  * var list = [[0, 1], [2, 3], [4, 5]];
  * var flat = _.reduceRight(list, function(a, b) { return a.concat(b); }, []);
  */
-_.reduceRight = function(list, iterator, memo, context){return new Object;};
-_.foldr = _.reduceRight;
+Underscore.prototype.reduceRight = function(list, iterator, memo, context){return new Object;};
+Underscore.prototype.foldr= Underscore.prototype.reduceRight;
 
 /**
  * Looks through each value in the <b>list</b>, returning the first one that
@@ -78,7 +81,7 @@ _.foldr = _.reduceRight;
  * @example
  * var even = _.detect([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
  */
-_.detect = function(list, iterator, context){return new Object;};
+Underscore.prototype.detect = function(list, iterator, context){return new Object;};
 
 /**
  * Looks through each value in the <b>list</b>, returning an array of all
@@ -91,8 +94,8 @@ _.detect = function(list, iterator, context){return new Object;};
  * @example
  * var evens = _.select([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
  */
-_.select = function(list, iterator, context){return new Array;};
-_.filter = _.select;
+Underscore.prototype.select = function(list, iterator, context){return new Array;};
+Underscore.prototype.filter= Underscore.prototype.select;
 
 /**
  * Returns the values in <b>list</b> without the elements that the truth
@@ -104,7 +107,7 @@ _.filter = _.select;
  * @example
  * var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
  */
-_.reject = function(list, iterator, context){return new Array;};
+Underscore.prototype.reject = function(list, iterator, context){return new Array;};
 
 /**
  * Returns <i>true</i> if all of the values in the <b>list</b> pass the <b>iterator</b>
@@ -118,8 +121,8 @@ _.reject = function(list, iterator, context){return new Array;};
  * @example
  * _.all([true, 1, null, 'yes']);
  */
-_.all = function(list, iterator, context){return true;};
-_.every = _.all;
+Underscore.prototype.all = function(list, iterator, context){return true;};
+Underscore.prototype.every= Underscore.prototype.all;
 
 /**
  * Returns <i>true</i> if any of the values in the <b>list</b> pass the
@@ -133,8 +136,8 @@ _.every = _.all;
  * @example
  * _.any([null, 0, 'yes', false]);
  */
-_.any = function(list, iterator, context){return true;};
-_.some = _.any;
+Underscore.prototype.any = function(list, iterator, context){return true;};
+Underscore.prototype.some= Underscore.prototype.any;
 
 /**
  * Returns <i>true</i> if the <b>value</b> is present in the <b>list</b>, using
@@ -146,8 +149,8 @@ _.some = _.any;
  * @example
  * _.include([1, 2, 3], 3);
  */
-_.include = function(list, value){return true;};
-_.contains = _.include;
+Underscore.prototype.include = function(list, value){return true;};
+Underscore.prototype.contains= Underscore.prototype.include;
 
 /**
  * Calls the method named by <b>methodName</b> on each value in the <b>list</b>.
@@ -159,7 +162,7 @@ _.contains = _.include;
  * @example
  * _.invoke([[5, 1, 7], [3, 2, 1]], 'sort');
  */
-_.invoke = function(list, methodName, args){};
+Underscore.prototype.invoke = function(list, methodName, args){};
 
 /**
  * An convenient version of what is perhaps the most common use-case for
@@ -171,7 +174,7 @@ _.invoke = function(list, methodName, args){};
  * var stooges = [{name : 'moe', age : 40}, {name : 'larry', age : 50}, {name : 'curly', age : 60}];
  * _.pluck(stooges, 'name');
  */
-_.pluck = function(list, propertyName){return new Array;};
+Underscore.prototype.pluck = function(list, propertyName){return new Array;};
 
 /**
  * Returns the maximum value in <b>list</b>. If <b>iterator</b> is passed,
@@ -185,7 +188,7 @@ _.pluck = function(list, propertyName){return new Array;};
  * var stooges = [{name : 'moe', age : 40}, {name : 'larry', age : 50}, {name : 'curly', age : 60}];
  * _.max(stooges, function(stooge){ return stooge.age; });
  */
-_.max = function(list, iterator, context){return new Object;};
+Underscore.prototype.max = function(list, iterator, context){return new Object;};
 
 /**
  * Returns the minimum value in <b>list</b>. If <b>iterator</b> is passed,
@@ -199,7 +202,7 @@ _.max = function(list, iterator, context){return new Object;};
  * var numbers = [10, 5, 100, 2, 1000];
  * _.min(numbers);
  */
-_.min = function(list, iterator, context){return new Object;};
+Underscore.prototype.min = function(list, iterator, context){return new Object;};
 
 /**
  * Returns a sorted <b>list</b>, ranked by the results of running each
@@ -211,7 +214,7 @@ _.min = function(list, iterator, context){return new Object;};
  * @example
  * _.sortBy([1, 2, 3, 4, 5, 6], function(num){ return Math.sin(num); });
  */
-_.sortBy = function(list, iterator, context){return new Array;};
+Underscore.prototype.sortBy = function(list, iterator, context){return new Array;};
 
 /**
  * Uses a binary search to determine the index at which the <b>value</b>
@@ -225,7 +228,7 @@ _.sortBy = function(list, iterator, context){return new Array;};
  * @example
  * _.sortedIndex([10, 20, 30, 40, 50], 35);
  */
-_.sortedIndex = function(list, value, iterator){return 0;};
+Underscore.prototype.sortedIndex = function(list, value, iterator){return 0;};
 
 /**
  * Converts the <b>list</b> (anything that can be iterated over), into a
@@ -235,7 +238,7 @@ _.sortedIndex = function(list, value, iterator){return 0;};
  * @example
  * (function(){ return _.toArray(arguments).slice(0); })(1, 2, 3);
  */
-_.toArray = function(list){return new Array;};
+Underscore.prototype.toArray = function(list){return new Array;};
 
 /**
  * Return the number of values in the <b>list</b>.
@@ -244,7 +247,7 @@ _.toArray = function(list){return new Array;};
  * @example
  * _.size({one : 1, two : 2, three : 3});
  */
-_.size = function(list){return 0;};
+Underscore.prototype.size = function(list){return 0;};
 
 /**
  * Returns the first element of an <b>array</b>. Passing <b>n</b> will
@@ -255,8 +258,8 @@ _.size = function(list){return 0;};
  * @example
  * _.first([5, 4, 3, 2, 1]);
  */
-_.first = function(array, n){return new Object;};
-_.head = _.first;
+Underscore.prototype.first = function(array, n){return new Object;};
+Underscore.prototype.head= Underscore.prototype.first;
 
 /**
  * Returns the <b>rest</b> of the elements in an array. Pass an <b>index</b>
@@ -267,8 +270,8 @@ _.head = _.first;
  * @example
  * _.rest([5, 4, 3, 2, 1]);
  */
-_.rest = function(array, index){return new Array;};
-_.tail = _.rest;
+Underscore.prototype.rest = function(array, index){return new Array;};
+Underscore.prototype.tail= Underscore.prototype.rest;
 
 /**
  * Returns the last element of an <b>array</b>.
@@ -277,7 +280,7 @@ _.tail = _.rest;
  * @example
  * _.last([5, 4, 3, 2, 1]);
  */
-_.last = function(array){return new Object;};
+Underscore.prototype.last = function(array){return new Object;};
 
 /**
  * Returns a copy of the <b>array</b> with all falsy values removed.
@@ -288,7 +291,7 @@ _.last = function(array){return new Object;};
  * @example
  * _.compact([0, 1, false, 2, '', 3]);
  */
-_.compact = function(array){return new Array;};
+Underscore.prototype.compact = function(array){return new Array;};
 
 /**
  * Flattens a nested <b>array</b> (the nesting can be to any depth).
@@ -297,7 +300,7 @@ _.compact = function(array){return new Array;};
  * @example
  * _.flatten([1, [2], [3, [[[4]]]]]);
  */
-_.flatten = function(array){return new Array;};
+Underscore.prototype.flatten = function(array){return new Array;};
 
 /**
  * Returns a copy of the <b>array</b> with all instances of the <b>values</b>
@@ -308,7 +311,7 @@ _.flatten = function(array){return new Array;};
  * @example
  * _.without([1, 2, 1, 0, 3, 1, 4], 0, 1);
  */
-_.without = function(array, values){return new Array;};
+Underscore.prototype.without = function(array, values){return new Array;};
 
 /**
  * Produces a duplicate-free version of the <b>array</b>, using <i>===</i> to test
@@ -320,8 +323,8 @@ _.without = function(array, values){return new Array;};
  * @example
  * _.uniq([1, 2, 1, 3, 1, 4]);
  */
-_.uniq = function(array, isSorted){return new Array;};
-_.unique = _.uniq;
+Underscore.prototype.uniq = function(array, isSorted){return new Array;};
+Underscore.prototype.unique= Underscore.prototype.uniq;
 
 /**
  * Computes the list of values that are the intersection of all the <b>arrays</b>.
@@ -331,7 +334,7 @@ _.unique = _.uniq;
  * @example
  * _.intersect([1, 2, 3], [101, 2, 1, 10], [2, 1]);
  */
-_.intersect = function(arrays){return new Array;};
+Underscore.prototype.intersect = function(arrays){return new Array;};
 
 /**
  * Merges together the values of each of the <b>arrays</b> with the
@@ -342,7 +345,7 @@ _.intersect = function(arrays){return new Array;};
  * @example
  * _.zip(['moe', 'larry', 'curly'], [30, 40, 50], [true, false, false]);
  */
-_.zip = function(arrays){return new Array;};
+Underscore.prototype.zip = function(arrays){return new Array;};
 
 /**
  * Returns the index at which <b>value</b> can be found in the <b>array</b>,
@@ -357,7 +360,7 @@ _.zip = function(arrays){return new Array;};
  * @example
  * _.indexOf([1, 2, 3], 2);
  */
-_.indexOf = function(array, value, isSorted){return 0;};
+Underscore.prototype.indexOf = function(array, value, isSorted){return 0;};
 
 /**
  * Returns the index of the last occurrence of <b>value</b> in the <b>array</b>,
@@ -369,7 +372,7 @@ _.indexOf = function(array, value, isSorted){return 0;};
  * @example
  * _.lastIndexOf([1, 2, 3, 1, 2, 3], 2);
  */
-_.lastIndexOf = function(array, value){return 0;};
+Underscore.prototype.lastIndexOf = function(array, value){return 0;};
 
 /**
  * A function to create flexibly-numbered lists of integers, handy for
@@ -388,7 +391,7 @@ _.lastIndexOf = function(array, value){return 0;};
  * _.range(0, -10, -1);
  * _.range(0);
  */
-_.range = function(start, stop, step){return new Array;};
+Underscore.prototype.range = function(start, stop, step){return new Array;};
 
 /**
  * Bind a <b>function</b> to an <b>object</b>, meaning that whenever
@@ -404,7 +407,7 @@ _.range = function(start, stop, step){return new Array;};
  * func = _.bind(func, {name : 'moe'}, 'hi');
  * func();
  */
-_.bind = function(fn, object, arguments){return function(){};};
+Underscore.prototype.bind = function(fn, object, arguments){return function(){};};
 
 /**
  * Binds a number of methods on the <b>object</b>, specified by
@@ -424,7 +427,7 @@ _.bind = function(fn, object, arguments){return function(){};};
  * _.bindAll(buttonView);
  * jQuery('#underscore_button').bind('click', buttonView.onClick);
  */
-_.bindAll = function(object, methodNames){};
+Underscore.prototype.bindAll = function(object, methodNames){};
 
 /**
  * Memoizes a given <b>function</b> by caching the computed result. Useful
@@ -440,7 +443,7 @@ _.bindAll = function(object, methodNames){};
  * };
  * var fastFibonacci = _.memoize(fibonacci);
  */
-_.memoize = function(fn, hashFunction){return function(){};};
+Underscore.prototype.memoize = function(fn, hashFunction){return function(){};};
 
 /**
  * Much like <b>setTimeout</b>, invokes <b>function</b> after <b>wait</b>
@@ -454,7 +457,7 @@ _.memoize = function(fn, hashFunction){return function(){};};
  * var log = _.bind(console.log, console);
  * _.delay(log, 1000, 'logged later');
  */
-_.delay = function(fn, wait, args){};
+Underscore.prototype.delay = function(fn, wait, args){};
 
 /**
  * Defers invoking the <b>function</b> until the current call stack has cleared,
@@ -466,7 +469,7 @@ _.delay = function(fn, wait, args){};
  * _.defer(function(){ alert('deferred'); });
  * // Returns from the function before the alert runs.
  */
-_.defer = function(fn){};
+Underscore.prototype.defer = function(fn){};
 
 /**
  * Returns a throttled version of the function, that, when invoked repeatedly,
@@ -480,7 +483,7 @@ _.defer = function(fn){};
  * var throttled = _.throttle(updatePosition, 100);
  * $(window).scroll(throttled);
  */
-_.throttle = function(fn, wait){return function(){};};
+Underscore.prototype.throttle = function(fn, wait){return function(){};};
 
 /**
  * Repeated calls to a debounced function will postpone it's execution
@@ -495,7 +498,7 @@ _.throttle = function(fn, wait){return function(){};};
  * var lazyLayout = _.debounce(calculateLayout, 300);
  * $(window).resize(lazyLayout);
  */
-_.debounce = function(fn, wait){return function(){};};
+Underscore.prototype.debounce = function(fn, wait){return function(){};};
 
 /**
  * Wraps the first <b>function</b> inside of the <b>wrapper</b> function,
@@ -512,7 +515,7 @@ _.debounce = function(fn, wait){return function(){};};
  * });
  * hello();
  */
-_.wrap = function(fn, wrapper){return function() {};};
+Underscore.prototype.wrap = function(fn, wrapper){return function() {};};
 
 /**
  * Returns the composition of a list of <b>functions</b>, where each function
@@ -527,7 +530,7 @@ _.wrap = function(fn, wrapper){return function() {};};
  * var welcome = _.compose(greet, exclaim);
  * welcome('moe');
  */
-_.compose = function(fn){return function() {};};
+Underscore.prototype.compose = function(fn){return function() {};};
 
 /**
  * Retrieve all the names of the <b>object</b>'s properties.
@@ -536,7 +539,7 @@ _.compose = function(fn){return function() {};};
  * @example
  * _.keys({one : 1, two : 2, three : 3});
  */
-_.keys = function(object){return new Array;};
+Underscore.prototype.keys = function(object){return new Array;};
 
 /**
  * Return all of the values of the <b>object</b>'s properties.
@@ -545,7 +548,7 @@ _.keys = function(object){return new Array;};
  * @example
  * _.values({one : 1, two : 2, three : 3});
  */
-_.values = function(object){return new Array;};
+Underscore.prototype.values = function(object){return new Array;};
 
 /**
  * Returns a sorted list of the names of every method in an object —
@@ -555,8 +558,8 @@ _.values = function(object){return new Array;};
  * @example
  * _.functions(_);
  */
-_.functions = function(object){return new Array;};
-_.methods = _.functions;
+Underscore.prototype.functions = function(object){return new Array;};
+Underscore.prototype.methods= Underscore.prototype.functions;
 
 /**
  * Copy all of the properties in the <b>source</b> objects over to the
@@ -568,7 +571,7 @@ _.methods = _.functions;
  * @example
  * _.extend({name : 'moe'}, {age : 50});
  */
-_.extend = function(destination, sources){ return new Object; };
+Underscore.prototype.extend = function(destination, sources){ return new Object; };
 
 /**
  * Create a shallow-copied clone of the <b>object</b>. Any nested objects
@@ -578,7 +581,7 @@ _.extend = function(destination, sources){ return new Object; };
  * @example
  * _.clone({name : 'moe'});
  */
-_.clone = function(object){return new Object;};
+Underscore.prototype.clone = function(object){return new Object;};
 
 /**
  * Invokes <b>interceptor</b> with the <b>object</b>, and then returns <b>object</b>.
@@ -593,7 +596,7 @@ _.clone = function(object){return new Object;};
  * map(function(num) { return num * num }).
  * value();
  */
-_.tap = function(object, interceptor){};
+Underscore.prototype.tap = function(object, interceptor){};
 
 /**
  * Performs an optimized deep comparison between the two objects, to determine
@@ -607,7 +610,7 @@ _.tap = function(object, interceptor){};
  * moe == clone;
  * _.isEqual(moe, clone);
  */
-_.isEqual = function(object, other){ return true; };
+Underscore.prototype.isEqual = function(object, other){ return true; };
 
 /**
  * Returns <i>true</i> if <b>object</b> contains no values.
@@ -617,7 +620,7 @@ _.isEqual = function(object, other){ return true; };
  * _.isEmpty([1, 2, 3]);
  * _.isEmpty({});
  */
-_.isEmpty = function(object){ return true; };
+Underscore.prototype.isEmpty = function(object){ return true; };
 
 /**
  * Returns <i>true</i> if <b>object</b> is a DOM element.
@@ -626,7 +629,7 @@ _.isEmpty = function(object){ return true; };
  * @example
  * _.isElement(jQuery('body')[0]);
  */
-_.isElement = function(object){return true;};
+Underscore.prototype.isElement = function(object){return true;};
 
 /**
  * Returns <i>true</i> if <b>object</b> is an Array.
@@ -636,7 +639,7 @@ _.isElement = function(object){return true;};
  * (function(){ return _.isArray(arguments); })();
  * _.isArray([1,2,3]);
  */
-_.isArray = function(object){return true;};
+Underscore.prototype.isArray = function(object){return true;};
 
 /**
  * Returns <i>true</i> if <b>object</b> is an Arguments object.
@@ -646,7 +649,7 @@ _.isArray = function(object){return true;};
  * (function(){ return _.isArguments(arguments); })(1, 2, 3);
  * _.isArguments([1,2,3]);
  */
-_.isArguments = function(object){return true;};
+Underscore.prototype.isArguments = function(object){return true;};
 
 /**
  * Returns <i>true</i> if <b>object</b> is a Function.
@@ -655,7 +658,7 @@ _.isArguments = function(object){return true;};
  * @example
  * _.isFunction(alert);
  */
-_.isFunction = function(object){return true;};
+Underscore.prototype.isFunction = function(object){return true;};
 
 /**
  * Returns <i>true</i> if <b>object</b> is a String.
@@ -664,7 +667,7 @@ _.isFunction = function(object){return true;};
  * @example
  * _.isString("moe");
  */
-_.isString = function(object){return true;};
+Underscore.prototype.isString = function(object){return true;};
 
 /**
  * Returns <i>true</i> if <b>object</b> is a Number.
@@ -673,7 +676,7 @@ _.isString = function(object){return true;};
  * @example
  * _.isNumber(8.4 * 5);
  */
-_.isNumber = function(object){return true;};
+Underscore.prototype.isNumber = function(object){return true;};
 
 /**
  * Returns <i>true</i> if <b>object</b> is either <i>true</i> or <i>false</i>.
@@ -682,7 +685,7 @@ _.isNumber = function(object){return true;};
  * @example
  * _.isBoolean(null);
  */
-_.isBoolean = function(object){return true;};
+Underscore.prototype.isBoolean = function(object){return true;};
 
 /**
  * Returns <i>true</i> if <b>object</b> is a Date.
@@ -691,7 +694,7 @@ _.isBoolean = function(object){return true;};
  * @example
  * _.isDate(new Date());
  */
-_.isDate = function(object){return true;};
+Underscore.prototype.isDate = function(object){return true;};
 
 /**
  * Returns <i>true</i> if <b>object</b> is a RegExp.
@@ -700,7 +703,7 @@ _.isDate = function(object){return true;};
  * @example
  * _.isRegExp(/moe/);
  */
-_.isRegExp = function(object){return true;};
+Underscore.prototype.isRegExp = function(object){return true;};
 
 /**
  * Returns <i>true</i> if <b>object</b> is <i>NaN</i>.<br> Note: this is not
@@ -713,7 +716,7 @@ _.isRegExp = function(object){return true;};
  * isNaN(undefined);
  * _.isNaN(undefined);
  */
-_.isNaN = function(object){return true;};
+Underscore.prototype.isNaN = function(object){return true;};
 
 /**
  * Returns <i>true</i> if the value of <b>object</b> is <i>null</i>.
@@ -723,7 +726,7 @@ _.isNaN = function(object){return true;};
  * _.isNull(null);
  * _.isNull(undefined);
  */
-_.isNull = function(object){return true;};
+Underscore.prototype.isNull = function(object){return true;};
 
 /**
  * Returns <i>true</i> if <b>variable</b> is <i>undefined</i>.
@@ -732,7 +735,7 @@ _.isNull = function(object){return true;};
  * @example
  * _.isUndefined(window.missingVariable);
  */
-_.isUndefined = function(variable){return true;};
+Underscore.prototype.isUndefined = function(variable){return true;};
 
 /**
  * Give control of the "_" variable back to its previous owner. Returns
@@ -741,7 +744,7 @@ _.isUndefined = function(variable){return true;};
  * @example
  * var underscore = _.noConflict();
  */
-_.noConflict = function(){return new Object;};
+Underscore.prototype.noConflict = function(){return new Object;};
 
 /**
  * Returns the same value that is used as the argument. In math:
@@ -754,7 +757,7 @@ _.noConflict = function(){return new Object;};
  * var moe = {name : 'moe'};
  * moe === _.identity(moe);
  */
-_.identity = function(value){return new Object;};
+Underscore.prototype.identity = function(value){return new Object;};
 
 /**
  * Invokes the given iterator function <b>n</b> times.
@@ -763,7 +766,7 @@ _.identity = function(value){return new Object;};
  * @example
  * _(3).times(function(){ genie.grantWish(); });
  */
-_.times = function(n, iterator){};
+Underscore.prototype.times = function(n, iterator){};
 
 /**
  * Allows you to extend Underscore with your own utility functions. Pass
@@ -778,7 +781,7 @@ _.times = function(n, iterator){};
  * });
  * _("fabio").capitalize();
  */
-_.mixin = function(object){};
+Underscore.prototype.mixin = function(object){};
 
 /**
  * Generate a globally-unique id for client-side models or DOM elements
@@ -788,7 +791,7 @@ _.mixin = function(object){};
  * @example
  * _.uniqueId('contact_');
  */
-_.uniqueId = function(prefix){return '';};
+Underscore.prototype.uniqueId = function(prefix){return '';};
 
 /**
  * Compiles JavaScript templates into functions that can be evaluated
@@ -810,14 +813,14 @@ _.uniqueId = function(prefix){return '';};
  * var list = "<% _.each(people, function(name) { %> <li><%= name %></li> <% }); %>";
  * _.template(list, {people : ['moe', 'curly', 'larry']});
  */
-_.template = function(templateString, context){return function(){};};
+Underscore.prototype.template = function(templateString, context){return function(){};};
 
 /**
  * Returns a wrapped object. Calling methods on this object will continue
  * to return wrapped objects until <tt>value</tt> is used. (
  * <a href="#styles">A more realistic example.</a>)
  * @param {Object} obj
- * @return {_}
+ * @return {Underscore}
  * @example
  * var stooges = [{name : 'curly', age : 25}, {name : 'moe', age : 21}, {name : 'larry', age : 23}];
  * var youngest = _(stooges).chain()
@@ -826,7 +829,7 @@ _.template = function(templateString, context){return function(){};};
  * .first()
  * .value();
  */
-_.chain = function(obj){return _;};
+Underscore.prototype.chain = function(obj){return _;};
 
 /**
  * Extracts the value of a wrapped object.
@@ -834,4 +837,6 @@ _.chain = function(obj){return _;};
  * @example
  * _([1, 2, 3]).value();
  */
-_.value = function(obj){return '';};
+Underscore.prototype.value = function(obj){return '';};
+
+var _ = new Underscore;

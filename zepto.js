@@ -1,6 +1,6 @@
 /**
  * Zepto.js is a minimalist framework for mobile WebKit browsers, with a Zepto-compatible chaining syntax.
- * @class
+ * @type Zepto
  * @constructor
  */
 function Zepto(){}
@@ -10,104 +10,104 @@ Zepto.prototype = new Array;
 /**
  * Access a single matched element.
  * @param {Number} num Element's index in array
- * @return {Element}
+ * @return {HTMLElement}
  */
-Zepto.prototype.get = function(num){};
+Zepto.prototype.get = function(num){ return new HTMLElement(); };
 
 /**
  * The number of elements currently matched.
  * @return {Number}
  */
-Zepto.prototype.size = function(){};
+Zepto.prototype.size = function(){return 0;};
 
 /**
  * Execute a function within the context of every matched element.
  * @param {Function} fn
  * @return {Zepto}
  */
-Zepto.prototype.each = function(fn){};
+Zepto.prototype.each = function(fn){ return new Zepto; };
 
 /**
  * Searches every matched element for the object and returns the index of the element, if found, starting with zero.
  * @param {Element} subject
  * @return {Number}
  */
-Zepto.prototype.index = function(subject){};
+Zepto.prototype.index = function(subject){return 0;};
 
 /**
  * Returns new collection containing only the first matched element
  * @return {Zepto}
  */
-Zepto.prototype.first = function(){};
+Zepto.prototype.first = function(){return new Zepto;};
 
 /**
  * Returns new collection containing only the last matched element
  * @return {Zepto}
  */
-Zepto.prototype.last = function(){};
+Zepto.prototype.last = function(){return new Zepto;};
 
 /**
  * Searches for all elements that match the specified expression.
  * @param {String} expr
  * @return {Zepto}
  */
-Zepto.prototype.find = function(expr){};
+Zepto.prototype.find = function(expr){return new Zepto;};
 
 /**
  * Get the first ancestor element that matches the selector, beginning at the current element and progressing up through the DOM tree.
  * @param {String} selector A string containing a selector expression to match elements against
  * @return {Zepto}
  */
-Zepto.prototype.closest = function(selector){};
+Zepto.prototype.closest = function(selector){return new Zepto;};
 
 /**
  * Get a set of elements containing the unique ancestors of the matched set of elements (except for the root element).
  * @param {String} expr
  * @return {Zepto}
  */
-Zepto.prototype.parents = function(expr){};
+Zepto.prototype.parents = function(expr){return new Zepto;};
 
 /**
  * Get a set of elements containing the unique parents of the matched set of elements.
  * @param {String} expr
  * @return {Zepto}
  */
-Zepto.prototype.parent = function(expr){};
+Zepto.prototype.parent = function(expr){return new Zepto;};
 
 /**
  * Get a set of elements containing all of the unique children of each of the matched set of elements.
  * @param {String} expr
  * @return {Zepto}
  */
-Zepto.prototype.children = function(expr){};
+Zepto.prototype.children = function(expr){return new Zepto;};
 
 /**
  * Get a set of elements containing all of the unique siblings of each of the matched set of elements.
  * @param {String} expr
  * @return {Zepto}
  */
-Zepto.prototype.siblings = function(expr){};
+Zepto.prototype.siblings = function(expr){return new Zepto;};
 
 /**
  * Get a set of elements containing the unique next siblings of each of the matched set of elements.
  * @param {String} expr
  * @return {Zepto}
  */
-Zepto.prototype.next = function(expr){};
+Zepto.prototype.next = function(expr){return new Zepto;};
 
 /**
  * Get a set of elements containing the unique previous siblings of each of the matched set of elements.
  * @param {String} expr
  * @return {Zepto}
  */
-Zepto.prototype.prev = function(expr){};
+Zepto.prototype.prev = function(expr){return new Zepto;};
 
 /**
  * Checks the current selection against an expression and returns true, if at least one element of the selection fits the given expression.
  * @param {String} expr
  * @return {Boolean}
  */
-Zepto.prototype.is = function(expr){};
+Zepto.prototype.is = function(expr){return true;};
 
 /**
  * Removes the specified Element from the set of matched elements.
@@ -125,13 +125,13 @@ Zepto.prototype.is = function(expr){};
  * @param {String} expr
  * @return {Zepto}
  */
-Zepto.prototype.not = function(expr){};
+Zepto.prototype.not = function(expr){return new Zepto;};
 
 /**
  * Removes all matched elements from the DOM.
  * @return {Zepto}
  */
-Zepto.prototype.remove = function(){};
+Zepto.prototype.remove = function(){return new Zepto;};
 
 /**
  * Get the html contents of the first matched element.
@@ -145,7 +145,7 @@ Zepto.prototype.remove = function(){};
  * @param {String} value New value
  * @return {String}
  */
-Zepto.prototype.html = function(value){};
+Zepto.prototype.html = function(value){return '';};
 
 /**
  * Get the text contents of all matched elements.
@@ -158,47 +158,47 @@ Zepto.prototype.html = function(value){};
  * @param {String} value
  * @return {String}
  */
-Zepto.prototype.text = function(value){};
+Zepto.prototype.text = function(value){return '';};
 
 /**
  * Append content to the inside of every matched element.
  * @param {Element} content
  * @return {Zepto}
  */
-Zepto.prototype.append = function(content){};
+Zepto.prototype.append = function(content){return new Zepto;};
 
 /**
  * Prepend content to the inside of every matched element.
  * @param {Element} content
  * @return {Zepto}
  */
-Zepto.prototype.prepend = function(content){};
+Zepto.prototype.prepend = function(content){return new Zepto;};
 
 /**
  * Insert content before each of the matched elements.
  * @param {Element} content
  * @return {Zepto}
  */
-Zepto.prototype.before = function(content){};
+Zepto.prototype.before = function(content){return new Zepto;};
 
 /**
  * Insert content after each of the matched elements.
  * @param {Element} content
  * @return {Zepto}
  */
-Zepto.prototype.after = function(content){};
+Zepto.prototype.after = function(content){return new Zepto;};
 
 /**
  * Displays each of the set of matched elements if they are hidden.
  * @return {Zepto}
  */
-Zepto.prototype.show = function(){};
+Zepto.prototype.show = function(){return new Zepto;};
 
 /**
  * Hides each of the set of matched elements if they are shown.
  * @return {Zepto}
  */
-Zepto.prototype.hide = function(){};
+Zepto.prototype.hide = function(){return new Zepto;};
 
 /**
  * Get the current offset of the first matched element relative to the viewport.
@@ -209,15 +209,15 @@ Zepto.prototype.offset = function(){ return {top: 0, left: 0};};
 
 /**
  * Get the current computed, pixel, height of the first matched element.
- * @return {String}
+ * @return {Number}
  */
-Zepto.prototype.height = function(){};
+Zepto.prototype.height = function(){return 0;};
 
 /**
  * Get the current computed, pixel, width of the first matched element.
  * @return {Number}
  */
-Zepto.prototype.width = function(){};
+Zepto.prototype.width = function(){return 0;};
 
 /**
  * Access a property on the first matched element.
@@ -240,7 +240,7 @@ Zepto.prototype.width = function(){};
  * @param {String} value
  * @return {Zepto}
  */
-Zepto.prototype.attr = function(name, value){};
+Zepto.prototype.attr = function(name, value){return new Zepto;};
 
 /**
  * Access a style property on the first matched element.
@@ -259,21 +259,21 @@ Zepto.prototype.attr = function(name, value){};
  * @param {String} value
  * @return {Zepto}
  */
-Zepto.prototype.css = function(name, value){};
+Zepto.prototype.css = function(name, value){return new Zepto;};
 
 /**
  * Adds the specified class(es) to each of the set of matched elements.
  * @param {String} className
  * @return {Zepto}
  */
-Zepto.prototype.addClass = function(className){};
+Zepto.prototype.addClass = function(className){return new Zepto;};
 
 /**
  * Removes all or the specified class(es) from the set of matched elements.
  * @param {String} className
  * @return {Zepto}
  */
-Zepto.prototype.removeClass = function(className){};
+Zepto.prototype.removeClass = function(className){return new Zepto;};
 
 /**
  * Adds the specified class if it is not present, removes it if it is present.
@@ -281,14 +281,14 @@ Zepto.prototype.removeClass = function(className){};
  * @param {Function} switchFn
  * @return {Zepto}
  */
-Zepto.prototype.toggleClass = function(className, switchFn){};
+Zepto.prototype.toggleClass = function(className, switchFn){return new Zepto;};
 
 /**
  * Checks the current selection against a class and returns true, if at least one element of the selection has the given class.
  * @param {String} className
  * @return {Boolean}
  */
-Zepto.prototype.hasClass = function(className){};
+Zepto.prototype.hasClass = function(className){return false;};
 
 /**
  * Binds a handler to a particular event (like click) for each matched element.
@@ -297,7 +297,7 @@ Zepto.prototype.hasClass = function(className){};
  * @param {Object} data
  * @return {Zepto}
  */
-Zepto.prototype.bind = function(type, fn){};
+Zepto.prototype.bind = function(type, fn){return new Zepto;};
 
 /**
  * Binds a handler to a particular event (like click) for each matched element.
@@ -306,7 +306,7 @@ Zepto.prototype.bind = function(type, fn){};
  * @param {Function} selector handler A function to execute at the time the event is triggered.
  * @return {Zepto}
  */
-Zepto.prototype.delegate = function(selector, eventType, handler){};
+Zepto.prototype.delegate = function(selector, eventType, handler){return new Zepto;};
 
 /**
  * Binds a handler to a particular event (like click) for each matched element.
@@ -315,7 +315,7 @@ Zepto.prototype.delegate = function(selector, eventType, handler){};
  * @param {Object} data
  * @return {Zepto}
  */
-Zepto.prototype.one = function(type, fn){};
+Zepto.prototype.one = function(type, fn){return new Zepto;};
 
 /**
  * The opposite of bind, removes a bound event from each of the matched elements.
@@ -323,7 +323,7 @@ Zepto.prototype.one = function(type, fn){};
  * @param {Function} fn
  * @return {Zepto}
  */
-Zepto.prototype.unbind = function(type, fn){};
+Zepto.prototype.unbind = function(type, fn){return new Zepto;};
 
 /**
  * The opposite of delegate, removes a delegated event from each of the matched elements.
@@ -332,14 +332,14 @@ Zepto.prototype.unbind = function(type, fn){};
  * @param {Function} fn
  * @return {Zepto}
  */
-Zepto.prototype.undelegate = function(selector, type, fn){};
+Zepto.prototype.undelegate = function(selector, type, fn){return new Zepto;};
 
 /**
  * Trigger a type of event on every matched element.
  * @param {String} type
  * @return {Zepto}
  */
-Zepto.prototype.trigger = function(type){};
+Zepto.prototype.trigger = function(type){return new Zepto;};
 
 /**
  * Return property for each element e.g. <code>pluck('innerHTML')</code> returns 
@@ -347,7 +347,7 @@ Zepto.prototype.trigger = function(type){};
  * @param {String} property
  * @return {Zepto}
  */
-Zepto.prototype.pluck = function(property){};
+Zepto.prototype.pluck = function(property){return new Zepto;};
 
 /**
  * Use <code>-webkit-transform</code>/<code>opacity</code> and do an animation,
@@ -358,28 +358,28 @@ Zepto.prototype.pluck = function(property){};
  * @param {Function} callback
  * @return {Zepto}
  */
-Zepto.prototype.anim = function(transform, opacity, duration, callback){};
+Zepto.prototype.anim = function(transform, opacity, duration, callback){return new Zepto;};
 
 /**
  * Bind a function to the tap event of each matched element.
  * @param {Function} fn
  * @return {Zepto}
  */
-Zepto.prototype.tap = function(fn){};
+Zepto.prototype.tap = function(fn){return new Zepto;};
 
 /**
  * Bind a function to the double tap event of each matched element.
  * @param {Function} fn
  * @return {Zepto}
  */
-Zepto.prototype.doubleTap = function(fn){};
+Zepto.prototype.doubleTap = function(fn){return new Zepto;};
 
 /**
  * Bind a function to the swipe tap event of each matched element.
  * @param {Function} fn
  * @return {Zepto}
  */
-Zepto.prototype.swipe = function(fn){};
+Zepto.prototype.swipe = function(fn){return new Zepto;};
 
 
 /**
@@ -387,22 +387,14 @@ Zepto.prototype.swipe = function(fn){};
  * @param {Function} fn
  * @return {Zepto}
  */
-Zepto.prototype.swipeLeft = function(fn){};
+Zepto.prototype.swipeLeft = function(fn){return new Zepto;};
 
 /**
  * Bind a function to the swipe right tap event of each matched element.
  * @param {Function} fn
  * @return {Zepto}
  */
-Zepto.prototype.swipeRight = function(fn){};
-
-/**
- * Zepto.js is a minimalist framework for mobile WebKit browsers, with a Zepto-compatible chaining syntax.
- * @param {String} selector
- * @return {Zepto}
- */
-function $(selector){return new Zepto();};
-$.prototype = new Zepto;
+Zepto.prototype.swipeRight = function(fn){return new Zepto;};
 
 /**
  * Load JSON data using an HTTP GET request.
@@ -411,7 +403,7 @@ $.prototype = new Zepto;
  * @param {Function} callback
  * @return {XMLHttpRequest}
  */
-$.getJSON = function(url, params, callback){};
+Zepto.getJSON = function(url, params, callback){return new XMLHttpRequest;};
 
 /**
  * Load a remote page using an HTTP GET request.
@@ -420,7 +412,7 @@ $.getJSON = function(url, params, callback){};
  * @param {Function} callback
  * @return {XMLHttpRequest}
  */
-$.get = function(url, params, callback){};
+Zepto.get = function(url, params, callback){return new XMLHttpRequest;};
 
 /**
  * Load a remote page using an HTTP POST request.
@@ -429,11 +421,19 @@ $.get = function(url, params, callback){};
  * @param {Function} callback
  * @return {XMLHttpRequest}
  */
-$.post = function(url, params, callback){};
+Zepto.post = function(url, params, callback){return new XMLHttpRequest};
 
 /**
  * Load a remote page using an HTTP request.
  * @param {Object} properties
  * @return {XMLHttpRequest}
  */
-$.ajax = function(properties){};
+Zepto.ajax = function(properties){return new XMLHttpRequest;};
+
+/**
+ * Zepto.js is a minimalist framework for mobile WebKit browsers, with a Zepto-compatible chaining syntax.
+ * @param {String} selector
+ * @return {Zepto}
+ */
+function $(selector){return new Zepto();};
+//$.prototype = new Zepto;

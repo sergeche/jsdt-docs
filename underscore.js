@@ -1,5 +1,6 @@
 /** 
  * @type {Underscore}
+ * @base {Funtion}
  * @constructor 
  */
 function Underscore() {}
